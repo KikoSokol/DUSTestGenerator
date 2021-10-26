@@ -20,6 +20,13 @@ public class ReachabilityGraphServiceImpl implements ReachabilityGraphService
 
     @Override
     public ReachabilityGraphDto getReachabilityGraph() {
+        return null;
+    }
+
+    @Override
+    public ReachabilityGraphDto getSampleReachabilityGraph() {
         return reachabilityGraphMapper.toReachabilityGraphDto(reachabilityGraphGenerator.hardcodedGenerateReachabilityGraph());
     }
+
+
 }

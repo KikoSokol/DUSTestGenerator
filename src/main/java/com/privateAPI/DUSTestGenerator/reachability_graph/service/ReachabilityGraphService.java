@@ -5,4 +5,6 @@ import com.privateAPI.DUSTestGenerator.reachability_graph.dto.ReachabilityGraphD
 public interface ReachabilityGraphService
 {
     ReachabilityGraphDto getReachabilityGraph();
+
+    ReachabilityGraphDto getSampleReachabilityGraph();
 }
