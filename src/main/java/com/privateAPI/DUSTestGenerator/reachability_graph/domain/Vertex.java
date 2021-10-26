@@ -22,6 +22,13 @@ public class Vertex
         this.predecessors = new ArrayList<>();
     }
 
+    public Vertex(int id, int[] marking, ArrayList<Integer> predecessors)
+    {
+        this.id = id;
+        this.marking = marking;
+        this.predecessors = predecessors;
+    }
+
     public void addPredecessors(int id)
     {
         this.predecessors.add(id);

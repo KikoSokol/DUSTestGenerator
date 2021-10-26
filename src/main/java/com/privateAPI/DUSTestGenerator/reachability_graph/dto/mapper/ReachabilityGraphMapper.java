@@ -72,21 +72,21 @@ public class ReachabilityGraphMapper
         return edgeDirectionDtos;
     }
 
-    private VertexDto[] convertVertexArrayToVertexDtoArray(Vertex[] vertices)
+    private VertexDto[] convertVertexArrayToVertexDtoArray(List<Vertex> vertices)
     {
-        VertexDto[] vertexDtos = new VertexDto[vertices.length];
-        for (int i = 0; i < vertices.length; i++) {
-            vertexDtos[i] = toVertexDto(vertices[i]);
+        VertexDto[] vertexDtos = new VertexDto[vertices.size()];
+        for (int i = 0; i < vertices.size(); i++) {
+            vertexDtos[i] = toVertexDto(vertices.get(i));
         }
 
         return vertexDtos;
     }
 
-    private EdgeDto[] convertEdgeArrayToEdgeDtoArray(Edge[] edges)
+    private EdgeDto[] convertEdgeArrayToEdgeDtoArray(List<Edge> edges)
     {
-        EdgeDto[] edgesDtos = new EdgeDto[edges.length];
-        for (int i = 0; i < edges.length; i++) {
-            edgesDtos[i] = toEdgeDto(edges[i]);
+        EdgeDto[] edgesDtos = new EdgeDto[edges.size()];
+        for (int i = 0; i < edges.size(); i++) {
+            edgesDtos[i] = toEdgeDto(edges.get(i));
         }
 
         return edgesDtos;
