@@ -1,6 +1,5 @@
 package com.privateAPI.DUSTestGenerator.reachability_graph.domain;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -18,6 +17,8 @@ public class ReachabilityGraph
     private List<Edge> edges;
 
 
-    public ReachabilityGraph(List<Vertex> verticesGenerateReachabilityGraph, List<Edge> edgesGenerateReachabilityGraph) {
+    public ReachabilityGraph(List<Vertex> vertices, List<Edge> edges) {
+        setEdges(edges);
+        setVertices(vertices);
     }
 }

@@ -1,6 +1,5 @@
 package com.privateAPI.DUSTestGenerator.reachability_graph.service.impl;
 
-import com.privateAPI.DUSTestGenerator.reachability_graph.domain.ReachabilityGraph;
 import com.privateAPI.DUSTestGenerator.reachability_graph.dto.ReachabilityGraphDto;
 import com.privateAPI.DUSTestGenerator.reachability_graph.dto.mapper.ReachabilityGraphMapper;
 import com.privateAPI.DUSTestGenerator.reachability_graph.generator.ReachabilityGraphGenerator;
@@ -16,12 +15,11 @@ public class ReachabilityGraphServiceImpl implements ReachabilityGraphService
 
     public ReachabilityGraphServiceImpl(ReachabilityGraphGenerator reachabilityGraphGenerator) {
         this.reachabilityGraphGenerator = reachabilityGraphGenerator;
-        reachabilityGraphMapper = new ReachabilityGraphMapper();
-        ReachabilityGraphDto reachabilityGraphDto = reachabilityGraphMapper.toReachabilityGraphDto(reachabilityGraphGenerator.hardcodedGenerateReachabilityGraph());
+        this.reachabilityGraphMapper = new ReachabilityGraphMapper();
     }
 
     @Override
     public ReachabilityGraphDto getReachabilityGraph() {
-        return null;
+        return reachabilityGraphMapper.toReachabilityGraphDto(reachabilityGraphGenerator.hardcodedGenerateReachabilityGraph());
     }
 }
