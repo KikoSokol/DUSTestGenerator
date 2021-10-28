@@ -1,16 +1,12 @@
 package com.privateAPI.DUSTestGenerator.petri_nets.dto.mapper;
 
 import com.privateAPI.DUSTestGenerator.petri_nets.dto.PetriNetDto;
-import com.privateAPI.DUSTestGenerator.petri_nets.dto.PlaceDto;
-import com.privateAPI.DUSTestGenerator.petri_nets.dto.PotentialLoop;
+import com.privateAPI.DUSTestGenerator.petri_nets.dto.Loop;
 import com.privateAPI.DUSTestGenerator.reachability_graph.domain.Edge;
 import com.privateAPI.DUSTestGenerator.reachability_graph.domain.EdgeDirection;
 import com.privateAPI.DUSTestGenerator.reachability_graph.domain.ReachabilityGraph;
-import com.privateAPI.DUSTestGenerator.reachability_graph.domain.Vertex;
-import org.springframework.data.mongodb.core.aggregation.ArrayOperators;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ReachabilityGraphToPetriNetMapper {
@@ -49,20 +45,33 @@ public class ReachabilityGraphToPetriNetMapper {
 
     private void calculateEdges () {
         for(Edge edge : this.graph.getEdges()) {
-            this.calculateEdges(edge);
-            this.calculateLoopEdges(edge);
+            List<Loop> allLoops = this.calculateLoopEdges(edge);
+            this.calculateEdges(edge, allLoops);
+
         }
     }
 
-    private void calculateEdges (Edge edge) {
+    private void calculateEdges (Edge edge, List<Loop> excludeLoops) {
         String transitionId = "t" + edge.getId();
         int[] markingChange = edge.getMarkingChange();
 
         for (int index = 0; index < markingChange.length; index++) {
-            String placeId = "p" + (index + 1);
-            int placeChange = markingChange[index];
-            this.calculateOneEdge(placeId, transitionId, placeChange);
+            if (!isInExcludedLoops(index, excludeLoops)) {
+                String placeId = "p" + (index + 1);
+                int placeChange = markingChange[index];
+                this.calculateOneEdge(placeId, transitionId, placeChange);
+            }
         }
+    }
+
+    private boolean isInExcludedLoops (int index, List<Loop> excludedLoops) {
+        for (Loop loop : excludedLoops) {
+            if (index == loop.getPlaceArrayIndex()){
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void calculateOneEdge (String placeId, String transitionId, int placeChange) {
@@ -73,29 +82,31 @@ public class ReachabilityGraphToPetriNetMapper {
         }
     }
 
-    private void calculateLoopEdges (Edge edge) {
+    private List<Loop> calculateLoopEdges (Edge edge) {
         String transitionId = "t" + edge.getId();
         int[] markingChange = edge.getMarkingChange();
-        List<PotentialLoop> potentialLoops = this.getPotentialLoops(markingChange);
+        List<Loop> loops = this.getPotentialLoops(markingChange);
         List<EdgeDirection> directions = edge.getEdgeDirections();
 
         for (EdgeDirection edgeDirection : directions) {
-            if (potentialLoops.isEmpty()) {
-                return;
+            if (loops.isEmpty()) {
+                return new ArrayList<Loop>();
             }
-            potentialLoops = this.recalculatePotentialLoops(potentialLoops, edgeDirection);
+            loops = this.recalculatePotentialLoops(loops, edgeDirection);
         }
 
-        this.createLoopEdges(transitionId, potentialLoops);
+        this.createLoopEdges(transitionId, loops);
+
+        return loops;
     }
 
-    private List<PotentialLoop> getPotentialLoops (int[] markingChange) {
-        List<PotentialLoop> potentialPlaces = new ArrayList<>();
+    private List<Loop> getPotentialLoops (int[] markingChange) {
+        List<Loop> potentialPlaces = new ArrayList<>();
 
         for (int index = 0; index < markingChange.length; index++) {
             int placeChange = markingChange[index];
             if (placeChange == 0) {
-                PotentialLoop loop = new PotentialLoop(index, null);
+                Loop loop = new Loop(index, null);
                 potentialPlaces.add(loop);
             }
         }
@@ -103,29 +114,29 @@ public class ReachabilityGraphToPetriNetMapper {
         return potentialPlaces;
     }
 
-    private List<PotentialLoop> recalculatePotentialLoops (List<PotentialLoop> potentialLoops, EdgeDirection edgeDirection) {
+    private List<Loop> recalculatePotentialLoops (List<Loop> loops, EdgeDirection edgeDirection) {
         int[] beforeMarkings = edgeDirection.getFrom().getMarking();
         int[] afterMarkings = edgeDirection.getTo().getMarking();
-        List<PotentialLoop> newPotentialLoops = new ArrayList<>();
+        List<Loop> newLoops = new ArrayList<>();
 
-        for (PotentialLoop loop : potentialLoops) {
+        for (Loop loop : loops) {
             int placeIndex = loop.getPlaceArrayIndex();
             int beforePlaceMark = beforeMarkings[placeIndex];
-            int afterPlaceMark = beforeMarkings[placeIndex];
+            int afterPlaceMark = afterMarkings[placeIndex];
 
             if (afterPlaceMark > 0 && beforePlaceMark == afterPlaceMark){
                 if (loop.getWeight() == null || loop.getWeight() > afterPlaceMark) {
                     loop.setWeight(afterPlaceMark);
                 }
-                newPotentialLoops.add(loop);
+                newLoops.add(loop);
             }
         }
 
-        return newPotentialLoops;
+        return newLoops;
     }
 
-    private void createLoopEdges (String transitionId, List<PotentialLoop> allLoops) {
-        for (PotentialLoop loop : allLoops) {
+    private void createLoopEdges (String transitionId, List<Loop> allLoops) {
+        for (Loop loop : allLoops) {
             String placeId = "p" + (loop.getPlaceArrayIndex() + 1);
             this.petriNet.addEdge(placeId, transitionId, loop.getWeight());
             this.petriNet.addEdge(transitionId, placeId, loop.getWeight());
