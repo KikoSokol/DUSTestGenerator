@@ -1,6 +1,8 @@
 package com.privateAPI.DUSTestGenerator.reachability_graph.service.impl;
 
+import com.privateAPI.DUSTestGenerator.petri_nets.dto.PetriNetDto;
 import com.privateAPI.DUSTestGenerator.reachability_graph.dto.ReachabilityGraphDto;
+import com.privateAPI.DUSTestGenerator.reachability_graph.dto.ReachabilityGraphResultDto;
 import com.privateAPI.DUSTestGenerator.reachability_graph.dto.mapper.ReachabilityGraphMapper;
 import com.privateAPI.DUSTestGenerator.reachability_graph.generator.ReachabilityGraphGenerator;
 import com.privateAPI.DUSTestGenerator.reachability_graph.service.ReachabilityGraphService;
@@ -24,8 +26,10 @@ public class ReachabilityGraphServiceImpl implements ReachabilityGraphService
     }
 
     @Override
-    public ReachabilityGraphDto getSampleReachabilityGraph() {
-        return reachabilityGraphMapper.toReachabilityGraphDto(reachabilityGraphGenerator.hardcodedGenerateReachabilityGraph());
+    public ReachabilityGraphResultDto getSampleReachabilityGraph() {
+        ReachabilityGraphDto reachabilityGraphDto = reachabilityGraphMapper.toReachabilityGraphDto(reachabilityGraphGenerator.hardcodedGenerateReachabilityGraph());
+        PetriNetDto petriNetDto = new PetriNetDto();
+        return new ReachabilityGraphResultDto(petriNetDto, reachabilityGraphDto);
     }
 
 
