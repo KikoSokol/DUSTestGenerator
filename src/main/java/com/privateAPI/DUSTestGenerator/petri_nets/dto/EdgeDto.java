@@ -10,7 +10,7 @@ public class EdgeDto {
     private String to;
     private int weight;
 
-    public EdgeDto() {
+    public EdgeDto () {
         this.from = "";
         this.to = "";
         this.weight = 0;

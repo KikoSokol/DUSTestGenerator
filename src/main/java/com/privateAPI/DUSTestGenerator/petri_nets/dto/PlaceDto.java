@@ -9,7 +9,7 @@ public class PlaceDto {
     private int numberOfTokens;
     private String id;
 
-    public PlaceDto() {
+    public PlaceDto () {
         this.numberOfTokens = 0;
         this.id = "";
     }
