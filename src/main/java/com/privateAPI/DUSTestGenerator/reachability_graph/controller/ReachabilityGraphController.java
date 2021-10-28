@@ -1,6 +1,7 @@
 package com.privateAPI.DUSTestGenerator.reachability_graph.controller;
 
 import com.privateAPI.DUSTestGenerator.reachability_graph.dto.ReachabilityGraphDto;
+import com.privateAPI.DUSTestGenerator.reachability_graph.dto.ReachabilityGraphResultDto;
 import com.privateAPI.DUSTestGenerator.reachability_graph.service.ReachabilityGraphService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,7 @@ public class ReachabilityGraphController
     @GetMapping("sample")
     public ResponseEntity getSampleReachabilityGraph()
     {
-        ReachabilityGraphDto graphDto = this.reachabilityGraphService.getSampleReachabilityGraph();
+        ReachabilityGraphResultDto graphDto = this.reachabilityGraphService.getSampleReachabilityGraph();
         return new ResponseEntity<>(graphDto, HttpStatus.OK);
     }
 
