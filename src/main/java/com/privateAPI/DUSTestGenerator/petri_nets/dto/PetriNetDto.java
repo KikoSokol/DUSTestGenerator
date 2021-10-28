@@ -13,9 +13,17 @@ public class PetriNetDto {
     private List<String> transitions;
     private List<EdgeDto> edges;
 
-    public PetriNetDto() {
+    public PetriNetDto () {
         this.places = new ArrayList<>();
         this.transitions = new ArrayList<>();
         this.edges = new ArrayList<>();
+    }
+
+    public void addTransition (String transition) {
+        this.transitions.add(transition);
+    }
+
+    public void addPlace (PlaceDto place) {
+        this.places.add(place);
     }
 }
