@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class Edge
+public class  Edge
 {
     private int id;
     private List<EdgeDirection> edgeDirections;

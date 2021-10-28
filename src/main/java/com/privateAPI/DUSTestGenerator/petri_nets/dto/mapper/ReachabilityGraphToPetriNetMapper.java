@@ -25,28 +25,45 @@ public class ReachabilityGraphToPetriNetMapper {
     private void startCalculation () {
         this.calculatePlaces();
         this.calculateTransitions();
-
+        this.calculateEdges();
     }
 
     private void calculatePlaces () {
         int[] initialMarking =  this.graph.getVertices().get(0).getMarking();
         int placeId = 1;
         for (int marking : initialMarking) {
-            PlaceDto place = new PlaceDto(marking, "p" + placeId);
-            this.petriNet.addPlace(place);
+            this.petriNet.addPlace(marking, placeId);
             placeId++;
         }
     }
 
     private void calculateTransitions () {
         for(Edge graphEdge : this.graph.getEdges()) {
-            this.petriNet.addTransition("t" + graphEdge.getId());
+            this.petriNet.addTransition(graphEdge.getId());
         }
     }
 
     private void calculateEdges () {
         for(Edge edge : this.graph.getEdges()) {
-            System.out.println(Arrays.toString(edge.getMarkingChange()));
+            String transitionId = "t" + edge.getId();
+            int[] markingChange = edge.getMarkingChange();
+            this.calculateEdgesFromChanges(transitionId, markingChange);
+        }
+    }
+
+    private void calculateEdgesFromChanges (String transitionId, int[] markingChange) {
+        for (int index = 0; index < markingChange.length; index++) {
+            String placeId = "p" + (index + 1);
+            int placeChange = markingChange[index];
+            this.calculateOneEdge(placeId, transitionId, placeChange);
+        }
+    }
+
+    private void calculateOneEdge (String placeId, String transitionId, int placeChange) {
+        if (placeChange > 0) {
+            this.petriNet.addEdge(transitionId, placeId, placeChange);
+        } else if (placeChange < 0) {
+            this.petriNet.addEdge(placeId, transitionId, Math.abs(placeChange));
         }
     }
 }

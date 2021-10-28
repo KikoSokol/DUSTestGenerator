@@ -19,11 +19,25 @@ public class PetriNetDto {
         this.edges = new ArrayList<>();
     }
 
-    public void addTransition (String transition) {
-        this.transitions.add(transition);
+    public void addTransition (int transitionId) {
+        this.transitions.add("t" + transitionId);
     }
 
     public void addPlace (PlaceDto place) {
         this.places.add(place);
+    }
+
+    public void addPlace (int marking, int placeId) {
+        PlaceDto place = new PlaceDto(marking, "p" + placeId);
+        this.places.add(place);
+    }
+
+    public void addEdge (EdgeDto edge) {
+        this.edges.add(edge);
+    }
+
+    public void addEdge (String from, String to, int weight) {
+        EdgeDto edge = new EdgeDto(from, to, weight);
+        this.edges.add(edge);
     }
 }
