@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class PotentialLoop {
+public class Loop {
     private int placeArrayIndex;
     private Integer weight;
 }
