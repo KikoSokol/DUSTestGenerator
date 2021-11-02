@@ -3,10 +3,12 @@ package com.privateAPI.DUSTestGenerator.reachability_graph.service.impl;
 import com.privateAPI.DUSTestGenerator.reachability_graph.domain.Edge;
 import com.privateAPI.DUSTestGenerator.reachability_graph.domain.ReachabilityGraph;
 import com.privateAPI.DUSTestGenerator.reachability_graph.domain.Vertex;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class ReachabilityGraphServiceTest {
 
     public ReachabilityGraph test1(){
