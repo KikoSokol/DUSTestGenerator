@@ -1,9 +1,11 @@
 package com.privateAPI.DUSTestGenerator.reachability_graph.generator;
 
 import com.privateAPI.DUSTestGenerator.reachability_graph.domain.*;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
+@Component
 public class ReachabilityGraphMaker
 {
     public ReachabilityGraphResult makeReachabilityGraph(Vertex firstVertex, List<Edge> edges)
@@ -21,7 +23,7 @@ public class ReachabilityGraphMaker
             for(Edge edge : edges)
             {
                 int[] newMarking = computeNewMarking(examine.getMarking(),edge.getMarkingChange());
-                if(isCorrectMarking(newMarking))
+                if(!isCorrectMarking(newMarking))
                     continue;
 
                 Vertex vertex = vertexWithTheSomeMarking(vertexMap,newMarking);
@@ -69,7 +71,7 @@ public class ReachabilityGraphMaker
     {
         for(int a : marking)
         {
-            if(a > 0)
+            if(a < 0)
                 return false;
         }
         return true;

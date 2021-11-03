@@ -14,4 +14,20 @@ public class ReachabilityGraphResult
         this.bounded = bounded;
         this.reachabilityGraph = reachabilityGraph;
     }
+
+    public boolean isBounded() {
+        return bounded;
+    }
+
+    public void setBounded(boolean bounded) {
+        this.bounded = bounded;
+    }
+
+    public ReachabilityGraph getReachabilityGraph() {
+        return reachabilityGraph;
+    }
+
+    public void setReachabilityGraph(ReachabilityGraph reachabilityGraph) {
+        this.reachabilityGraph = reachabilityGraph;
+    }
 }
