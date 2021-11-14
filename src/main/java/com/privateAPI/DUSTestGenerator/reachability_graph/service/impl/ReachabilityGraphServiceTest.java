@@ -4,11 +4,12 @@ import com.privateAPI.DUSTestGenerator.petri_nets.dto.PetriNetDto;
 import com.privateAPI.DUSTestGenerator.petri_nets.dto.mapper.ReachabilityGraphToPetriNetMapper;
 import com.privateAPI.DUSTestGenerator.reachability_graph.domain.Edge;
 import com.privateAPI.DUSTestGenerator.reachability_graph.domain.ReachabilityGraph;
-import com.privateAPI.DUSTestGenerator.reachability_graph.domain.ReachabilityGraphResult;
+import com.privateAPI.DUSTestGenerator.reachability_graph.domain.ReachabilityGraphMakerResult;
 import com.privateAPI.DUSTestGenerator.reachability_graph.domain.Vertex;
 import com.privateAPI.DUSTestGenerator.reachability_graph.dto.ReachabilityGraphDto;
 import com.privateAPI.DUSTestGenerator.reachability_graph.dto.ReachabilityGraphResultDto;
 import com.privateAPI.DUSTestGenerator.reachability_graph.dto.mapper.ReachabilityGraphMapper;
+import com.privateAPI.DUSTestGenerator.reachability_graph.generator.ReachabilityGraphGenerator;
 import com.privateAPI.DUSTestGenerator.reachability_graph.generator.ReachabilityGraphMaker;
 import org.springframework.stereotype.Service;
 
@@ -22,9 +23,11 @@ public class ReachabilityGraphServiceTest
     private final ReachabilityGraphMaker reachabilityGraphMaker;
     private final ReachabilityGraphMapper reachabilityGraphMapper;
     private final ReachabilityGraphToPetriNetMapper reachabilityGraphToPetriNetMapper;
+    private final ReachabilityGraphGenerator reachabilityGraphGenerator;
 
-    public ReachabilityGraphServiceTest(ReachabilityGraphMaker reachabilityGraphMaker) {
+    public ReachabilityGraphServiceTest(ReachabilityGraphMaker reachabilityGraphMaker, ReachabilityGraphGenerator reachabilityGraphGenerator) {
         this.reachabilityGraphMaker = reachabilityGraphMaker;
+        this.reachabilityGraphGenerator = reachabilityGraphGenerator;
         this.reachabilityGraphMapper = new ReachabilityGraphMapper();
         this.reachabilityGraphToPetriNetMapper = new ReachabilityGraphToPetriNetMapper();
     }
@@ -70,12 +73,19 @@ public class ReachabilityGraphServiceTest
     }
 
     private ReachabilityGraphResultDto getReachabilityGraphResultDto (Vertex vertex, List<Edge> edges) {
-        ReachabilityGraphResult reachabilityGraphResult = this.reachabilityGraphMaker.makeReachabilityGraph(vertex, edges);
-        ReachabilityGraph reachabilityGraph = reachabilityGraphResult.getReachabilityGraph();
+        ReachabilityGraphMakerResult reachabilityGraphMakerResult = this.reachabilityGraphMaker.makeReachabilityGraph(vertex, edges);
+        ReachabilityGraph reachabilityGraph = reachabilityGraphMakerResult.getReachabilityGraph();
 
         ReachabilityGraphDto reachabilityGraphDto = this.reachabilityGraphMapper.toReachabilityGraphDto(reachabilityGraph);
         PetriNetDto petriNetDto = this.reachabilityGraphToPetriNetMapper.calculatePetriNet(reachabilityGraph);
 
         return new ReachabilityGraphResultDto(petriNetDto, reachabilityGraphDto);
+    }
+
+    public ReachabilityGraphDto getRandomReachabilityGraph()
+    {
+        ReachabilityGraph reachabilityGraph = this.reachabilityGraphGenerator.generateRandomReachabilityGraph();
+
+        return this.reachabilityGraphMapper.toReachabilityGraphDto(reachabilityGraph);
     }
 }

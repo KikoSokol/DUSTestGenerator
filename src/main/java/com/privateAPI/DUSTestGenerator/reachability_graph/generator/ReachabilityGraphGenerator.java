@@ -1,18 +1,20 @@
 package com.privateAPI.DUSTestGenerator.reachability_graph.generator;
 
-import com.privateAPI.DUSTestGenerator.reachability_graph.domain.Edge;
-import com.privateAPI.DUSTestGenerator.reachability_graph.domain.EdgeDirection;
-import com.privateAPI.DUSTestGenerator.reachability_graph.domain.ReachabilityGraph;
-import com.privateAPI.DUSTestGenerator.reachability_graph.domain.Vertex;
+import com.privateAPI.DUSTestGenerator.reachability_graph.domain.*;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class ReachabilityGraphGenerator {
+
+
+    private final ReachabilityGraphMaker reachabilityGraphMaker;
+
+    public ReachabilityGraphGenerator(ReachabilityGraphMaker reachabilityGraphMaker) {
+        this.reachabilityGraphMaker = reachabilityGraphMaker;
+    }
+
     public ReachabilityGraph hardcodedGenerateReachabilityGraph() {
         List<Vertex> hardcodedVertices = hardcodedGenerateVertices();
         List<Edge> hardcodedEdges = hardcodedGenerateEdges(hardcodedVertices);
@@ -60,5 +62,150 @@ public class ReachabilityGraphGenerator {
         )), new int[]{0, 0, 0, -1, 1}));
         return hardcodedEdges;
     }
+
+
+
+    public ReachabilityGraph generateRandomReachabilityGraph()
+    {
+        return generateRandomReachabilityGraph(10,15);
+    }
+
+    public ReachabilityGraph generateRandomReachabilityGraph(int minVertices, int maxVertices)
+    {
+
+        while(true)
+        {
+            Vertex firstVertex = generateFirstVertex(4,5,0,3);
+            List<Edge> edges = generateRandomEdges(firstVertex.getMarking().length,3,5,-3,3);
+            ReachabilityGraphMakerResult reachabilityGraphMakerResult = reachabilityGraphMaker.makeReachabilityGraph(firstVertex,edges,maxVertices);
+
+            if(isCorrectReachabilityGraph(reachabilityGraphMakerResult, minVertices, maxVertices))
+            {
+                return reachabilityGraphMakerResult.getReachabilityGraph();
+            }
+        }
+    }
+
+    public boolean isCorrectReachabilityGraph(ReachabilityGraphMakerResult reachabilityGraphMakerResult, int minVertices, int maxVertices)
+    {
+
+        if(reachabilityGraphMakerResult.getState() == ReachabilityGraphState.UNBOUDED)
+            return false;
+
+        int countVertices = reachabilityGraphMakerResult.getReachabilityGraph().getVertices().size();
+
+        if(reachabilityGraphMakerResult.getState() == ReachabilityGraphState.INCOMPLETE)
+            return false;
+        else if(reachabilityGraphMakerResult.getState() == ReachabilityGraphState.BOUNDED)
+        {
+            if(countVertices < minVertices || countVertices > maxVertices)
+                return false;
+        }
+
+        return true;
+
+    }
+
+
+    private Vertex generateFirstVertex(int minPlaces, int maxPlaces, int minToken, int maxToken)
+    {
+        Random random = new Random();
+        int numberOfPlaces = random.nextInt((maxPlaces + 1) - minPlaces) + minPlaces;
+
+        return generateRandomVertex(1,numberOfPlaces,minToken,maxToken);
+    }
+
+    private List<Edge> generateRandomEdges(int numberOfPlaces, int minCount, int maxCount, int minNumber, int maxNumber)
+    {
+        Random random = new Random();
+        int countEdges = random.nextInt((maxCount + 1) - minCount) + minCount;
+
+        List<Edge> edges = new ArrayList<>();
+
+        for (int i = 0; i < countEdges; i++) {
+            edges.add(generateRandomEdge(edges, numberOfPlaces,i+1, minNumber, maxNumber));
+        }
+
+        return edges;
+    }
+
+    private Edge generateRandomEdge(List<Edge> edges, int numberOfPlaces, int id, int minNumber, int maxNumber)
+    {
+        while (true)
+        {
+            Edge edge = generateRandomEdge(id, numberOfPlaces, minNumber, maxNumber);
+            if(isCorrectEdge(edges,edge))
+            {
+                return edge;
+            }
+
+        }
+    }
+
+    private boolean isCorrectEdge(List<Edge> edges, Edge edge)
+    {
+        for(Edge e : edges)
+        {
+            if(isEqualMarkingChange(e.getMarkingChange(), edge.getMarkingChange()))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isEqualMarkingChange(int[] markingChange1, int[] markingChange2)
+    {
+        if(markingChange1.length != markingChange2.length)
+            return false;
+
+        for (int i = 0; i < markingChange1.length; i++)
+        {
+            if(markingChange1[i] != markingChange2[i])
+                return false;
+        }
+
+        return true;
+    }
+
+    private Edge generateRandomEdge(int id, int numberOfPlaces, int minNumber, int maxNumber)
+    {
+        int[] markingChange = getRandomMarkingChange(numberOfPlaces,minNumber,maxNumber);
+        return new Edge(id, new ArrayList<>(), markingChange);
+    }
+
+    private Vertex generateRandomVertex(int id,int numberOfPlaces,int minToken, int maxToken)
+    {
+        return new Vertex(id,getRandomMarking(numberOfPlaces,minToken,maxToken));
+    }
+
+    private int[] getRandomMarking(int numberOfPlaces, int minToken, int maxToken)
+    {
+        int[] marking = new int[numberOfPlaces];
+        Random random = new Random();
+
+        for (int i = 0; i < marking.length; i++) {
+            marking[i] = random.nextInt((maxToken + 1) - minToken) + minToken;
+        }
+
+        return marking;
+    }
+
+    private int[] getRandomMarkingChange(int numberOfPlaces, int minToken, int maxToken)
+    {
+        int[] marking = new int[numberOfPlaces];
+        Random random = new Random();
+        int negativeIndex = random.nextInt(numberOfPlaces);
+
+        for (int i = 0; i < numberOfPlaces; i++) {
+            if(i != negativeIndex)
+                marking[i] = random.nextInt((maxToken + 1) - minToken) + minToken;
+            else
+                marking[i] = random.nextInt(-minToken) + minToken;
+        }
+
+        return marking;
+    }
+
 
 }

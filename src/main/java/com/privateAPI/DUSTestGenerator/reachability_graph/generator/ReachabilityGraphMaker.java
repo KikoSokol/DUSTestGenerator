@@ -8,7 +8,7 @@ import java.util.*;
 @Component
 public class ReachabilityGraphMaker
 {
-    public ReachabilityGraphResult makeReachabilityGraph(Vertex firstVertex, List<Edge> edges)
+    public ReachabilityGraphMakerResult makeReachabilityGraph(Vertex firstVertex, List<Edge> edges)
     {
         Map<Integer,Vertex> vertexMap = new HashMap<>();
         List<Integer> examinedVertices = new ArrayList<>();
@@ -38,7 +38,7 @@ public class ReachabilityGraphMaker
                 }
 
                 if(!isBounded(vertexMap,vertex))
-                    return new ReachabilityGraphResult(false);
+                    return new ReachabilityGraphMakerResult(ReachabilityGraphState.UNBOUDED,null);
 
                 EdgeDirection edgeDirection = new EdgeDirection(examine,vertex);
                 edge.getEdgeDirections().add(edgeDirection);
@@ -51,7 +51,59 @@ public class ReachabilityGraphMaker
 
 
         ReachabilityGraph reachabilityGraph = new ReachabilityGraph(getVertexListFromMap(vertexMap),edges);
-        return new ReachabilityGraphResult(true,reachabilityGraph);
+        return new ReachabilityGraphMakerResult(ReachabilityGraphState.BOUNDED,reachabilityGraph);
+
+    }
+
+    public ReachabilityGraphMakerResult makeReachabilityGraph(Vertex firstVertex, List<Edge> edges, int maxVertices)
+    {
+        Map<Integer,Vertex> vertexMap = new HashMap<>();
+        List<Integer> examinedVertices = new ArrayList<>();
+        int idNewVertex = 1;
+        firstVertex = prepareFirstVertex(firstVertex,idNewVertex);
+        vertexMap.put(firstVertex.getId(),firstVertex);
+
+
+        Vertex examine = getUnexaminedVertex(vertexMap,examinedVertices);
+        while(examine != null)
+        {
+            for(Edge edge : edges)
+            {
+                int[] newMarking = computeNewMarking(examine.getMarking(),edge.getMarkingChange());
+                if(!isCorrectMarking(newMarking))
+                    continue;
+
+                Vertex vertex = vertexWithTheSomeMarking(vertexMap,newMarking);
+                if(vertex == null)
+                {
+                    idNewVertex++;
+                    vertex = new Vertex(idNewVertex,newMarking,createPredecessors(examine));
+                }
+                else
+                {
+                    vertex.setPredecessors(createPredecessors(examine,vertex));
+                }
+
+                if(!isBounded(vertexMap,vertex))
+                    return new ReachabilityGraphMakerResult(ReachabilityGraphState.UNBOUDED,null);
+
+                EdgeDirection edgeDirection = new EdgeDirection(examine,vertex);
+                edge.getEdgeDirections().add(edgeDirection);
+                vertexMap.put(vertex.getId(),vertex);
+            }
+
+            if(getCountVertexInVertexMap(vertexMap) > maxVertices)
+            {
+                ReachabilityGraph reachabilityGraph = new ReachabilityGraph(getVertexListFromMap(vertexMap),edges);
+                return new ReachabilityGraphMakerResult(ReachabilityGraphState.INCOMPLETE,reachabilityGraph);
+            }
+            examinedVertices.add(examine.getId());
+            examine = getUnexaminedVertex(vertexMap,examinedVertices);
+        }
+
+
+        ReachabilityGraph reachabilityGraph = new ReachabilityGraph(getVertexListFromMap(vertexMap),edges);
+        return new ReachabilityGraphMakerResult(ReachabilityGraphState.BOUNDED,reachabilityGraph);
 
     }
 
@@ -171,5 +223,10 @@ public class ReachabilityGraphMaker
         firstVertex.setId(id);
         firstVertex.setPredecessors(new ArrayList<>());
         return firstVertex;
+    }
+
+    private int getCountVertexInVertexMap(Map<Integer,Vertex> vertexMap)
+    {
+        return vertexMap.keySet().size();
     }
 }
