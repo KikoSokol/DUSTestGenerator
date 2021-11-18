@@ -47,7 +47,6 @@ public class ReachabilityGraphToPetriNetMapper {
         for(Edge edge : this.graph.getEdges()) {
             List<Loop> allLoops = this.calculateLoopEdges(edge);
             this.calculateEdges(edge, allLoops);
-
         }
     }
 
@@ -106,7 +105,7 @@ public class ReachabilityGraphToPetriNetMapper {
         for (int index = 0; index < markingChange.length; index++) {
             int placeChange = markingChange[index];
             if (placeChange == 0) {
-                Loop loop = new Loop(index, null);
+                Loop loop = new Loop(index, null, null);
                 potentialPlaces.add(loop);
             }
         }
@@ -125,8 +124,9 @@ public class ReachabilityGraphToPetriNetMapper {
             int afterPlaceMark = afterMarkings[placeIndex];
 
             if (afterPlaceMark > 0 && beforePlaceMark == afterPlaceMark){
-                if (loop.getWeight() == null || loop.getWeight() > afterPlaceMark) {
-                    loop.setWeight(afterPlaceMark);
+                if ((loop.getInWeight() == null && loop.getOutWeight() == null) || loop.getInWeight() > afterPlaceMark) {
+                    loop.setInWeight(afterPlaceMark);
+                    loop.setOutWeight(afterPlaceMark);
                 }
                 newLoops.add(loop);
             }
@@ -138,8 +138,8 @@ public class ReachabilityGraphToPetriNetMapper {
     private void createLoopEdges (String transitionId, List<Loop> allLoops) {
         for (Loop loop : allLoops) {
             String placeId = "p" + (loop.getPlaceArrayIndex() + 1);
-            this.petriNet.addEdge(placeId, transitionId, loop.getWeight());
-            this.petriNet.addEdge(transitionId, placeId, loop.getWeight());
+            this.petriNet.addEdge(placeId, transitionId, loop.getOutWeight());
+            this.petriNet.addEdge(transitionId, placeId, loop.getInWeight());
         }
     }
 }

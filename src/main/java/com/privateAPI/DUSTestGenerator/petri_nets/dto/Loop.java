@@ -7,5 +7,14 @@ import lombok.Data;
 @AllArgsConstructor
 public class Loop {
     private int placeArrayIndex;
-    private Integer weight;
+
+    /**
+     * weight on arc going to place
+     */
+    private Integer inWeight;
+
+    /**
+     * weight on arc going to transition
+     */
+    private Integer outWeight;
 }
