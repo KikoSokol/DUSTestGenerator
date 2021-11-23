@@ -1,6 +1,8 @@
 package com.privateAPI.DUSTestGenerator.reachability_graph.controller;
 
+import com.privateAPI.DUSTestGenerator.reachability_graph.controller.request.ReachabilityGraphGeneratorRequest;
 import com.privateAPI.DUSTestGenerator.reachability_graph.domain.ReachabilityGraph;
+import com.privateAPI.DUSTestGenerator.reachability_graph.domain.ReachabilityGraphGeneratorResult;
 import com.privateAPI.DUSTestGenerator.reachability_graph.dto.ReachabilityGraphDto;
 import com.privateAPI.DUSTestGenerator.reachability_graph.dto.ReachabilityGraphResultDto;
 import com.privateAPI.DUSTestGenerator.reachability_graph.generator.ReachabilityGraphGenerator;
@@ -8,10 +10,7 @@ import com.privateAPI.DUSTestGenerator.reachability_graph.service.impl.Reachabil
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("reachability-graph-test")
@@ -47,12 +46,20 @@ public class ReachabilityGraphControllerTest {
         return new ResponseEntity<>(graphDtoTest, HttpStatus.OK);
     }
 
-    @CrossOrigin(origins = "http://lubossremanak.com.d.r2.wbsprt.com")
+    @CrossOrigin(origins = "https://lubossremanak.site")
     @GetMapping("generator")
     public ResponseEntity getRandomReachabilityGraph()
     {
         ReachabilityGraphDto reachabilityGraphDto = this.reachabilityGraphServiceTest.getRandomReachabilityGraph();
         return new ResponseEntity<>(reachabilityGraphDto, HttpStatus.OK);
+    }
+
+    @CrossOrigin(origins = "https://lubossremanak.site")
+    @GetMapping("generator-with-parameter")
+    public ResponseEntity getRandomReachabilityGraphWithParameter(@RequestBody ReachabilityGraphGeneratorRequest generatorRequest)
+    {
+        ReachabilityGraphGeneratorResult generatorResult = this.reachabilityGraphServiceTest.getRandomReachabilityGraph(generatorRequest);
+        return new ResponseEntity<>(generatorResult, HttpStatus.OK);
     }
 
 

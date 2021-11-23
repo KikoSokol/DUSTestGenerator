@@ -1,5 +1,6 @@
 package com.privateAPI.DUSTestGenerator.reachability_graph.generator;
 
+import com.privateAPI.DUSTestGenerator.reachability_graph.controller.request.ReachabilityGraphGeneratorRequest;
 import com.privateAPI.DUSTestGenerator.reachability_graph.domain.*;
 import org.springframework.stereotype.Component;
 
@@ -65,28 +66,61 @@ public class ReachabilityGraphGenerator {
 
 
 
-    public ReachabilityGraph generateRandomReachabilityGraph()
+    public ReachabilityGraphGeneratorResult generateRandomReachabilityGraph()
     {
-        return generateRandomReachabilityGraph(10,15);
+        return makeRandomReachabilityGraph(10,15);
     }
 
-    public ReachabilityGraph generateRandomReachabilityGraph(int minVertices, int maxVertices)
+    public ReachabilityGraphGeneratorResult generateRandomReachabilityGraph(ReachabilityGraphGeneratorRequest generatorRequest)
     {
+        return makeRandomReachabilityGraph(generatorRequest);
+    }
 
+
+
+    private ReachabilityGraphGeneratorResult makeRandomReachabilityGraph(int minVertices, int maxVertices)
+    {
+        int countOfDeletedReachabilityGraphs = 0;
         while(true)
         {
             Vertex firstVertex = generateFirstVertex(4,5,0,3);
             List<Edge> edges = generateRandomEdges(firstVertex.getMarking().length,3,5,-3,3);
-            ReachabilityGraphMakerResult reachabilityGraphMakerResult = reachabilityGraphMaker.makeReachabilityGraph(firstVertex,edges,maxVertices);
+            ReachabilityGraphMakerResult reachabilityGraphMakerResult = reachabilityGraphMaker.makeReachabilityGraph(firstVertex, edges, maxVertices);
 
             if(isCorrectReachabilityGraph(reachabilityGraphMakerResult, minVertices, maxVertices))
             {
-                return reachabilityGraphMakerResult.getReachabilityGraph();
+                return new ReachabilityGraphGeneratorResult(countOfDeletedReachabilityGraphs,
+                        reachabilityGraphMakerResult.getReachabilityGraph());
             }
+            else
+                countOfDeletedReachabilityGraphs++;
         }
     }
 
-    public boolean isCorrectReachabilityGraph(ReachabilityGraphMakerResult reachabilityGraphMakerResult, int minVertices, int maxVertices)
+    private ReachabilityGraphGeneratorResult makeRandomReachabilityGraph(ReachabilityGraphGeneratorRequest generatorRequest)
+    {
+
+        int countOfDeletedReachabilityGraphs = 0;
+        while(true)
+        {
+            Vertex firstVertex = generateFirstVertex(generatorRequest.getMinPlaces(), generatorRequest.getMaxPlaces(),
+                    0,3);
+            List<Edge> edges = generateRandomEdges(firstVertex.getMarking().length,generatorRequest.getMinCountEdges(),
+                    generatorRequest.getMaxCountEdges(),-3,3);
+            ReachabilityGraphMakerResult reachabilityGraphMakerResult = reachabilityGraphMaker.makeReachabilityGraph(firstVertex,
+                    edges, generatorRequest.getMaxVertices());
+
+            if(isCorrectReachabilityGraph(reachabilityGraphMakerResult, generatorRequest.getMinVertices(), generatorRequest.getMaxVertices()))
+            {
+                return new ReachabilityGraphGeneratorResult(countOfDeletedReachabilityGraphs,
+                        reachabilityGraphMakerResult.getReachabilityGraph());
+            }
+            else
+                countOfDeletedReachabilityGraphs++;
+        }
+    }
+
+    private boolean isCorrectReachabilityGraph(ReachabilityGraphMakerResult reachabilityGraphMakerResult, int minVertices, int maxVertices)
     {
 
         if(reachabilityGraphMakerResult.getState() == ReachabilityGraphState.UNBOUDED)
@@ -174,7 +208,7 @@ public class ReachabilityGraphGenerator {
         return new Edge(id, new ArrayList<>(), markingChange);
     }
 
-    private Vertex generateRandomVertex(int id,int numberOfPlaces,int minToken, int maxToken)
+    private Vertex generateRandomVertex(int id, int numberOfPlaces, int minToken, int maxToken)
     {
         return new Vertex(id,getRandomMarking(numberOfPlaces,minToken,maxToken));
     }

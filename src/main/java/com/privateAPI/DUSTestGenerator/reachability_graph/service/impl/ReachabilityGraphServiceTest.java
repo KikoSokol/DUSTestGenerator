@@ -2,10 +2,8 @@ package com.privateAPI.DUSTestGenerator.reachability_graph.service.impl;
 
 import com.privateAPI.DUSTestGenerator.petri_nets.dto.PetriNetDto;
 import com.privateAPI.DUSTestGenerator.petri_nets.dto.mapper.ReachabilityGraphToPetriNetMapper;
-import com.privateAPI.DUSTestGenerator.reachability_graph.domain.Edge;
-import com.privateAPI.DUSTestGenerator.reachability_graph.domain.ReachabilityGraph;
-import com.privateAPI.DUSTestGenerator.reachability_graph.domain.ReachabilityGraphMakerResult;
-import com.privateAPI.DUSTestGenerator.reachability_graph.domain.Vertex;
+import com.privateAPI.DUSTestGenerator.reachability_graph.controller.request.ReachabilityGraphGeneratorRequest;
+import com.privateAPI.DUSTestGenerator.reachability_graph.domain.*;
 import com.privateAPI.DUSTestGenerator.reachability_graph.dto.ReachabilityGraphDto;
 import com.privateAPI.DUSTestGenerator.reachability_graph.dto.ReachabilityGraphResultDto;
 import com.privateAPI.DUSTestGenerator.reachability_graph.dto.mapper.ReachabilityGraphMapper;
@@ -84,8 +82,20 @@ public class ReachabilityGraphServiceTest
 
     public ReachabilityGraphDto getRandomReachabilityGraph()
     {
-        ReachabilityGraph reachabilityGraph = this.reachabilityGraphGenerator.generateRandomReachabilityGraph();
+        ReachabilityGraph reachabilityGraph = this.reachabilityGraphGenerator.generateRandomReachabilityGraph().getReachabilityGraph();
 
         return this.reachabilityGraphMapper.toReachabilityGraphDto(reachabilityGraph);
     }
+
+    public ReachabilityGraphGeneratorResult getRandomReachabilityGraphForTest()
+    {
+        return this.reachabilityGraphGenerator.generateRandomReachabilityGraph();
+    }
+
+    public ReachabilityGraphGeneratorResult getRandomReachabilityGraph(ReachabilityGraphGeneratorRequest generatorRequest)
+    {
+        return this.reachabilityGraphGenerator.generateRandomReachabilityGraph(generatorRequest);
+    }
+
+
 }

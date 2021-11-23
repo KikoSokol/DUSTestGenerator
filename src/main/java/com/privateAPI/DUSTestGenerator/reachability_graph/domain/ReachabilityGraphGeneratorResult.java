@@ -1,0 +1,43 @@
+package com.privateAPI.DUSTestGenerator.reachability_graph.domain;
+
+import java.util.Objects;
+
+public class ReachabilityGraphGeneratorResult
+{
+    private int countOfDeletedReachabilityGraphs;
+    private ReachabilityGraph reachabilityGraph;
+
+    public ReachabilityGraphGeneratorResult(int countOfDeletedReachabilityGraphs, ReachabilityGraph reachabilityGraph) {
+        this.countOfDeletedReachabilityGraphs = countOfDeletedReachabilityGraphs;
+        this.reachabilityGraph = reachabilityGraph;
+    }
+
+    public int getCountOfDeletedReachabilityGraphs() {
+        return countOfDeletedReachabilityGraphs;
+    }
+
+    public void setCountOfDeletedReachabilityGraphs(int countOfDeletedReachabilityGraphs) {
+        this.countOfDeletedReachabilityGraphs = countOfDeletedReachabilityGraphs;
+    }
+
+    public ReachabilityGraph getReachabilityGraph() {
+        return reachabilityGraph;
+    }
+
+    public void setReachabilityGraph(ReachabilityGraph reachabilityGraph) {
+        this.reachabilityGraph = reachabilityGraph;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ReachabilityGraphGeneratorResult)) return false;
+        ReachabilityGraphGeneratorResult that = (ReachabilityGraphGeneratorResult) o;
+        return getCountOfDeletedReachabilityGraphs() == that.getCountOfDeletedReachabilityGraphs() && Objects.equals(getReachabilityGraph(), that.getReachabilityGraph());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getCountOfDeletedReachabilityGraphs(), getReachabilityGraph());
+    }
+}
