@@ -56,7 +56,7 @@ public class ReachabilityGraphControllerTest {
     }
 
     @CrossOrigin(origins = "https://lubossremanak.site")
-    @GetMapping("generator-with-parameter")
+    @PostMapping("generator-with-parameter")
     public ResponseEntity getRandomReachabilityGraphWithParameter(@RequestBody ReachabilityGraphGeneratorRequest generatorRequest)
     {
         ReachabilityGraphGeneratorResultDto generatorResult = this.reachabilityGraphServiceTest.getRandomReachabilityGraph(generatorRequest);
