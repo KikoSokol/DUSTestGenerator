@@ -1,13 +1,7 @@
 package com.privateAPI.DUSTestGenerator.reachability_graph.dto.mapper;
 
-import com.privateAPI.DUSTestGenerator.reachability_graph.domain.Edge;
-import com.privateAPI.DUSTestGenerator.reachability_graph.domain.EdgeDirection;
-import com.privateAPI.DUSTestGenerator.reachability_graph.domain.ReachabilityGraph;
-import com.privateAPI.DUSTestGenerator.reachability_graph.domain.Vertex;
-import com.privateAPI.DUSTestGenerator.reachability_graph.dto.EdgeDirectionDto;
-import com.privateAPI.DUSTestGenerator.reachability_graph.dto.EdgeDto;
-import com.privateAPI.DUSTestGenerator.reachability_graph.dto.ReachabilityGraphDto;
-import com.privateAPI.DUSTestGenerator.reachability_graph.dto.VertexDto;
+import com.privateAPI.DUSTestGenerator.reachability_graph.domain.*;
+import com.privateAPI.DUSTestGenerator.reachability_graph.dto.*;
 
 import java.util.List;
 
@@ -40,7 +34,11 @@ public class ReachabilityGraphMapper
                 convertEdgeArrayToEdgeDtoArray(reachabilityGraph.getEdges()));
     }
 
-
+    public ReachabilityGraphGeneratorResultDto toReachabilityGraphGeneratorResultDto(ReachabilityGraphGeneratorResult reachabilityGraphGeneratorResult)
+    {
+        return new ReachabilityGraphGeneratorResultDto(reachabilityGraphGeneratorResult.getCountOfDeletedReachabilityGraphs(),
+                toReachabilityGraphDto(reachabilityGraphGeneratorResult.getReachabilityGraph()));
+    }
 
 
 

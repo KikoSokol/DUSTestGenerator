@@ -2,6 +2,7 @@ package com.privateAPI.DUSTestGenerator.reachability_graph.service.impl;
 
 import com.privateAPI.DUSTestGenerator.reachability_graph.controller.request.ReachabilityGraphGeneratorRequest;
 import com.privateAPI.DUSTestGenerator.reachability_graph.domain.ReachabilityGraphGeneratorResult;
+import com.privateAPI.DUSTestGenerator.reachability_graph.dto.ReachabilityGraphGeneratorResultDto;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +57,7 @@ class ReachabilityGraphServiceTestTest
         for (int i = 0; i < 1000; i++)
         {
             System.out.println(i + 1);
-            ReachabilityGraphGeneratorResult result = this.service.getRandomReachabilityGraph(request);
+            ReachabilityGraphGeneratorResultDto result = this.service.getRandomReachabilityGraph(request);
             count = count + result.getCountOfDeletedReachabilityGraphs();
         }
 
@@ -89,7 +90,7 @@ class ReachabilityGraphServiceTestTest
         for (int i = 0; i < 1000; i++)
         {
             System.out.println(i + 1);
-            ReachabilityGraphGeneratorResult result = this.service.getRandomReachabilityGraph(request);
+            ReachabilityGraphGeneratorResultDto result = this.service.getRandomReachabilityGraph(request);
             count = count + result.getCountOfDeletedReachabilityGraphs();
             deleted[i] = result.getCountOfDeletedReachabilityGraphs();
         }

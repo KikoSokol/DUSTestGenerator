@@ -4,6 +4,7 @@ import com.privateAPI.DUSTestGenerator.reachability_graph.controller.request.Rea
 import com.privateAPI.DUSTestGenerator.reachability_graph.domain.ReachabilityGraph;
 import com.privateAPI.DUSTestGenerator.reachability_graph.domain.ReachabilityGraphGeneratorResult;
 import com.privateAPI.DUSTestGenerator.reachability_graph.dto.ReachabilityGraphDto;
+import com.privateAPI.DUSTestGenerator.reachability_graph.dto.ReachabilityGraphGeneratorResultDto;
 import com.privateAPI.DUSTestGenerator.reachability_graph.dto.ReachabilityGraphResultDto;
 import com.privateAPI.DUSTestGenerator.reachability_graph.generator.ReachabilityGraphGenerator;
 import com.privateAPI.DUSTestGenerator.reachability_graph.service.impl.ReachabilityGraphServiceTest;
@@ -58,7 +59,7 @@ public class ReachabilityGraphControllerTest {
     @GetMapping("generator-with-parameter")
     public ResponseEntity getRandomReachabilityGraphWithParameter(@RequestBody ReachabilityGraphGeneratorRequest generatorRequest)
     {
-        ReachabilityGraphGeneratorResult generatorResult = this.reachabilityGraphServiceTest.getRandomReachabilityGraph(generatorRequest);
+        ReachabilityGraphGeneratorResultDto generatorResult = this.reachabilityGraphServiceTest.getRandomReachabilityGraph(generatorRequest);
         return new ResponseEntity<>(generatorResult, HttpStatus.OK);
     }
 
