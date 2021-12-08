@@ -1,5 +1,7 @@
 package com.privateAPI.DUSTestGenerator.reachability_graph.service.impl;
 
+import com.privateAPI.DUSTestGenerator.objects_for_graph_and_tree.domain.Edge;
+import com.privateAPI.DUSTestGenerator.objects_for_graph_and_tree.domain.Vertex;
 import com.privateAPI.DUSTestGenerator.petri_nets.dto.PetriNetDto;
 import com.privateAPI.DUSTestGenerator.petri_nets.dto.mapper.ReachabilityGraphToPetriNetMapper;
 import com.privateAPI.DUSTestGenerator.reachability_graph.controller.request.ReachabilityGraphGeneratorRequest;

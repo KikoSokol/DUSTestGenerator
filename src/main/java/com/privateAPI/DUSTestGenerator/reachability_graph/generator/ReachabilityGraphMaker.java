@@ -1,5 +1,8 @@
 package com.privateAPI.DUSTestGenerator.reachability_graph.generator;
 
+import com.privateAPI.DUSTestGenerator.objects_for_graph_and_tree.domain.Edge;
+import com.privateAPI.DUSTestGenerator.objects_for_graph_and_tree.domain.EdgeDirection;
+import com.privateAPI.DUSTestGenerator.objects_for_graph_and_tree.domain.Vertex;
 import com.privateAPI.DUSTestGenerator.reachability_graph.domain.*;
 import org.springframework.stereotype.Component;
 

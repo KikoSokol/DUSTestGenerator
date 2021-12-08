@@ -1,4 +1,4 @@
-package com.privateAPI.DUSTestGenerator.reachability_graph.domain;
+package com.privateAPI.DUSTestGenerator.objects_for_graph_and_tree.domain;
 
 import lombok.Data;
 import lombok.Getter;

@@ -1,5 +1,7 @@
 package com.privateAPI.DUSTestGenerator.reachability_graph.domain;
 
+import com.privateAPI.DUSTestGenerator.objects_for_graph_and_tree.domain.Edge;
+import com.privateAPI.DUSTestGenerator.objects_for_graph_and_tree.domain.Vertex;
 import lombok.Data;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;

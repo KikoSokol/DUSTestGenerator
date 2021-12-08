@@ -2,8 +2,8 @@ package com.privateAPI.DUSTestGenerator.petri_nets.dto.mapper;
 
 import com.privateAPI.DUSTestGenerator.petri_nets.dto.PetriNetDto;
 import com.privateAPI.DUSTestGenerator.petri_nets.dto.Loop;
-import com.privateAPI.DUSTestGenerator.reachability_graph.domain.Edge;
-import com.privateAPI.DUSTestGenerator.reachability_graph.domain.EdgeDirection;
+import com.privateAPI.DUSTestGenerator.objects_for_graph_and_tree.domain.Edge;
+import com.privateAPI.DUSTestGenerator.objects_for_graph_and_tree.domain.EdgeDirection;
 import com.privateAPI.DUSTestGenerator.reachability_graph.domain.ReachabilityGraph;
 
 import java.util.ArrayList;
