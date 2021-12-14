@@ -1,7 +1,9 @@
 package com.privateAPI.DUSTestGenerator.coverability_tree.dto.mapper;
 
 import com.privateAPI.DUSTestGenerator.coverability_tree.domain.CoverabilityTree;
+import com.privateAPI.DUSTestGenerator.coverability_tree.domain.CoverabilityTreeGeneratorResult;
 import com.privateAPI.DUSTestGenerator.coverability_tree.dto.CoverabilityTreeDto;
+import com.privateAPI.DUSTestGenerator.coverability_tree.dto.CoverabilityTreeGeneratorResultDto;
 import com.privateAPI.DUSTestGenerator.objects_for_graph_and_tree.domain.Edge;
 import com.privateAPI.DUSTestGenerator.objects_for_graph_and_tree.domain.Vertex;
 import com.privateAPI.DUSTestGenerator.objects_for_graph_and_tree.dto.EdgeDto;
@@ -23,6 +25,16 @@ public class CoverabilityTreeMapper
     {
         return new CoverabilityTreeDto(convertVertexListToVertexDtoArray(coverabilityTree.getVertices()),
                 convertEdgeListToEdgeDtoArray(coverabilityTree.getEdges()));
+    }
+
+    public CoverabilityTreeGeneratorResultDto toCoverabilityTreeGeneratorResultDto(CoverabilityTreeGeneratorResult coverabilityTreeGeneratorResult)
+    {
+        CoverabilityTreeDto coverabilityTreeDto = this.toCoverabilityTreeDto(coverabilityTreeGeneratorResult.
+                getCoverabilityTree());
+
+        return new CoverabilityTreeGeneratorResultDto(coverabilityTreeGeneratorResult.getCountOfDeletedCoverabilityTrees(),
+                coverabilityTreeDto);
+
     }
 
 

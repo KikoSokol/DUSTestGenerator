@@ -1,8 +1,12 @@
 package com.privateAPI.DUSTestGenerator.coverability_tree.service.impl;
 
+import com.privateAPI.DUSTestGenerator.coverability_tree.controller.request.CoverabilityTreeGeneratorRequest;
 import com.privateAPI.DUSTestGenerator.coverability_tree.domain.CoverabilityTree;
+import com.privateAPI.DUSTestGenerator.coverability_tree.domain.CoverabilityTreeGeneratorResult;
 import com.privateAPI.DUSTestGenerator.coverability_tree.dto.CoverabilityTreeDto;
+import com.privateAPI.DUSTestGenerator.coverability_tree.dto.CoverabilityTreeGeneratorResultDto;
 import com.privateAPI.DUSTestGenerator.coverability_tree.dto.mapper.CoverabilityTreeMapper;
+import com.privateAPI.DUSTestGenerator.coverability_tree.genrator.CoverabilityTreeGenerator;
 import com.privateAPI.DUSTestGenerator.coverability_tree.genrator.CoverabilityTreeMaker;
 import com.privateAPI.DUSTestGenerator.objects_for_graph_and_tree.domain.Edge;
 import com.privateAPI.DUSTestGenerator.objects_for_graph_and_tree.domain.Vertex;
@@ -16,9 +20,11 @@ public class CoverabilityTreeServiceTest
 {
     private final CoverabilityTreeMaker coverabilityTreeMaker;
     private final CoverabilityTreeMapper coverabilityTreeMapper;
+    private final CoverabilityTreeGenerator coverabilityTreeGenerator;
 
-    public CoverabilityTreeServiceTest(CoverabilityTreeMaker coverabilityTreeMaker) {
+    public CoverabilityTreeServiceTest(CoverabilityTreeMaker coverabilityTreeMaker, CoverabilityTreeGenerator coverabilityTreeGenerator) {
         this.coverabilityTreeMaker = coverabilityTreeMaker;
+        this.coverabilityTreeGenerator = coverabilityTreeGenerator;
         this.coverabilityTreeMapper = new CoverabilityTreeMapper();
     }
 
@@ -36,7 +42,8 @@ public class CoverabilityTreeServiceTest
         edges.add(b);
         edges.add(c);
 
-        CoverabilityTree coverabilityTree = this.coverabilityTreeMaker.makeCoverabilityTree(firstVertex, edges);
+        CoverabilityTree coverabilityTree = this.coverabilityTreeMaker.makeCoverabilityTree(firstVertex, edges)
+                .getCoverabilityTree();
 
         return this.coverabilityTreeMapper.toCoverabilityTreeDto(coverabilityTree);
 
@@ -54,8 +61,27 @@ public class CoverabilityTreeServiceTest
         edges.add(a);
         edges.add(b);
 
-        CoverabilityTree coverabilityTree = this.coverabilityTreeMaker.makeCoverabilityTree(firstVertex, edges);
+        CoverabilityTree coverabilityTree = this.coverabilityTreeMaker.makeCoverabilityTree(firstVertex, edges)
+                .getCoverabilityTree();
 
         return this.coverabilityTreeMapper.toCoverabilityTreeDto(coverabilityTree);
     }
+
+
+    public CoverabilityTreeGeneratorResultDto getRandomCoverability()
+    {
+        CoverabilityTreeGeneratorResult result = this.coverabilityTreeGenerator.generateRandomCoverabilityTree();
+
+        return this.coverabilityTreeMapper.toCoverabilityTreeGeneratorResultDto(result);
+    }
+
+    public CoverabilityTreeGeneratorResultDto getRandomCoverability(CoverabilityTreeGeneratorRequest generatorRequest)
+    {
+        CoverabilityTreeGeneratorResult result = this.coverabilityTreeGenerator
+                .generateRandomCoverabilityTree(generatorRequest);
+
+        return this.coverabilityTreeMapper.toCoverabilityTreeGeneratorResultDto(result);
+    }
+
+
 }

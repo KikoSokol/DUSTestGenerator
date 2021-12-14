@@ -1,6 +1,8 @@
 package com.privateAPI.DUSTestGenerator.coverability_tree.genrator;
 
 import com.privateAPI.DUSTestGenerator.coverability_tree.domain.CoverabilityTree;
+import com.privateAPI.DUSTestGenerator.coverability_tree.domain.CoverabilityTreeMakerResult;
+import com.privateAPI.DUSTestGenerator.coverability_tree.domain.CoverabilityTreeState;
 import com.privateAPI.DUSTestGenerator.objects_for_graph_and_tree.domain.Edge;
 import com.privateAPI.DUSTestGenerator.objects_for_graph_and_tree.domain.EdgeDirection;
 import com.privateAPI.DUSTestGenerator.objects_for_graph_and_tree.domain.Vertex;
@@ -11,7 +13,7 @@ import java.util.*;
 @Component
 public class CoverabilityTreeMaker
 {
-    public CoverabilityTree makeCoverabilityTree(Vertex firstVertex, List<Edge> edges)
+    public CoverabilityTreeMakerResult makeCoverabilityTree(Vertex firstVertex, List<Edge> edges)
     {
         Map<Integer, Vertex> vertexMap = new HashMap<>();
         List<Integer> examinedVertices = new ArrayList<>();
@@ -52,7 +54,62 @@ public class CoverabilityTreeMaker
             examine = getUnexaminedVertex(vertexMap, examinedVertices);
         }
 
-        return new CoverabilityTree(getVertexListFromMap(vertexMap), edges);
+        CoverabilityTree coverabilityTree = new CoverabilityTree(getVertexListFromMap(vertexMap), edges);
+        return new CoverabilityTreeMakerResult(CoverabilityTreeState.COMPLETE, coverabilityTree);
+
+    }
+
+
+    public CoverabilityTreeMakerResult makeCoverabilityTree(Vertex firstVertex, List<Edge> edges, int maxVertices)
+    {
+        Map<Integer, Vertex> vertexMap = new HashMap<>();
+        List<Integer> examinedVertices = new ArrayList<>();
+
+        int idNewVertex = 1;
+        firstVertex = prepareFirstVertex(firstVertex,idNewVertex);
+        vertexMap.put(firstVertex.getId(), firstVertex);
+
+        Vertex examine = getUnexaminedVertex(vertexMap, examinedVertices);
+        while(examine != null)
+        {
+            if(!existsEqualPredecessor(examine, vertexMap))
+            {
+                for(Edge edge : edges)
+                {
+                    int[] newMarking = computeNewMarking(examine.getMarking(), edge.getMarkingChange());
+                    if(!isCorrectMarking(examine.getMarking(), newMarking))
+                    {
+                        continue;
+                    }
+
+                    idNewVertex++;
+                    Vertex vertex = new Vertex(idNewVertex, newMarking, createPredecessors(examine));
+
+                    Vertex predecessorVertexWithLowerMarking = getPredecessorVertexWithLowerMarking(vertex, vertexMap);
+                    if(predecessorVertexWithLowerMarking != null)
+                    {
+                        addOmegaToMarkingInNewVertex(vertex, predecessorVertexWithLowerMarking);
+                    }
+
+                    EdgeDirection edgeDirection = new EdgeDirection(examine, vertex);
+                    edge.getEdgeDirections().add(edgeDirection);
+                    vertexMap.put(vertex.getId(), vertex);
+
+                }
+
+                if(getCountVertexInVertexMap(vertexMap) > maxVertices)
+                {
+                    CoverabilityTree coverabilityTree = new CoverabilityTree(getVertexListFromMap(vertexMap), edges);
+                    return new CoverabilityTreeMakerResult(CoverabilityTreeState.INCOMPLETE, coverabilityTree);
+                }
+
+            }
+            examinedVertices.add(examine.getId());
+            examine = getUnexaminedVertex(vertexMap, examinedVertices);
+        }
+
+        CoverabilityTree coverabilityTree = new CoverabilityTree(getVertexListFromMap(vertexMap), edges);
+        return new CoverabilityTreeMakerResult(CoverabilityTreeState.COMPLETE, coverabilityTree);
 
     }
 
@@ -110,9 +167,7 @@ public class CoverabilityTreeMaker
     private boolean isNewMarkingLower(int[] predecessorsMarking, int[] newMarking)
     {
         for (int i = 0; i < predecessorsMarking.length; i++) {
-//            if(newMarking[i] == -1) {}
-//            else if(newMarking[i] < predecessorsMarking[i])
-//                return true;
+
             if(newMarking[i] != -1 && newMarking[i] < predecessorsMarking[i])
                 return true;
         }
@@ -187,5 +242,10 @@ public class CoverabilityTreeMaker
         }
 
         return vertices;
+    }
+
+    private int getCountVertexInVertexMap(Map<Integer,Vertex> vertexMap)
+    {
+        return vertexMap.keySet().size();
     }
 }
