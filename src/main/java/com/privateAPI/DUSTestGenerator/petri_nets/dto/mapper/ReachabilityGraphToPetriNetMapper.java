@@ -103,7 +103,7 @@ public class ReachabilityGraphToPetriNetMapper {
 
         for (int index = 0; index < markingChange.length; index++) {
             int placeChange = markingChange[index];
-            if (placeChange > 0) {
+            if (placeChange != 0) {
                 Loop loop = new Loop(index, null, null);
                 potentialLoops.add(loop);
             }
@@ -123,16 +123,18 @@ public class ReachabilityGraphToPetriNetMapper {
             int afterPlaceMark = afterMarkings[placeIndex];
             int differencePlaceMark = afterPlaceMark - beforePlaceMark;
 
-            if (beforePlaceMark > 0 && differencePlaceMark > 0){
+            if (beforePlaceMark > 0 && afterPlaceMark > 0 && differencePlaceMark != 0) {
+                //hrana do miesta je vacsia ako hrana z miesta
                 if (loop.getInWeight() == null && loop.getOutWeight() == null) {
+                    //loop nie je este zadefinovany
                     loop.setInWeight(afterPlaceMark);
                     loop.setOutWeight(beforePlaceMark);
                     newLoops.add(loop);
                 } else if (differencePlaceMark == (loop.getInWeight() - loop.getOutWeight())) {
+                    //loop uz je zadefinovany
                     if (loop.getOutWeight() > beforePlaceMark) {
-                        int outWeightDifference = loop.getOutWeight() - beforePlaceMark;
-                        int newInWeight = loop.getInWeight() - outWeightDifference;
-                        loop.setInWeight(newInWeight);
+                        //loop upravujeme
+                        loop.setInWeight(afterPlaceMark);
                         loop.setOutWeight(beforePlaceMark);
                     }
                     newLoops.add(loop);
