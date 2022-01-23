@@ -163,11 +163,8 @@ public class ReachabilityGraphGenerator {
 
         countEdges = Math.min(allPossibleCountOfEdge, countEdges);
 
-        int tt = 0;
         for (int i = 0; i < countEdges; i++) {
             edges.add(generateRandomEdge(edges, numberOfPlaces,i+1, minNumber, maxNumber));
-            tt++;
-            System.out.println(tt);
         }
 
         return edges;
