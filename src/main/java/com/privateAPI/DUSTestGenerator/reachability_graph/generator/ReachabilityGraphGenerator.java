@@ -159,8 +159,15 @@ public class ReachabilityGraphGenerator {
 
         List<Edge> edges = new ArrayList<>();
 
+        int allPossibleCountOfEdge = getCountOfAllCombinationWithOneNegativeNumber(minNumber, maxNumber, numberOfPlaces);
+
+        countEdges = Math.min(allPossibleCountOfEdge, countEdges);
+
+        int tt = 0;
         for (int i = 0; i < countEdges; i++) {
             edges.add(generateRandomEdge(edges, numberOfPlaces,i+1, minNumber, maxNumber));
+            tt++;
+            System.out.println(tt);
         }
 
         return edges;
@@ -242,6 +249,15 @@ public class ReachabilityGraphGenerator {
         }
 
         return marking;
+    }
+
+    public static int getCountOfAllCombinationWithOneNegativeNumber(int minNumber, int maxNumber, int length)
+    {
+        int countOfValue =  maxNumber - minNumber + 1;
+        int countOfPositiveNumber = maxNumber + 1;
+        int allCombination = (int) Math.pow(countOfValue, length);
+
+        return allCombination - (int) Math.pow(countOfPositiveNumber, length);
     }
 
 
