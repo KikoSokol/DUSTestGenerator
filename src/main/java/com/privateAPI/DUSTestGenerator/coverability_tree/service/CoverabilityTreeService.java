@@ -1,0 +1,9 @@
+package com.privateAPI.DUSTestGenerator.coverability_tree.service;
+
+import com.privateAPI.DUSTestGenerator.coverability_tree.controller.request.CoverabilityTreeGeneratorRequest;
+import com.privateAPI.DUSTestGenerator.coverability_tree.dto.CoverabilityTreeGeneratorResultDto;
+
+public interface CoverabilityTreeService
+{
+    CoverabilityTreeGeneratorResultDto generateCoverabilityTree(CoverabilityTreeGeneratorRequest coverabilityTreeGeneratorRequest);
+}
