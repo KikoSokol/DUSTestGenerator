@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 public class PetriNetDto {
     private List<PlaceDto> places;
-    private List<String> transitions;
+    private List<TransitionDto> transitions;
     private List<EdgeDto> edges;
 
     public PetriNetDto () {
@@ -19,8 +19,13 @@ public class PetriNetDto {
         this.edges = new ArrayList<>();
     }
 
+    public void addTransition (TransitionDto transition) {
+        this.transitions.add(transition);
+    }
+
     public void addTransition (int transitionId) {
-        this.transitions.add("t" + transitionId);
+        TransitionDto transition = new TransitionDto("t" + transitionId);
+        this.transitions.add(transition);
     }
 
     public void addPlace (PlaceDto place) {
