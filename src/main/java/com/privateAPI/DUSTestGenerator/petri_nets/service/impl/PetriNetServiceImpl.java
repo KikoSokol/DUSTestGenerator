@@ -1,7 +1,9 @@
 package com.privateAPI.DUSTestGenerator.petri_nets.service.impl;
 
 import com.privateAPI.DUSTestGenerator.petri_nets.controller.request.PetriNetGeneratorRequest;
+import com.privateAPI.DUSTestGenerator.petri_nets.dto.DefinitionPTIOM0;
 import com.privateAPI.DUSTestGenerator.petri_nets.dto.PetriNetDto;
+import com.privateAPI.DUSTestGenerator.petri_nets.dto.PrescriptionPnDto;
 import com.privateAPI.DUSTestGenerator.petri_nets.generator.PetriNetGenerator;
 import com.privateAPI.DUSTestGenerator.petri_nets.service.PetriNetService;
 import com.privateAPI.DUSTestGenerator.petri_nets.validator.PetriNetValidator;
@@ -29,5 +31,17 @@ public class PetriNetServiceImpl implements PetriNetService
             throw exception;
 
         return petriNetGenerator.generateRandomPetriNet(petriNetGeneratorRequest);
+    }
+
+    @Override
+    public PrescriptionPnDto getRandomPetriNetWithPrescriptionPN(PetriNetGeneratorRequest petriNetGeneratorRequest) {
+        PetriNetDto petriNetDto = getRandomPetriNet(petriNetGeneratorRequest);
+        return new PrescriptionPnDto(petriNetDto);
+    }
+
+    @Override
+    public DefinitionPTIOM0 getRandomPetriNetWithDefinitionPNIOM0C(PetriNetGeneratorRequest petriNetGeneratorRequest) {
+        PetriNetDto petriNetDto = getRandomPetriNet(petriNetGeneratorRequest);
+        return new DefinitionPTIOM0(petriNetDto);
     }
 }

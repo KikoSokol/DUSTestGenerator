@@ -1,6 +1,7 @@
 package com.privateAPI.DUSTestGenerator.petri_nets.controller;
 
 import com.privateAPI.DUSTestGenerator.petri_nets.controller.request.PetriNetGeneratorRequest;
+import com.privateAPI.DUSTestGenerator.petri_nets.dto.DefinitionPTIOM0;
 import com.privateAPI.DUSTestGenerator.petri_nets.dto.PetriNetDto;
 import com.privateAPI.DUSTestGenerator.petri_nets.dto.PrescriptionPnDto;
 import com.privateAPI.DUSTestGenerator.petri_nets.service.PetriNetService;
@@ -40,12 +41,31 @@ public class PetriNetController
     {
         try
         {
-            PetriNetDto petriNetDto = this.petriNetService.getRandomPetriNet(petriNetGeneratorRequest);
-            return new ResponseEntity<>(new PrescriptionPnDto(petriNetDto), HttpStatus.OK);
+            PrescriptionPnDto prescriptionPnDto = this.petriNetService.getRandomPetriNetWithPrescriptionPN(petriNetGeneratorRequest);
+            return new ResponseEntity<>(prescriptionPnDto, HttpStatus.OK);
         }
         catch (ConstraintViolationException e)
         {
             return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
+
+    @CrossOrigin(origins = "https://lubossremanak.site")
+    @PostMapping("generator-with-ptiom0c")
+    public ResponseEntity generateRandomPetriNetWithDefinitionPNIOM0C(@RequestBody PetriNetGeneratorRequest petriNetGeneratorRequest)
+    {
+        try
+        {
+            DefinitionPTIOM0 definitionPTIOM0 = this.petriNetService.getRandomPetriNetWithDefinitionPNIOM0C(petriNetGeneratorRequest);
+            return new ResponseEntity<>(definitionPTIOM0, HttpStatus.OK);
+        }
+        catch (ConstraintViolationException e)
+        {
+            return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+
+    }
+
+
+
 }
