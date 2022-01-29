@@ -6,6 +6,7 @@ import com.privateAPI.DUSTestGenerator.petri_nets.controller.request.PetriNetGen
 import com.privateAPI.DUSTestGenerator.petri_nets.dto.EdgeDto;
 import com.privateAPI.DUSTestGenerator.petri_nets.dto.PetriNetDto;
 import com.privateAPI.DUSTestGenerator.petri_nets.dto.PlaceDto;
+import com.privateAPI.DUSTestGenerator.petri_nets.dto.TransitionDto;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -18,7 +19,7 @@ public class PetriNetGenerator
     public PetriNetDto generateRandomPetriNet(PetriNetGeneratorRequest request)
     {
         List<PlaceDto> places = generatePlaces(request.getMinPlaces(), request.getMaxPlaces());
-        List<String> transitions = generateTransitions(request.getMinTransition(), request.getMaxTransition());
+        List<TransitionDto> transitions = generateTransitions(request.getMinTransition(), request.getMaxTransition());
         List<EdgeDto> edges = generateRandomEdges(places, transitions, request.getMinEdges(), request.getMaxEdges());
 
         generateRandomMarking(places, request.getMinToken(), request.getMaxToken());
@@ -46,16 +47,16 @@ public class PetriNetGenerator
         return places;
     }
 
-    private List<String> generateTransitions(int minTransition, int maxTransition)
+    private List<TransitionDto> generateTransitions(int minTransition, int maxTransition)
     {
-        List<String> transitions = new ArrayList<>();
+        List<TransitionDto> transitions = new ArrayList<>();
         Random random = new Random();
         int countOfTransitions = random.nextInt((maxTransition + 1) - minTransition) + minTransition;
 
         char name = 65;
         for(int i = 0; i < countOfTransitions; i++)
         {
-            transitions.add("" + name);
+            transitions.add(new TransitionDto("" + name));
             name++;
         }
 
@@ -85,7 +86,7 @@ public class PetriNetGenerator
 
     }
 
-    private List<EdgeDto> generateRandomEdges(List<PlaceDto> places, List<String> transitions, int minEdges, int maxEdges)
+    private List<EdgeDto> generateRandomEdges(List<PlaceDto> places, List<TransitionDto> transitions, int minEdges, int maxEdges)
     {
         int maxPossibleEdges = places.size() * transitions.size() * 2;
 
@@ -103,7 +104,7 @@ public class PetriNetGenerator
 
     }
 
-    private List<EdgeDto> generateEdges(List<PlaceDto> places, List<String> transitions, int count)
+    private List<EdgeDto> generateEdges(List<PlaceDto> places, List<TransitionDto> transitions, int count)
     {
 
         Map<String, List<String>> placeToTransitionMap = createPlaceToTransitionMap(places, transitions);
@@ -441,25 +442,25 @@ public class PetriNetGenerator
     }
 
 
-    private Map<String, List<String>> createPlaceToTransitionMap(List<PlaceDto> places, List<String> transitions)
+    private Map<String, List<String>> createPlaceToTransitionMap(List<PlaceDto> places, List<TransitionDto> transitions)
     {
         Map<String, List<String>> placeToTransitionMap = new HashMap<>();
 
         for(PlaceDto p : places)
         {
-            placeToTransitionMap.put(p.getId(), new ArrayList<>(transitions));
+            placeToTransitionMap.put(p.getId(), transitions.stream().map(TransitionDto::getId).collect(Collectors.toList()));
         }
 
         return placeToTransitionMap;
     }
 
-    private Map<String, List<String>> createTransitionToPlaceMap(List<PlaceDto> places, List<String> transitions)
+    private Map<String, List<String>> createTransitionToPlaceMap(List<PlaceDto> places, List<TransitionDto> transitions)
     {
         Map<String, List<String>> transitionToPlaceMap = new HashMap<>();
 
-        for(String transition : transitions)
+        for(TransitionDto transition : transitions)
         {
-            transitionToPlaceMap.put(transition, places.stream().map(PlaceDto::getId).collect(Collectors.toList()));
+            transitionToPlaceMap.put(transition.getId(), places.stream().map(PlaceDto::getId).collect(Collectors.toList()));
         }
 
         return transitionToPlaceMap;

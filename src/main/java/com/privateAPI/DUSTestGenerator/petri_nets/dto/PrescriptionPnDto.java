@@ -53,9 +53,9 @@ public class PrescriptionPnDto
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.append("{");
-        for (String transition : this.petriNet.getTransitions())
+        for (TransitionDto transition : this.petriNet.getTransitions())
         {
-            stringBuilder.append(transition);
+            stringBuilder.append(transition.getId());
             stringBuilder.append(", ");
         }
 
@@ -162,7 +162,7 @@ public class PrescriptionPnDto
     {
         StringBuilder stringBuilder = new StringBuilder();
 
-        for (String transition : this.petriNet.getTransitions()) {
+        for (TransitionDto transition : this.petriNet.getTransitions()) {
             stringBuilder.append(getPostsetOfTransition(transition));
             stringBuilder.append("\n");
         }
@@ -179,7 +179,7 @@ public class PrescriptionPnDto
     {
         StringBuilder stringBuilder = new StringBuilder();
 
-        for (String transition : this.petriNet.getTransitions()) {
+        for (TransitionDto transition : this.petriNet.getTransitions()) {
             stringBuilder.append(getPresetOfTransition(transition));
             stringBuilder.append("\n");
         }
@@ -193,18 +193,18 @@ public class PrescriptionPnDto
     }
 
 
-    private String getPostsetOfTransition(String transition)
+    private String getPostsetOfTransition(TransitionDto transition)
     {
         StringBuilder stringBuilder = new StringBuilder();
 
-        stringBuilder.append(transition);
+        stringBuilder.append(transition.getId());
         stringBuilder.append("• = {");
 
         List<String> places = new ArrayList<>();
 
         for (EdgeDto edge : this.petriNet.getEdges())
         {
-            if(transition.compareTo(edge.getFrom()) == 0)
+            if(transition.getId().compareTo(edge.getFrom()) == 0)
             {
                 places.add(edge.getTo());
             }
@@ -217,12 +217,12 @@ public class PrescriptionPnDto
         return stringBuilder.toString();
     }
 
-    private String getPresetOfTransition(String transition)
+    private String getPresetOfTransition(TransitionDto transition)
     {
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.append("•");
-        stringBuilder.append(transition);
+        stringBuilder.append(transition.getId());
         stringBuilder.append(" = {");
 
 
@@ -230,7 +230,7 @@ public class PrescriptionPnDto
 
         for (EdgeDto edge : this.petriNet.getEdges())
         {
-            if(transition.compareTo(edge.getTo()) == 0)
+            if(transition.getId().compareTo(edge.getTo()) == 0)
             {
                 places.add(edge.getFrom());
             }
