@@ -2,6 +2,7 @@ package com.privateAPI.DUSTestGenerator.petri_nets.controller;
 
 import com.privateAPI.DUSTestGenerator.petri_nets.controller.request.PetriNetGeneratorRequest;
 import com.privateAPI.DUSTestGenerator.petri_nets.dto.PetriNetDto;
+import com.privateAPI.DUSTestGenerator.petri_nets.dto.PrescriptionPnDto;
 import com.privateAPI.DUSTestGenerator.petri_nets.service.PetriNetService;
 import com.privateAPI.DUSTestGenerator.response.ErrorResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,21 @@ public class PetriNetController
         {
             PetriNetDto petriNetDto = this.petriNetService.getRandomPetriNet(petriNetGeneratorRequest);
             return new ResponseEntity<>(petriNetDto, HttpStatus.OK);
+        }
+        catch (ConstraintViolationException e)
+        {
+            return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    @CrossOrigin(origins = "https://lubossremanak.site")
+    @PostMapping("generator-with-prescription-pn")
+    public ResponseEntity generateRandomPetriNetWithPrescriptionPN(@RequestBody PetriNetGeneratorRequest petriNetGeneratorRequest)
+    {
+        try
+        {
+            PetriNetDto petriNetDto = this.petriNetService.getRandomPetriNet(petriNetGeneratorRequest);
+            return new ResponseEntity<>(new PrescriptionPnDto(petriNetDto), HttpStatus.OK);
         }
         catch (ConstraintViolationException e)
         {

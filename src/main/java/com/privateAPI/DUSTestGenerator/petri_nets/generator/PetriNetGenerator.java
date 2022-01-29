@@ -18,9 +18,7 @@ public class PetriNetGenerator
     public PetriNetDto generateRandomPetriNet(PetriNetGeneratorRequest request)
     {
         List<PlaceDto> places = generatePlaces(request.getMinPlaces(), request.getMaxPlaces());
-        System.out.println("places: " + places.size());
         List<String> transitions = generateTransitions(request.getMinTransition(), request.getMaxTransition());
-        System.out.println("transitions: " + transitions.size());
         List<EdgeDto> edges = generateRandomEdges(places, transitions, request.getMinEdges(), request.getMaxEdges());
 
         generateRandomMarking(places, request.getMinToken(), request.getMaxToken());
@@ -93,6 +91,9 @@ public class PetriNetGenerator
 
         if(maxPossibleEdges < maxEdges)
             maxEdges = maxPossibleEdges;
+
+        if(maxPossibleEdges < minEdges)
+            minEdges = maxEdges;
 
         Random random = new Random();
         int countOfTransition = random.nextInt((maxEdges + 1) - minEdges) + minEdges;
@@ -378,7 +379,6 @@ public class PetriNetGenerator
 
     private String[] getRandomOrderOfId(List<String> ids)
     {
-//        List<String> ids = new ArrayList<>(idsInput);
         String[] id = new String[ids.size()];
         Random random = new Random();
         int idPosition = 0;
@@ -441,23 +441,6 @@ public class PetriNetGenerator
     }
 
 
-    private int[] generateHelpArrayForGenerateEdges(int length)
-    {
-        int[] array = new int[length];
-        Random random = new Random();
-
-        for (int i = 0; i < length; i++)
-        {
-            array[i] = random.nextInt(2);
-        }
-
-        return array;
-    }
-
-
-
-
-
     private Map<String, List<String>> createPlaceToTransitionMap(List<PlaceDto> places, List<String> transitions)
     {
         Map<String, List<String>> placeToTransitionMap = new HashMap<>();
@@ -483,32 +466,5 @@ public class PetriNetGenerator
     }
 
 
-    private void trtopl(Map<String, List<String>> transitionToPlaceMap)
-    {
-        for(String m: transitionToPlaceMap.keySet())
-        {
-            System.out.println(m + ":   " + transitionToPlaceMap.get(m));
-        }
 
-        System.out.println("-------------------------------------");
-    }
-
-    private void pltotr(Map<String, List<String>> placeToTransitionMap)
-    {
-        for(String m: placeToTransitionMap.keySet())
-        {
-            System.out.println(m + ":   " + placeToTransitionMap.get(m));
-        }
-
-        System.out.println("-------------------------------------");
-    }
-
-    private void printArr(String[] a)
-    {
-        for(int i = 0; i < a.length; i++)
-        {
-            System.out.print(a[i] + "-");
-        }
-        System.out.println("|||||||||||");
-    }
 }
