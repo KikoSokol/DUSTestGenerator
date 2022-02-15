@@ -39,7 +39,7 @@ public class PetriNetGenerator
         char name = 97;
         for(int i = 0; i < countOfPlaces; i++)
         {
-            PlaceDto place = new PlaceDto(0, "" + name);
+            PlaceDto place = new PlaceDto(0, "" + name, false);
             places.add(place);
             name++;
         }

@@ -32,8 +32,8 @@ public class PetriNetDto {
         this.places.add(place);
     }
 
-    public void addPlace (int marking, int placeId) {
-        PlaceDto place = new PlaceDto(marking, "p" + placeId);
+    public void addPlace (int marking, int placeId, boolean isStatic) {
+        PlaceDto place = new PlaceDto(marking, "p" + placeId, isStatic);
         this.places.add(place);
     }
 

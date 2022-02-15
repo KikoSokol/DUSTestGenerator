@@ -1,5 +1,7 @@
 package com.privateAPI.DUSTestGenerator.reachability_graph.controller;
 
+import com.privateAPI.DUSTestGenerator.petri_nets.dto.PetriNetDto;
+import com.privateAPI.DUSTestGenerator.petri_nets.dto.mapper.ReachabilityGraphToPetriNetMapper;
 import com.privateAPI.DUSTestGenerator.reachability_graph.controller.request.ReachabilityGraphGeneratorRequest;
 import com.privateAPI.DUSTestGenerator.reachability_graph.domain.ReachabilityGraph;
 import com.privateAPI.DUSTestGenerator.reachability_graph.domain.ReachabilityGraphGeneratorResult;
@@ -22,6 +24,9 @@ import javax.validation.ConstraintViolationException;
 public class ReachabilityGraphControllerTest {
     @Autowired
     private ReachabilityGraphServiceTest reachabilityGraphServiceTest;
+
+    @Autowired
+    private ReachabilityGraphGenerator reachabilityGraphGenerator;
 
 
 
@@ -87,6 +92,24 @@ public class ReachabilityGraphControllerTest {
         {
             return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.UNPROCESSABLE_ENTITY);
         }
+
+    }
+
+    @PostMapping("generator-with-parameter-validate-mapper-error-example")
+    public ResponseEntity reachabilityGraphToPetriNetMapperErrorExample(@RequestBody ReachabilityGraphGeneratorRequest generatorRequest)
+    {
+        ReachabilityGraphGeneratorResult generatorResult = this.reachabilityGraphGenerator.generateRandomReachabilityGraph(generatorRequest);
+
+        try {
+            ReachabilityGraphToPetriNetMapper mapper = new ReachabilityGraphToPetriNetMapper();
+            PetriNetDto petriNetDto = mapper.calculatePetriNet(generatorResult.getReachabilityGraph());
+        }
+        catch (NullPointerException e)
+        {
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<>(generatorResult, HttpStatus.OK);
 
     }
 

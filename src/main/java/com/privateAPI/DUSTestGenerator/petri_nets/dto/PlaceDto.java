@@ -8,9 +8,11 @@ import lombok.Data;
 public class PlaceDto {
     private int numberOfTokens;
     private String id;
+    private boolean isStatic;
 
     public PlaceDto () {
         this.numberOfTokens = 0;
         this.id = "";
+        this.isStatic = false;
     }
 }
