@@ -113,5 +113,36 @@ public class ReachabilityGraphControllerTest {
 
     }
 
+    @GetMapping("triDvaA")
+    public ResponseEntity triDvaA()
+    {
+        ReachabilityGraphDto reachabilityGraphDto = this.reachabilityGraphServiceTest.triDvaA();
+
+        return new ResponseEntity<>(reachabilityGraphDto, HttpStatus.OK);
+    }
+
+    @GetMapping("triDvaB")
+    public ResponseEntity triDvaB()
+    {
+        ReachabilityGraphDto reachabilityGraphDto = this.reachabilityGraphServiceTest.triDvaB();
+
+        return new ResponseEntity<>(reachabilityGraphDto, HttpStatus.OK);
+    }
+
+    @GetMapping("triDvaC")
+    public ResponseEntity triDvaC()
+    {
+        ReachabilityGraphDto reachabilityGraphDto = this.reachabilityGraphServiceTest.triDvaC();
+
+        return new ResponseEntity<>(reachabilityGraphDto, HttpStatus.OK);
+    }
+
+    @GetMapping("fJednaDva")
+    public ResponseEntity fJednaDva()
+    {
+        ReachabilityGraphDto reachabilityGraphDto = this.reachabilityGraphServiceTest.fJednaDva();
+
+        return new ResponseEntity<>(reachabilityGraphDto, HttpStatus.OK);
+    }
 
 }
