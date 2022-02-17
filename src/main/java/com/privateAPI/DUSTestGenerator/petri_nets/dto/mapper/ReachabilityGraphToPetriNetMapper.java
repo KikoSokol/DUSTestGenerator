@@ -162,6 +162,10 @@ public class ReachabilityGraphToPetriNetMapper {
         List<Loop> loops = this.getPotentialLoops(markingChange);
         List<EdgeDirection> directions = edge.getEdgeDirections();
 
+        if (directions == null || directions.isEmpty()) {
+            return new ArrayList<Loop>();
+        }
+
         for (EdgeDirection edgeDirection : directions) {
             if (loops.isEmpty()) {
                 return new ArrayList<Loop>();
