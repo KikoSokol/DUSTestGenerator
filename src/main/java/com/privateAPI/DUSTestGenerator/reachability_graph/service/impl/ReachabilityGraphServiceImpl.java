@@ -1,14 +1,16 @@
 package com.privateAPI.DUSTestGenerator.reachability_graph.service.impl;
 
-import com.privateAPI.DUSTestGenerator.petri_nets.dto.PetriNetDto;
+
 import com.privateAPI.DUSTestGenerator.petri_nets.dto.mapper.ReachabilityGraphToPetriNetMapper;
-import com.privateAPI.DUSTestGenerator.reachability_graph.domain.ReachabilityGraph;
-import com.privateAPI.DUSTestGenerator.reachability_graph.dto.ReachabilityGraphDto;
-import com.privateAPI.DUSTestGenerator.reachability_graph.dto.ReachabilityGraphResultDto;
+import com.privateAPI.DUSTestGenerator.reachability_graph.controller.request.ReachabilityGraphGeneratorRequest;
+import com.privateAPI.DUSTestGenerator.reachability_graph.domain.ReachabilityGraphGeneratorResult;
+import com.privateAPI.DUSTestGenerator.reachability_graph.dto.ReachabilityGraphGeneratorResultDto;
 import com.privateAPI.DUSTestGenerator.reachability_graph.dto.mapper.ReachabilityGraphMapper;
 import com.privateAPI.DUSTestGenerator.reachability_graph.generator.ReachabilityGraphGenerator;
 import com.privateAPI.DUSTestGenerator.reachability_graph.service.ReachabilityGraphService;
+import com.privateAPI.DUSTestGenerator.reachability_graph.validator.ReachabilityGraphValidator;
 import org.springframework.stereotype.Service;
+import javax.validation.ConstraintViolationException;
 
 @Service
 public class ReachabilityGraphServiceImpl implements ReachabilityGraphService
@@ -17,25 +19,26 @@ public class ReachabilityGraphServiceImpl implements ReachabilityGraphService
     private final ReachabilityGraphGenerator reachabilityGraphGenerator;
     private final ReachabilityGraphMapper reachabilityGraphMapper;
     private final ReachabilityGraphToPetriNetMapper reachabilityGraphToPetriNetMapper;
+    private final ReachabilityGraphValidator reachabilityGraphValidator;
 
-    public ReachabilityGraphServiceImpl(ReachabilityGraphGenerator reachabilityGraphGenerator) {
+
+    public ReachabilityGraphServiceImpl(ReachabilityGraphGenerator reachabilityGraphGenerator, ReachabilityGraphValidator reachabilityGraphValidator) {
         this.reachabilityGraphGenerator = reachabilityGraphGenerator;
         this.reachabilityGraphMapper = new ReachabilityGraphMapper();
         this.reachabilityGraphToPetriNetMapper = new ReachabilityGraphToPetriNetMapper();
+        this.reachabilityGraphValidator = reachabilityGraphValidator;
     }
 
     @Override
-    public ReachabilityGraphDto getReachabilityGraph() {
-        return null;
-    }
+    public ReachabilityGraphGeneratorResultDto getReachabilityGraph(ReachabilityGraphGeneratorRequest reachabilityGraphGeneratorRequest)
+    {
+        ConstraintViolationException exception = reachabilityGraphValidator.validateReachabilityGraphGeneratorRequest(reachabilityGraphGeneratorRequest);
 
-    @Override
-    public ReachabilityGraphResultDto getSampleReachabilityGraph() {
-        ReachabilityGraph graph = this.reachabilityGraphGenerator.hardcodedGenerateReachabilityGraph();
-        ReachabilityGraphDto reachabilityGraphDto = this.reachabilityGraphMapper.toReachabilityGraphDto(graph);
-        PetriNetDto petriNetDto = this.reachabilityGraphToPetriNetMapper.calculatePetriNet(graph);
-        return new ReachabilityGraphResultDto(petriNetDto, reachabilityGraphDto);
-    }
+        if(exception != null)
+            throw exception;
 
+        ReachabilityGraphGeneratorResult generatorResult = this.reachabilityGraphGenerator.generateRandomReachabilityGraph(reachabilityGraphGeneratorRequest);
+        return this.reachabilityGraphMapper.toReachabilityGraphGeneratorResultDto(generatorResult);
+    }
 
 }

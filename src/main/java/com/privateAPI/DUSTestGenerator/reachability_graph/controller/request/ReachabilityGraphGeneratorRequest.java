@@ -1,16 +1,25 @@
 package com.privateAPI.DUSTestGenerator.reachability_graph.controller.request;
 
 import java.util.Objects;
+import javax.validation.constraints.Min;
 
 public class ReachabilityGraphGeneratorRequest
 {
+
+    @Min(value = 1, message = "Graf dosiahnuteľnosti musí mať minimálne 1 vrchol")
     private int minVertices;
+    @Min(value = 1, message = "Graf dosiahnuteľnosti musí mať minimálne 1 vrchol")
     private int maxVertices;
 
+    @Min(value = 1, message = "Petriho sieť ktorú bude reprezentovať tento graf dosiahnuteľnosti musí mať minimálne 1 miesto")
     private int minPlaces;
+    @Min(value = 1, message = "Petriho sieť ktorú bude reprezentovať tento graf dosiahnuteľnosti musí mať minimálne 1 miesto")
     private int maxPlaces;
 
+    @Min(value = 1, message = "Petriho sieť ktorú bude reprezentovať tento graf dosiahnuteľnosti musí mať minimálne 1 prechod")
     private int minCountEdges;
+
+    @Min(value = 1, message = "Petriho sieť ktorú bude reprezentovať tento graf dosiahnuteľnosti musí mať minimálne 1 prechod")
     private int maxCountEdges;
 
     public ReachabilityGraphGeneratorRequest(int minVertices, int maxVertices, int minPlaces, int maxPlaces, int minCountEdges, int maxCountEdges) {

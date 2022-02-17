@@ -28,7 +28,17 @@ public class ObjectsForGraphAndTreeMapper
 
     public EdgeDto toEdgeDto(Edge edge)
     {
-        return new EdgeDto(EDGE_FIRST_WORD + edge.getId(),
+        String id;
+
+        try {
+            id = EDGE_FIRST_WORD + Integer.parseInt(edge.getId());
+        }
+        catch (NumberFormatException e)
+        {
+            id = edge.getId();
+        }
+
+        return new EdgeDto(id,
                 listEdgeDirectionToArrayEdgeDirectionsDto(edge.getEdgeDirections()));
     }
 
