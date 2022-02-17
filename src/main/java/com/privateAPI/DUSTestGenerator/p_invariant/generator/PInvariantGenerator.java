@@ -41,7 +41,7 @@ public class PInvariantGenerator {
         for (int i = 0; i < PInvariant.length; i++) {
             if (parametersIndexes.contains(i)) {
 
-                PInvariant[i][parametersIndexes.indexOf(i)] = random.nextInt(3)+1;
+                PInvariant[i][parametersIndexes.indexOf(i)] = random.nextInt(3) + 1;
             } else {
 
                 for (int j = 0; j < PInvariant[0].length; j++) {
@@ -60,16 +60,17 @@ public class PInvariantGenerator {
             if (!parametersIndexes.contains(i)) {
                 matrixC[pivotNum][i] = 1;
                 for (int j = 0; j < pInvariant[0].length; j++) {
-                    matrixC[pivotNum][parametersIndexes.get(j)] = pInvariant[i][j];
+                    matrixC[pivotNum][parametersIndexes.get(j)] = -pInvariant[i][j];
                 }
                 pivotNum++;
             }
         }
 
-        for (int i = 0; i< parametersIndexes.size(); i++){
-            if(parametersIndexes.get(i) != 1) {
+        for (int i = 0; i < parametersIndexes.size(); i++) {
+            if (Math.abs(pInvariant[parametersIndexes.get(i)][i]) != 1) {
                 for (int j = 0; j < transition - parametersIndexes.size(); j++) {
-                    matrixC[j][i] /= pInvariant[parametersIndexes.get(i)][i]; //nemozem delit, treba vynasobit vsetko?
+                    if (matrixC[j][parametersIndexes.get(i)] != 0)
+                        matrixC[j][parametersIndexes.get(i)] /= pInvariant[parametersIndexes.get(i)][i]; //nemozem delit, treba vynasobit vsetko?
                 }
             }
         }
