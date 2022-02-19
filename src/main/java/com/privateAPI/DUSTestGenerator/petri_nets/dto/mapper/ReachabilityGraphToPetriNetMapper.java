@@ -217,8 +217,10 @@ public class ReachabilityGraphToPetriNetMapper {
     private void createLoopEdges (String transitionId, List<Loop> allLoops) {
         for (Loop loop : allLoops) {
             String placeId = "p" + (loop.getPlaceArrayIndex() + 1);
-            this.petriNet.addEdge(placeId, transitionId, loop.getOutWeight());
-            this.petriNet.addEdge(transitionId, placeId, loop.getInWeight());
+            if(loop.getOutWeight() != null)
+                this.petriNet.addEdge(placeId, transitionId, loop.getOutWeight());
+            if(loop.getInWeight() != null)
+                this.petriNet.addEdge(transitionId, placeId, loop.getInWeight());
         }
     }
 
