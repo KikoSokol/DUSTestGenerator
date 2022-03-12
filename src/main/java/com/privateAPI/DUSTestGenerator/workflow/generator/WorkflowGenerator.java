@@ -161,8 +161,6 @@ public class WorkflowGenerator {
             connectPlaces.add(connectTransitionToRandomPlace(edges, transitionDto, tmpPlaces));
         }
 
-        //TODO: doplň hrany aj do predchadzajúcich miest
-
         int countToConnectedPlaces  = random.nextInt(3);
 
         countToConnectedPlaces = Math.min(connectedPlaces.size(), countToConnectedPlaces);
@@ -226,8 +224,6 @@ public class WorkflowGenerator {
 //            edges.add(new EdgeDto(placeDto.getId(), transitionDto.getId(), 1));
             connectTransitions.add(connectPlaceToRandomTransition(edges, placeDto, tmpTransitions));
         }
-
-        //TODO: doplň hrany aj do predchadzajúcich prechodov
 
 
 //        int countToConnectedTransition = random.nextInt(3);
