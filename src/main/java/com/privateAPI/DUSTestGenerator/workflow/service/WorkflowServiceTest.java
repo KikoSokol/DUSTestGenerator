@@ -1,5 +1,6 @@
 package com.privateAPI.DUSTestGenerator.workflow.service;
 
+import com.privateAPI.DUSTestGenerator.workflow.WorkflowChecker;
 import com.privateAPI.DUSTestGenerator.workflow.controller.request.WorkflowGeneratorRequest;
 import com.privateAPI.DUSTestGenerator.petri_nets.dto.PetriNetDto;
 import com.privateAPI.DUSTestGenerator.workflow.generator.WorkflowGenerator;
@@ -10,19 +11,26 @@ import org.springframework.stereotype.Service;
 public class WorkflowServiceTest
 {
 
+
+    private final WorkflowGenerator workflowGenerator;
+
+    private final WorkflowChecker workflowChecker;
+
     @Autowired
-    private WorkflowGenerator workflowGenerator;
+    public WorkflowServiceTest(WorkflowGenerator workflowGenerator) {
+        this.workflowGenerator = workflowGenerator;
+        this.workflowChecker = new WorkflowChecker();
+    }
 
-
-    public PetriNetDto getRandomWorkflow()
+    public PetriNetDto getRandomWorkflow(WorkflowGeneratorRequest workflowGeneratorRequest)
     {
-        WorkflowGeneratorRequest workflowGeneratorRequest = new WorkflowGeneratorRequest();
-        workflowGeneratorRequest.setMinPlaces(1);
-        workflowGeneratorRequest.setMaxPlaces(1);
-        workflowGeneratorRequest.setMinTransition(1);
-        workflowGeneratorRequest.setMaxTransition(1);
+
+        PetriNetDto workflow = this.workflowGenerator.generateRandomWorkflow(workflowGeneratorRequest);
+
+        System.out.println("Je workflow korektna?  " + workflowChecker.isCorrectWorkflow(workflow));
+
+        return workflow;
 
 
-        return this.workflowGenerator.generateRandomWorkflow(workflowGeneratorRequest);
     }
 }
