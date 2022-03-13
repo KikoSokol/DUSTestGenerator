@@ -31,6 +31,24 @@ public class WorkflowServiceTest
 
         return workflow;
 
+    }
 
+    public PetriNetDto getRandomCorrectWorkflow(WorkflowGeneratorRequest workflowGeneratorRequest)
+    {
+        PetriNetDto petriNetDto = null;
+        int count = 0;
+        while (true)
+        {
+            PetriNetDto petriNetDto1 = this.workflowGenerator.generateRandomWorkflow(workflowGeneratorRequest);
+            count++;
+            System.out.println("COUNT: " + count);
+            if(workflowChecker.isCorrectWorkflow(petriNetDto1))
+            {
+                petriNetDto = petriNetDto1;
+                break;
+            }
+        }
+
+        return petriNetDto;
     }
 }

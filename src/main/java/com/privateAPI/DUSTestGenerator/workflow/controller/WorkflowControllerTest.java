@@ -20,4 +20,11 @@ public class WorkflowControllerTest
     {
         return new ResponseEntity<>(this.workflowServiceTest.getRandomWorkflow(workflowGeneratorRequest), HttpStatus.OK);
     }
+
+    @CrossOrigin(origins = "https://lubossremanak.site")
+    @PostMapping("random-correct-workflow")
+    public ResponseEntity getRandomCorrectWorkflow(@RequestBody WorkflowGeneratorRequest workflowGeneratorRequest)
+    {
+        return new ResponseEntity<>(this.workflowServiceTest.getRandomCorrectWorkflow(workflowGeneratorRequest), HttpStatus.OK);
+    }
 }
