@@ -24,17 +24,7 @@ public class WorkflowChecker
 
     public boolean isCorrectWorkflow(PetriNetDto petriNetDto)
     {
-        PlaceDto inputPlace = getInputPlace(petriNetDto);
-        if(inputPlace == null)
-            return false;
-        System.out.println("Vstupné miesto: " + inputPlace.getId());
-
-        if(!isCorrectStartMarking(inputPlace, petriNetDto.getPlaces()))
-            return false;
-
-        List<PlaceDto> potentiallyOutputPlaces = getPotentiallyOutputPlaces(petriNetDto);
-
-        if(potentiallyOutputPlaces.size() == 0)
+        if(!isPetriNetWorkflow(petriNetDto))
             return false;
 
         ReachabilityGraphMakerResult reachabilityGraphResult = this.reachabilityGraphMaker.makeReachabilityGraph(petriNetDto);
@@ -42,30 +32,51 @@ public class WorkflowChecker
         if(reachabilityGraphResult.getState() == ReachabilityGraphState.UNBOUDED)
             return false;
 
-
         ReachabilityGraph reachabilityGraph = reachabilityGraphResult.getReachabilityGraph();
 
+        PlaceDto outputPlace = getOutputPlace(petriNetDto);
 
-        return checkIsCorrectWorkflowInReachabilityGraph(petriNetDto, reachabilityGraph, potentiallyOutputPlaces);
+        return checkIsCorrectWorkflowInReachabilityGraph(petriNetDto, reachabilityGraph, outputPlace);
+    }
+
+    public boolean isPetriNetWorkflow(PetriNetDto petriNetDto)
+    {
+        PlaceDto inputPlace = getInputPlace(petriNetDto);
+        if(inputPlace == null)
+            return false;
+
+        PlaceDto outputPlace = getOutputPlace(petriNetDto);
+        if(outputPlace == null)
+            return false;
+
+        if(!isCorrectStartMarking(inputPlace, petriNetDto.getPlaces()))
+            return false;
+
+        return true;
+
     }
 
     private PlaceDto getInputPlace(PetriNetDto petriNetDto)
     {
-        List<PlaceDto> potentiallyInputPlaces = new ArrayList<>();
+        PlaceDto inputPlace = null;
 
         for(PlaceDto placeDto : petriNetDto.getPlaces())
         {
             if(isPotentiallyInputPlace(placeDto, petriNetDto.getEdges()))
-                potentiallyInputPlaces.add(placeDto);
+            {
+                if(inputPlace == null)
+                    inputPlace = placeDto;
+                else
+                    return null;
+            }
         }
 
-        for(PlaceDto placeDto : potentiallyInputPlaces)
+        if(inputPlace != null && inputPlace.getNumberOfTokens() != 1)
         {
-            if(placeDto.getNumberOfTokens() == 1)
-                return placeDto;
+            return null;
         }
-
-        return null;
+        else
+            return inputPlace;
     }
 
     private boolean isPotentiallyInputPlace(PlaceDto place, List<EdgeDto> edges)
@@ -82,17 +93,24 @@ public class WorkflowChecker
         return countEdgesOutFromPlace != 0;
     }
 
-    private List<PlaceDto> getPotentiallyOutputPlaces(PetriNetDto petriNetDto)
+    private PlaceDto getOutputPlace(PetriNetDto petriNetDto)
     {
-        List<PlaceDto> potentiallyOutputPlaces = new ArrayList<>();
+        PlaceDto outputPlace = null;
 
         for(PlaceDto placeDto : petriNetDto.getPlaces())
         {
-            if(isPotentiallyOutputPlace(placeDto, petriNetDto.getEdges()))
-                potentiallyOutputPlaces.add(placeDto);
+            if(isPotentiallyOutputPlace(placeDto, petriNetDto.getEdges())) {
+                if (outputPlace == null)
+                    outputPlace = placeDto;
+                else
+                    return null;
+            }
         }
 
-        return potentiallyOutputPlaces;
+        if(outputPlace != null && outputPlace.getNumberOfTokens() > 0)
+            return null;
+
+        return outputPlace;
     }
 
     private boolean isPotentiallyOutputPlace(PlaceDto place, List<EdgeDto> edges)
@@ -109,10 +127,15 @@ public class WorkflowChecker
     {
         for(PlaceDto placeDto : allPlaces)
         {
-            if (!placeDto.equals(inputPlace)) {
-                if(placeDto.getNumberOfTokens() > 0)
-                    return false;
+            if(placeDto.equals(inputPlace) && placeDto.getNumberOfTokens() != 1)
+            {
+                return false;
             }
+            else if(!placeDto.equals(inputPlace) && placeDto.getNumberOfTokens() > 0)
+            {
+                return false;
+            }
+
         }
         return true;
     }
@@ -120,37 +143,17 @@ public class WorkflowChecker
 
     private boolean checkIsCorrectWorkflowInReachabilityGraph(PetriNetDto petriNetDto,
                                                               ReachabilityGraph reachabilityGraph,
-                                                              List<PlaceDto> potentiallyOutputPlaces)
+                                                              PlaceDto outputPlace)
     {
         Map<PlaceDto, Integer> placesMapToPositionInVertex = getPlacePositionInVertexMarking(petriNetDto);
 
-        PlaceDto outputPlace = null;
-        Vertex correctVertex = null;
+        Vertex outputVertex = getVertexWithOneTokenInOutputPlace(outputPlace, reachabilityGraph,
+                placesMapToPositionInVertex.get(outputPlace));
 
-        for(PlaceDto potentiallyOutputPlace : potentiallyOutputPlaces)
-        {
-            if(outputPlace == null)
-            {
-                Vertex vertexWithOneTokenInPotentiallyOutputPlace =
-                        getVertexWithOneTokenInPotentiallyOutputPlace(potentiallyOutputPlace, reachabilityGraph,
-                                placesMapToPositionInVertex.get(potentiallyOutputPlace));
-                if(vertexWithOneTokenInPotentiallyOutputPlace != null)
-                {
-                    outputPlace = potentiallyOutputPlace;
-                    correctVertex = vertexWithOneTokenInPotentiallyOutputPlace;
-                }
-            }
-            else
-                return false;
-        }
-
-        if(outputPlace == null)
+        if(outputVertex == null)
             return false;
 
-        System.out.println("Vystupné miesto " + outputPlace.getId());
-
-
-        return isAllPredecessorsAllOtherVertices(correctVertex, reachabilityGraph.getVertices());
+        return isAllPredecessorsAllOtherVertices(outputVertex, reachabilityGraph.getVertices());
     }
 
     private Map<PlaceDto, Integer> getPlacePositionInVertexMarking(PetriNetDto petriNetDto)
@@ -167,22 +170,22 @@ public class WorkflowChecker
         return placesMap;
     }
 
-    private Vertex getVertexWithOneTokenInPotentiallyOutputPlace(PlaceDto potentiallyOutputPlace,
-                                              ReachabilityGraph reachabilityGraph,
-                                              int placePositionInVertexMarking)
+    private Vertex getVertexWithOneTokenInOutputPlace(PlaceDto outputPlace,
+                                                      ReachabilityGraph reachabilityGraph,
+                                                      int placePositionInVertexMarking)
     {
-        List<Vertex> verticesWithTokensInPotentiallyOutputPlace = new ArrayList<>();
+        List<Vertex> verticesWithTokensInOutputPlace = new ArrayList<>();
 
         for(Vertex vertex : reachabilityGraph.getVertices())
         {
             if(vertex.getMarking()[placePositionInVertexMarking] > 0)
-                verticesWithTokensInPotentiallyOutputPlace.add(vertex);
+                verticesWithTokensInOutputPlace.add(vertex);
         }
 
-        if(verticesWithTokensInPotentiallyOutputPlace.size() != 1)
+        if(verticesWithTokensInOutputPlace.size() != 1)
             return null;
 
-        Vertex oneVertex = verticesWithTokensInPotentiallyOutputPlace.get(0);
+        Vertex oneVertex = verticesWithTokensInOutputPlace.get(0);
 
         if(oneVertex.getMarking()[placePositionInVertexMarking] != 1)
             return null;
@@ -194,7 +197,6 @@ public class WorkflowChecker
                 if(oneVertex.getMarking()[i] != 0)
                     return null;
             }
-
         }
 
         return oneVertex;
