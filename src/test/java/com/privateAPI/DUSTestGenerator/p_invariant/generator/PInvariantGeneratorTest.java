@@ -17,7 +17,7 @@ class PInvariantGeneratorTest
         PInvariantGenerator generator = new PInvariantGenerator(maker);
 
 
-        for(int i = 0; i < 10; i++){
+        for(int i = 0; i < 100; i++){
             System.out.println(generator.PInvariantGeneratorResult());
         }
 
