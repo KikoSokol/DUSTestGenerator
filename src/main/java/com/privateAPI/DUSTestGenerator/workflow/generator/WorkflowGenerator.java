@@ -154,26 +154,26 @@ public class WorkflowGenerator {
 
         for(int i = 0; i < countFromFreePlaces; i++)
         {
-//            PlaceDto placeDto = tmpPlaces.get(random.nextInt(tmpPlaces.size()));
-//            tmpPlaces.remove(placeDto);
-//            edges.add(new EdgeDto(transitionDto.getId(), placeDto.getId(), 1));
-//            connectPlaces.add(placeDto);
-            connectPlaces.add(connectTransitionToRandomPlace(edges, transitionDto, tmpPlaces));
+            PlaceDto connectedPlace = connectTransitionToRandomPlace(edges, transitionDto, tmpPlaces);
+            if(connectedPlace != null)
+                connectPlaces.add(connectedPlace);
         }
 
-        int countToConnectedPlaces  = random.nextInt(3);
-
-        countToConnectedPlaces = Math.min(connectedPlaces.size(), countToConnectedPlaces);
-
-        if(countToConnectedPlaces > 0)
-        {
-            List<PlaceDto> tmpConnectedPlaces = new ArrayList<>(connectedPlaces);
-
-            for(int i = 0; i < countToConnectedPlaces; i++)
-            {
-                connectTransitionToRandomPlace(edges, transitionDto, tmpConnectedPlaces);
-            }
-        }
+//        int countToConnectedPlaces  = random.nextInt(3);
+//
+//        List<PlaceDto> tmpConnectedPlacesWithoutOppositeEdges = getPlaceWithoutOppositeEdge(edges,
+//                new ArrayList<>(connectedPlaces), transitionDto);
+//
+//        countToConnectedPlaces = Math.min(tmpConnectedPlacesWithoutOppositeEdges.size(), countToConnectedPlaces);
+//
+//        if(countToConnectedPlaces > 0)
+//        {
+//
+//            for(int i = 0; i < countToConnectedPlaces; i++)
+//            {
+//                connectTransitionToRandomPlace(edges, transitionDto, tmpConnectedPlacesWithoutOppositeEdges);
+//            }
+//        }
 
         return connectPlaces;
     }
@@ -185,8 +185,17 @@ public class WorkflowGenerator {
         PlaceDto placeDto = possiblePlaces.get(random.nextInt(possiblePlaces.size()));
         possiblePlaces.remove(placeDto);
 
-        edges.add(new EdgeDto(transitionDto.getId(), placeDto.getId(), 1));
-        return placeDto;
+        if(existOppositeEdge(edges, transitionDto.getId(), placeDto.getId()))
+        {
+            return null;
+        }
+        else
+        {
+            edges.add(new EdgeDto(transitionDto.getId(), placeDto.getId(), 1));
+            return placeDto;
+        }
+
+
     }
 
     private List<TransitionDto> connectTransitions(List<EdgeDto> edges, List<PlaceDto> connectedPlaces,
@@ -219,26 +228,10 @@ public class WorkflowGenerator {
 
         for(int i = 0; i < countFromFreeTransitions; i++)
         {
-//            TransitionDto transitionDto = tmpTransitions.get(random.nextInt(tmpTransitions.size()));
-//            tmpTransitions.remove(transitionDto);
-//            edges.add(new EdgeDto(placeDto.getId(), transitionDto.getId(), 1));
-            connectTransitions.add(connectPlaceToRandomTransition(edges, placeDto, tmpTransitions));
+            TransitionDto connectedTransition = connectPlaceToRandomTransition(edges, placeDto, tmpTransitions);
+            if(connectedTransition != null)
+                connectTransitions.add(connectedTransition);
         }
-
-
-//        int countToConnectedTransition = random.nextInt(3);
-//        countToConnectedTransition = Math.min(connectedTransitions.size(), countToConnectedTransition);
-//
-//        if(countToConnectedTransition > 0)
-//        {
-//
-//            List<TransitionDto> tmpConnectedTransitions = new ArrayList<>(connectedTransitions);
-//            for(int i = 0; i < countToConnectedTransition; i++)
-//            {
-//                connectPlaceToRandomTransition(edges, placeDto, tmpConnectedTransitions);
-//            }
-//        }
-
 
         return connectTransitions;
 
@@ -251,9 +244,42 @@ public class WorkflowGenerator {
         TransitionDto transitionDto = possibleTransitions.get(random.nextInt(possibleTransitions.size()));
         possibleTransitions.remove(transitionDto);
 
-        edges.add(new EdgeDto(placeDto.getId(), transitionDto.getId(), 1));
+        if(existOppositeEdge(edges, placeDto.getId(), transitionDto.getId()))
+            return null;
+        else
+        {
+            edges.add(new EdgeDto(placeDto.getId(), transitionDto.getId(), 1));
+            return transitionDto;
+        }
+    }
 
-        return transitionDto;
+
+    private boolean existOppositeEdge(List<EdgeDto> edges, String from, String to)
+    {
+        for(EdgeDto edgeDto : edges)
+        {
+            if(edgeDto.getFrom().compareTo(to) == 0 && edgeDto.getTo().compareTo(from) == 0)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    private List<PlaceDto> getPlaceWithoutOppositeEdge(List<EdgeDto> edges, List<PlaceDto> placeDtos, TransitionDto transitionDto)
+    {
+        List<PlaceDto> placesWithoutOppositeEdge = new ArrayList<>();
+
+        for(PlaceDto placeDto : placeDtos)
+        {
+            if(!existOppositeEdge(edges, transitionDto.getId(), placeDto.getId()))
+                placesWithoutOppositeEdge.add(placeDto);
+
+        }
+
+        return placesWithoutOppositeEdge;
     }
 
 
