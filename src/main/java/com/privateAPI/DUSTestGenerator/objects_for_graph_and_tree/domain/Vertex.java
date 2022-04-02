@@ -5,7 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -34,5 +36,18 @@ public class Vertex
         this.predecessors.add(id);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Vertex vertex = (Vertex) o;
+        return getId() == vertex.getId() && Arrays.equals(getMarking(), vertex.getMarking()) && getPredecessors().equals(vertex.getPredecessors());
+    }
 
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(getId(), getPredecessors());
+        result = 31 * result + Arrays.hashCode(getMarking());
+        return result;
+    }
 }
