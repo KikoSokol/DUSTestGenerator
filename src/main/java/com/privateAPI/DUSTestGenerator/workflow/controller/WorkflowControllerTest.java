@@ -1,5 +1,6 @@
 package com.privateAPI.DUSTestGenerator.workflow.controller;
 
+import com.privateAPI.DUSTestGenerator.petri_nets.dto.PetriNetDto;
 import com.privateAPI.DUSTestGenerator.workflow.controller.request.WorkflowGeneratorRequest;
 import com.privateAPI.DUSTestGenerator.workflow.service.WorkflowServiceTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,5 +27,12 @@ public class WorkflowControllerTest
     public ResponseEntity getRandomCorrectWorkflow(@RequestBody WorkflowGeneratorRequest workflowGeneratorRequest)
     {
         return new ResponseEntity<>(this.workflowServiceTest.getRandomCorrectWorkflow(workflowGeneratorRequest), HttpStatus.OK);
+    }
+
+    @CrossOrigin(origins = "https://lubossremanak.site")
+    @PostMapping("add-static-place")
+    public ResponseEntity addStaticPlace(@RequestBody PetriNetDto workflow)
+    {
+        return new ResponseEntity<>(this.workflowServiceTest.addStaticPlaces(workflow), HttpStatus.OK);
     }
 }

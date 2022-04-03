@@ -3,6 +3,7 @@ package com.privateAPI.DUSTestGenerator.workflow.service;
 import com.privateAPI.DUSTestGenerator.workflow.WorkflowChecker;
 import com.privateAPI.DUSTestGenerator.workflow.controller.request.WorkflowGeneratorRequest;
 import com.privateAPI.DUSTestGenerator.petri_nets.dto.PetriNetDto;
+import com.privateAPI.DUSTestGenerator.workflow.generator.StaticPlacesGenerator;
 import com.privateAPI.DUSTestGenerator.workflow.generator.WorkflowGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,10 +17,13 @@ public class WorkflowServiceTest
 
     private final WorkflowChecker workflowChecker;
 
+    private final StaticPlacesGenerator staticPlacesGenerator;
+
     @Autowired
     public WorkflowServiceTest(WorkflowGenerator workflowGenerator) {
         this.workflowGenerator = workflowGenerator;
         this.workflowChecker = new WorkflowChecker();
+        this.staticPlacesGenerator = new StaticPlacesGenerator();
     }
 
     public PetriNetDto getRandomWorkflow(WorkflowGeneratorRequest workflowGeneratorRequest)
@@ -50,5 +54,12 @@ public class WorkflowServiceTest
         }
 
         return petriNetDto;
+    }
+
+
+    public PetriNetDto addStaticPlaces(PetriNetDto workflow)
+    {
+        return this.staticPlacesGenerator.addStaticPlacesToWorkflow(workflow, 1);
+
     }
 }
