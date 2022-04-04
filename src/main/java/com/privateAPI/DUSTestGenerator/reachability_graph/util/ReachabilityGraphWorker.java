@@ -167,6 +167,22 @@ public class ReachabilityGraphWorker
         return getSortedVertices(new HashSet<>(reachabilityGraph.getVertices())).get(count - 1);
     }
 
+    public Map<Vertex, List<Vertex>> removeVerticesFromPaths(Map<Vertex, List<Vertex>> paths, Vertex start)
+    {
+        for(Vertex vertex : paths.keySet())
+        {
+            List<Vertex> tmpForDelete = new ArrayList<>();
+            for(Vertex lVertex : paths.get(vertex))
+            {
+                if(lVertex.getId() >= start.getId())
+                    tmpForDelete.add(lVertex);
+            }
+            paths.get(vertex).removeAll(tmpForDelete);
+        }
+
+        return paths;
+    }
+
 
 
     private void printMap(Map<Vertex, Map<Vertex, List<String>>> map)
