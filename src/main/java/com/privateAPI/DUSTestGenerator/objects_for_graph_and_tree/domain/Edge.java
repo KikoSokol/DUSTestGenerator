@@ -7,10 +7,15 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class  Edge
+public class Edge
 {
-    private int id;
+    private String id;
     private List<EdgeDirection> edgeDirections;
     private int[] markingChange;
 
+    public Edge(int id, List<EdgeDirection> edgeDirections, int[] markingChange) {
+        this.id = Integer.toString(id);
+        this.edgeDirections = edgeDirections;
+        this.markingChange = markingChange;
+    }
 }

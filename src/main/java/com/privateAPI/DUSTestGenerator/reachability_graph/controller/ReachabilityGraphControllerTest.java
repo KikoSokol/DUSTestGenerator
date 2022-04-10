@@ -1,12 +1,17 @@
 package com.privateAPI.DUSTestGenerator.reachability_graph.controller;
 
+import com.privateAPI.DUSTestGenerator.petri_nets.dto.PetriNetDto;
+import com.privateAPI.DUSTestGenerator.petri_nets.dto.mapper.ReachabilityGraphToPetriNetMapper;
 import com.privateAPI.DUSTestGenerator.reachability_graph.controller.request.ReachabilityGraphGeneratorRequest;
 import com.privateAPI.DUSTestGenerator.reachability_graph.domain.ReachabilityGraph;
 import com.privateAPI.DUSTestGenerator.reachability_graph.domain.ReachabilityGraphGeneratorResult;
+import com.privateAPI.DUSTestGenerator.reachability_graph.domain.ReachabilityGraphMakerResult;
 import com.privateAPI.DUSTestGenerator.reachability_graph.dto.ReachabilityGraphDto;
 import com.privateAPI.DUSTestGenerator.reachability_graph.dto.ReachabilityGraphGeneratorResultDto;
 import com.privateAPI.DUSTestGenerator.reachability_graph.dto.ReachabilityGraphResultDto;
+import com.privateAPI.DUSTestGenerator.reachability_graph.dto.mapper.ReachabilityGraphMapper;
 import com.privateAPI.DUSTestGenerator.reachability_graph.generator.ReachabilityGraphGenerator;
+import com.privateAPI.DUSTestGenerator.reachability_graph.generator.ReachabilityGraphMaker;
 import com.privateAPI.DUSTestGenerator.reachability_graph.service.ReachabilityGraphService;
 import com.privateAPI.DUSTestGenerator.reachability_graph.service.impl.ReachabilityGraphServiceTest;
 import com.privateAPI.DUSTestGenerator.response.ErrorResponse;
@@ -23,6 +28,11 @@ public class ReachabilityGraphControllerTest {
     @Autowired
     private ReachabilityGraphServiceTest reachabilityGraphServiceTest;
 
+    @Autowired
+    private ReachabilityGraphGenerator reachabilityGraphGenerator;
+
+    @Autowired
+    private ReachabilityGraphMaker reachabilityGraphMaker;
 
 
     @GetMapping("sample")
@@ -90,5 +100,68 @@ public class ReachabilityGraphControllerTest {
 
     }
 
+    @PostMapping("generator-with-parameter-validate-mapper-error-example")
+    public ResponseEntity reachabilityGraphToPetriNetMapperErrorExample(@RequestBody ReachabilityGraphGeneratorRequest generatorRequest)
+    {
+        ReachabilityGraphGeneratorResult generatorResult = this.reachabilityGraphGenerator.generateRandomReachabilityGraph(generatorRequest);
 
+        try {
+            ReachabilityGraphToPetriNetMapper mapper = new ReachabilityGraphToPetriNetMapper();
+            PetriNetDto petriNetDto = mapper.calculatePetriNet(generatorResult.getReachabilityGraph());
+        }
+        catch (NullPointerException e)
+        {
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<>(generatorResult, HttpStatus.OK);
+
+    }
+
+    @GetMapping("triDvaA")
+    public ResponseEntity triDvaA()
+    {
+        ReachabilityGraphDto reachabilityGraphDto = this.reachabilityGraphServiceTest.triDvaA();
+
+        return new ResponseEntity<>(reachabilityGraphDto, HttpStatus.OK);
+    }
+
+    @GetMapping("triDvaB")
+    public ResponseEntity triDvaB()
+    {
+        ReachabilityGraphDto reachabilityGraphDto = this.reachabilityGraphServiceTest.triDvaB();
+
+        return new ResponseEntity<>(reachabilityGraphDto, HttpStatus.OK);
+    }
+
+    @GetMapping("triDvaC")
+    public ResponseEntity triDvaC()
+    {
+        ReachabilityGraphDto reachabilityGraphDto = this.reachabilityGraphServiceTest.triDvaC();
+
+        return new ResponseEntity<>(reachabilityGraphDto, HttpStatus.OK);
+    }
+
+    @GetMapping("fJednaDva")
+    public ResponseEntity fJednaDva()
+    {
+        ReachabilityGraphDto reachabilityGraphDto = this.reachabilityGraphServiceTest.fJednaDva();
+
+        return new ResponseEntity<>(reachabilityGraphDto, HttpStatus.OK);
+    }
+
+
+
+    @PostMapping("fromPetriNetToReachabilityGraph")
+    public ResponseEntity fromPetriNetToReachabilityGraph(@RequestBody PetriNetDto petriNetDto)
+    {
+        ReachabilityGraphMakerResult result = this.reachabilityGraphMaker.makeReachabilityGraph(petriNetDto);
+
+        ReachabilityGraphMapper mapper = new ReachabilityGraphMapper();
+
+        ReachabilityGraphDto dto = mapper.toReachabilityGraphDto(result.getReachabilityGraph());
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+
+    }
 }

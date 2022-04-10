@@ -5,14 +5,10 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class PlaceDto {
-    private int numberOfTokens;
+public class TransitionDto {
     private String id;
-    private boolean isStatic;
 
-    public PlaceDto () {
-        this.numberOfTokens = 0;
+    public TransitionDto () {
         this.id = "";
-        this.isStatic = false;
     }
 }

@@ -38,7 +38,7 @@ public class ReachabilityGraphToPetriNetMapper {
         int[] initialMarking =  this.graph.getVertices().get(0).getMarking();
         int placeId = 1;
         for (int marking : initialMarking) {
-            this.petriNet.addPlace(marking, placeId);
+            this.petriNet.addPlace(marking, placeId, false);
             placeId++;
         }
     }
@@ -162,6 +162,10 @@ public class ReachabilityGraphToPetriNetMapper {
         List<Loop> loops = this.getPotentialLoops(markingChange);
         List<EdgeDirection> directions = edge.getEdgeDirections();
 
+        if (directions == null || directions.isEmpty()) {
+            return new ArrayList<Loop>();
+        }
+
         for (EdgeDirection edgeDirection : directions) {
             if (loops.isEmpty()) {
                 return new ArrayList<Loop>();
@@ -213,8 +217,10 @@ public class ReachabilityGraphToPetriNetMapper {
     private void createLoopEdges (String transitionId, List<Loop> allLoops) {
         for (Loop loop : allLoops) {
             String placeId = "p" + (loop.getPlaceArrayIndex() + 1);
-            this.petriNet.addEdge(placeId, transitionId, loop.getOutWeight());
-            this.petriNet.addEdge(transitionId, placeId, loop.getInWeight());
+            if(loop.getOutWeight() != null)
+                this.petriNet.addEdge(placeId, transitionId, loop.getOutWeight());
+            if(loop.getInWeight() != null)
+                this.petriNet.addEdge(transitionId, placeId, loop.getInWeight());
         }
     }
 

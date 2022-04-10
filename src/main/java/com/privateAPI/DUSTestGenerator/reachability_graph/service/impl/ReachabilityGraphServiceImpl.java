@@ -1,6 +1,7 @@
 package com.privateAPI.DUSTestGenerator.reachability_graph.service.impl;
 
 
+import com.privateAPI.DUSTestGenerator.petri_nets.dto.PetriNetDto;
 import com.privateAPI.DUSTestGenerator.petri_nets.dto.mapper.ReachabilityGraphToPetriNetMapper;
 import com.privateAPI.DUSTestGenerator.reachability_graph.controller.request.ReachabilityGraphGeneratorRequest;
 import com.privateAPI.DUSTestGenerator.reachability_graph.domain.ReachabilityGraphGeneratorResult;
@@ -38,7 +39,13 @@ public class ReachabilityGraphServiceImpl implements ReachabilityGraphService
             throw exception;
 
         ReachabilityGraphGeneratorResult generatorResult = this.reachabilityGraphGenerator.generateRandomReachabilityGraph(reachabilityGraphGeneratorRequest);
-        return this.reachabilityGraphMapper.toReachabilityGraphGeneratorResultDto(generatorResult);
+        PetriNetDto petriNetDto = this.reachabilityGraphToPetriNetMapper.calculatePetriNet(generatorResult.getReachabilityGraph());
+
+        ReachabilityGraphGeneratorResultDto generatorResultDto = this.reachabilityGraphMapper.toReachabilityGraphGeneratorResultDto(generatorResult);
+
+        generatorResultDto.setPetriNetDto(petriNetDto);
+
+        return generatorResultDto;
     }
 
 }
