@@ -32,7 +32,7 @@ public class ReachabilityGraphWorker
         {
             possibleTransitionTakeFromStaticPlace.put(vertex, getNextVertices(reachabilityGraph, vertex));
         }
-        printMap(possibleTransitionTakeFromStaticPlace);
+//        printMap(possibleTransitionTakeFromStaticPlace);
         return possibleTransitionTakeFromStaticPlace;
     }
 
@@ -80,6 +80,7 @@ public class ReachabilityGraphWorker
         }
 
         return path;
+//        return deleteSameVerticesInParallelPath(path);
     }
 
     private Vertex chooseEndParallelVertex(List<Integer> verticesIds, Map<Vertex, List<Vertex>> parallel)
@@ -140,8 +141,8 @@ public class ReachabilityGraphWorker
         return getAllParallelPaths(reachabilityGraph, vertexMap);
     }
 
-    public List<ReachabilityGraphParallelPaths> getAllParallelPaths(ReachabilityGraph reachabilityGraph, Map<Vertex,
-            Map<Vertex, List<String>>> map)
+    public List<ReachabilityGraphParallelPaths> getAllParallelPaths(ReachabilityGraph reachabilityGraph,
+                                                                    Map<Vertex, Map<Vertex, List<String>>> map)
     {
         List<ReachabilityGraphParallelPaths> parallels = new ArrayList<>();
 
@@ -156,9 +157,83 @@ public class ReachabilityGraphWorker
             }
         }
 
+//        return parallels;
+        return maximizeParallelPaths(parallels, map);
+    }
+
+    public List<ReachabilityGraphParallelPaths> maximizeParallelPaths(List<ReachabilityGraphParallelPaths> parallels,
+                                                                      Map<Vertex, Map<Vertex, List<String>>> map)
+    {
+        if(parallels.size() == 1 || parallels.isEmpty())
+            return parallels;
+
+        ReachabilityGraphParallelPaths first = parallels.get(0);
+        for(int i = 1; i < parallels.size(); i++)
+        {
+            ReachabilityGraphParallelPaths second = parallels.get(i);
+
+            if(isFirstVertexConnectedWithSecondInParallelPaths(first, second, map))
+            {
+                ReachabilityGraphParallelPaths newConnected = new ReachabilityGraphParallelPaths(first.getStartVertex(),
+                        second.getEndVertex());
+                List<ReachabilityGraphParallelPaths> newParallels = createMaximizeParallelPaths(first, second,
+                        newConnected, parallels);
+                return maximizeParallelPaths(newParallels, map);
+
+            }
+            first = second;
+        }
+
         return parallels;
     }
 
+    private boolean isFirstVertexConnectedWithSecondInParallelPaths(ReachabilityGraphParallelPaths first,
+                                                                    ReachabilityGraphParallelPaths second,
+                                                                    Map<Vertex, Map<Vertex, List<String>>> map)
+    {
+        for(int i = first.getStartVertex().getId(); i < first.getEndVertex().getId(); i++)
+        {
+            Vertex vertexFromFirst = getVertexFromMapById(i, map);
+
+            for(int a = second.getStartVertex().getId(); a < second.getEndVertex().getId(); a++)
+            {
+                Vertex vertexFromSecond = getVertexFromMapById(a, map);
+                if(map.get(vertexFromFirst).containsKey(vertexFromSecond))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    private List<ReachabilityGraphParallelPaths> createMaximizeParallelPaths(ReachabilityGraphParallelPaths first,
+                                                                             ReachabilityGraphParallelPaths second,
+                                                                             ReachabilityGraphParallelPaths newConnected,
+                                                                             List<ReachabilityGraphParallelPaths> parallels)
+    {
+        List<ReachabilityGraphParallelPaths> newParallelsPath = new ArrayList<>();
+
+        for(int i = 0; i < parallels.size(); i++)
+        {
+            if(parallels.get(i).equals(first))
+                newParallelsPath.add(newConnected);
+
+            if(!parallels.get(i).equals(second) && !parallels.get(i).equals(first))
+                newParallelsPath.add(parallels.get(i));
+        }
+        return newParallelsPath;
+    }
+
+    private Vertex getVertexFromMapById(int id, Map<Vertex, Map<Vertex, List<String>>> map)
+    {
+        Vertex vertex = null;
+
+        for(Vertex v : map.keySet())
+        {
+            if(v.getId() == id)
+                vertex = v;
+        }
+        return vertex;
+    }
 
     public int getLastIdVertex(ReachabilityGraph reachabilityGraph)
     {
@@ -183,9 +258,188 @@ public class ReachabilityGraphWorker
         return paths;
     }
 
+    public Map<Vertex, Map<Vertex, List<String>>> removeVerticesFromOutsideParallelPath(
+            Map<Vertex, Map<Vertex, List<String>>> vertexMap, ReachabilityGraphParallelPaths parallel,
+            Vertex nextVertex)
+    {
+        Map<Vertex, List<Vertex>> parallelPaths = getParallelPaths(vertexMap, parallel.getStartVertex());
+        parallelPaths = removeVerticesFromPaths(parallelPaths, parallel.getEndVertex());
+
+        List<Vertex> verticesFromVertexMap = vertexMap.keySet().stream().map(Vertex::new).collect(Collectors.toList());
+        verticesFromVertexMap.remove(parallel.getStartVertex());
+        verticesFromVertexMap.remove(parallel.getEndVertex());
+
+        List<Vertex> verticesFromCorrectPath = parallelPaths.get(getStartParallelPath(parallelPaths, nextVertex));
+
+        for(Vertex vertex : verticesFromVertexMap)
+        {
+            if(!verticesFromCorrectPath.contains(vertex))
+            {
+                vertexMap.remove(vertex);
+            }
+        }
+
+        vertexMap.get(parallel.getEndVertex()).clear();
 
 
-    private void printMap(Map<Vertex, Map<Vertex, List<String>>> map)
+        List<Vertex> nextVerticesFromStartParallelVertex = vertexMap.get(parallel.getStartVertex()).
+                keySet().stream().map(Vertex::new).collect(Collectors.toList());
+
+        for(Vertex v : nextVerticesFromStartParallelVertex)
+        {
+            if(!v.equals(nextVertex))
+            {
+                vertexMap.get(parallel.getStartVertex()).remove(v);
+            }
+        }
+
+        return vertexMap;
+    }
+
+    private Vertex getStartParallelPath(Map<Vertex, List<Vertex>> parallelPaths, Vertex vertex)
+    {
+        Vertex start = null;
+
+        for(Vertex v : parallelPaths.keySet())
+        {
+            if(parallelPaths.get(v).contains(vertex))
+            {
+                start = v;
+            }
+        }
+        return start;
+    }
+
+
+    public List<ReachabilityGraphParallelPaths> getAllSubParallelPaths(Map<Vertex, Map<Vertex, List<String>>> vertexMap)
+    {
+        List<Vertex> vertices = vertexMap.keySet().stream().map(Vertex::new)
+                .sorted(Comparator.comparingInt(Vertex::getId)).collect(Collectors.toList());
+
+        List<ReachabilityGraphParallelPaths> parallels = new ArrayList<>();
+
+        for(int i = 0; i < vertices.size(); i++)
+        {
+            Vertex startVertex = vertices.get(i);
+            if(vertexMap.get(startVertex).size() > 1)
+            {
+                Vertex endVertex = getEndParallelVertex(vertexMap, startVertex);
+                parallels.add(new ReachabilityGraphParallelPaths(startVertex, endVertex));
+                i = vertices.indexOf(endVertex) - 1;
+            }
+        }
+
+        return parallels;
+    }
+
+
+
+    public Map<Vertex, List<Vertex>> deleteSameVerticesInParallelPath(Map<Vertex, List<Vertex>> parallelPath)
+    {
+        List<Vertex> vertices = parallelPath.keySet().stream().map(Vertex::new).collect(Collectors.toList());
+
+        for(int i = 0; i < vertices.size(); i++)
+        {
+            for(int a = i + 1; a < vertices.size(); a++)
+            {
+                for(Vertex vertex : parallelPath.get(vertices.get(i)))
+                {
+                    parallelPath.get(vertices.get(a)).remove(vertex);
+                }
+            }
+        }
+
+        return parallelPath;
+    }
+
+    public boolean isParallelStartWithPlaces(ReachabilityGraphParallelPaths parallel,
+                                              Map<Vertex, Map<Vertex, List<String>>> vertexMap)
+    {
+        System.out.println("Start parrrrralel: " + parallel.getStartVertex().getId());
+        Map<Vertex, List<Vertex>> parallelPaths = getParallelPaths(vertexMap, parallel.getStartVertex());
+        parallelPaths = removeVerticesFromPaths(parallelPaths, parallel.getEndVertex());
+
+//        Map<Vertex, List<Vertex>> p = this.reachabilityGraphWorker.getParallelPaths(vertexMap, vertex);
+//        p = this.reachabilityGraphWorker.removeVerticesFromPaths(p, parallelPaths.get(0).getEndVertex());
+        for(Vertex v : parallelPaths.keySet())
+        {
+            System.out.print(v.getId() + ": ");
+            for(Vertex l : parallelPaths.get(v))
+            {
+                System.out.print(l.getId() + ", ");
+            }
+            System.out.println();
+        }
+
+        List<Vertex> vertices = parallelPaths.keySet().stream().map(Vertex::new).collect(Collectors.toList());
+
+        for(int i = 0; i < parallelPaths.size(); i++)
+        {
+            List<Vertex> basePathVertices = parallelPaths.get(vertices.get(i));
+//            System.out.println("Base vertices");
+//            for(Vertex pr : basePathVertices)
+//            {
+//                System.out.print(pr.getId() + ", ");
+//            }
+//            System.out.println();
+            List<List<String>> baseTransitions = getTransitionsOnPath(vertexMap, vertices.get(i),
+                    basePathVertices);
+
+//            System.out.println("Base transitions");
+//            System.out.print(vertices.get(i).getId() + ":  ");
+//            for(List<String> o : baseTransitions)
+//            {
+//                for(String p : o)
+//                {
+//                    System.out.print(p + ", ");
+//                }
+//                System.out.println();
+//            }
+            for(int a = i + 1; a < parallelPaths.size(); a++)
+            {
+
+                List<Vertex> forCompareVertices = parallelPaths.get(vertices.get(a));
+
+                List<List<String>> forCompareTransitions = getTransitionsOnPath(vertexMap, vertices.get(a),
+                        forCompareVertices);
+
+                for(List<String> base : baseTransitions)
+                {
+                    if(forCompareTransitions.contains(base))
+                        return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private List<List<String>> getTransitionsOnPath(Map<Vertex, Map<Vertex, List<String>>> vertexMap,
+                                                    Vertex firstVertexInPath, List<Vertex> verticesOnPath)
+    {
+        List<List<String>> transitions = new ArrayList<>();
+
+        for(Vertex vertexInVertexMap : vertexMap.keySet())
+        {
+            if(vertexMap.get(vertexInVertexMap).containsKey(firstVertexInPath))
+            {
+                transitions.add(vertexMap.get(vertexInVertexMap).get(firstVertexInPath));
+            }
+        }
+
+        for(Vertex vertexInVerticesOnPath : verticesOnPath)
+        {
+            for(Vertex vertex : vertexMap.get(vertexInVerticesOnPath).keySet())
+            {
+                transitions.add(vertexMap.get(vertexInVerticesOnPath).get(vertex));
+            }
+        }
+
+        return transitions;
+    }
+
+
+    public void printMap(Map<Vertex, Map<Vertex, List<String>>> map)
     {
         for(Vertex from : map.keySet())
         {
