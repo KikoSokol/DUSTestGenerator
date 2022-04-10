@@ -1,10 +1,9 @@
 package com.privateAPI.DUSTestGenerator.p_invariant.generator;
 
 
+import com.privateAPI.DUSTestGenerator.petri_nets.dto.mapper.IncidentalMatrixToPetriNet;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class PInvariantGeneratorTest
@@ -13,8 +12,9 @@ class PInvariantGeneratorTest
     @Test
     void test()
     {
-        PInvariantMaker maker = new PInvariantMaker();
-        PInvariantGenerator generator = new PInvariantGenerator(maker);
+        InvariantMaker maker = new InvariantMaker();
+        IncidentalMatrixToPetriNet incidentalMatrixToPetriNet = new IncidentalMatrixToPetriNet();
+        InvariantGenerator generator = new InvariantGenerator(maker, incidentalMatrixToPetriNet);
 
 
         for(int i = 0; i < 100; i++){
