@@ -35,10 +35,19 @@ public class InvariantGenerator {
         double[][] invariant = (limitedness) ?
                 invariantMaker.generatePInvariant(place, transition, parametersIndexes) :
                 invariantMaker.generateFalsePInvariant(place, transition, parametersIndexes);
-        double[][] cMatrix = invariantMaker.calculateMatrixC(transition, invariant, parametersIndexes);
+        double[][] cMatrix = invariantMaker.calculateAndTransposeMatrixC(transition, invariant, parametersIndexes);
         PetriNetDto petriNet = incidentalMatrixToPetriNet.calculatePetriNet(cMatrix);
-        return new Invariant(invariant,petriNet, type);
+        return new Invariant(invariant, petriNet, type);
     }
 
 
+    public Invariant makeRandomTInvariant(int place, int transition, boolean reversibility, InvariantType type) {
+        ArrayList<Integer> parametersIndexes = new ArrayList<>();
+        double[][] invariant = (reversibility) ?
+                invariantMaker.generateTInvariant(place, transition, parametersIndexes) :
+                new double[transition][1];
+        double[][] cMatrix = invariantMaker.calculateMatrixC(place, invariant, parametersIndexes);
+        PetriNetDto petriNet = incidentalMatrixToPetriNet.calculatePetriNet(cMatrix);
+        return new Invariant(invariant, petriNet, type);
+    }
 }

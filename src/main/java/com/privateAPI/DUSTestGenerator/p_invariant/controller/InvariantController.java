@@ -35,4 +35,17 @@ public class InvariantController {
         }
 
     }
+
+    @PostMapping("t-invariant")
+    public ResponseEntity TInvariantGeneratorResult(@RequestBody InvariantGeneratorRequest invariantGeneratorRequest){
+        try {
+            Invariant result = this.invariantServiceTest.TInvariantGeneratorResult(invariantGeneratorRequest);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        }
+        catch (ConstraintViolationException e)
+        {
+            return new ResponseEntity<>(new ErrorResponse(e.getMessage()),HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+
+    }
 }

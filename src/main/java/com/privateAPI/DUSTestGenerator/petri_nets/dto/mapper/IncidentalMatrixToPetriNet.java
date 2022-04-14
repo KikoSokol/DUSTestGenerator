@@ -38,7 +38,7 @@ public class IncidentalMatrixToPetriNet {
     private void calculatePlaces() {
         Random random = new Random();
         for (int placeId = 0; placeId < this.c.length; placeId++) {
-            this.petriNet.addPlace(random.nextInt(4), placeId);
+            this.petriNet.addPlace(random.nextInt(4), placeId, false);
         }
     }
 
@@ -48,7 +48,7 @@ public class IncidentalMatrixToPetriNet {
      */
     private void calculateTransitions() {
         for (int transitionId = 0; transitionId < this.c[0].length; transitionId++) {
-            this.petriNet.addTransition(transitionId);
+            this.petriNet.addTransition(transitionId + "");
         }
     }
 
@@ -67,31 +67,33 @@ public class IncidentalMatrixToPetriNet {
 
     private void chooseEdgeDirection(int value, int place, int transition) {
         Random random = new Random();
-        int direction = random.nextInt(2);
-        if (direction == 0 && value != 0 || abs(value) > 5) {
+//        int direction = random.nextInt(2);
+//        if (direction == 0 && abs(value) != 0){ //|| abs(value) > 5) {
             if(value > 0){ //??????naopak???
             this.petriNet.addEdge("t" + transition, "p" + place, value);
 
             } else {
-                this.petriNet.addEdge("p" + place, "t" + transition, value);
+                if(abs(value) != 0)
+                    this.petriNet.addEdge("p" + place, "t" + transition, abs(value));
             }
 
-        } else {
-            int fromPlace, toPlace;
-            if (value > 0){ //??????naopak???
-                fromPlace = random.nextInt(3) * (-1) ;
-                toPlace = value - fromPlace;
-            }
-            else {
-                toPlace = random.nextInt(3);
-                fromPlace = value - toPlace;
-            }
-
-            this.petriNet.addEdge("t" + transition, "p" + place, toPlace);
-            this.petriNet.addEdge("p" + place, "t" + transition, fromPlace);
-
-
-        }
+//        } else {
+//            int fromPlace, toPlace;
+//            if (value > 0){ //??????naopak???
+//                fromPlace = random.nextInt(3) * (-1) ;
+//                toPlace = value - fromPlace;
+//            }
+//            else {
+//                toPlace = random.nextInt(3);
+//                fromPlace = value - toPlace;
+//            }
+//            if(abs(toPlace) != 0)
+//                this.petriNet.addEdge("t" + transition, "p" + place, toPlace);
+//            if(abs(fromPlace) != 0)
+//                this.petriNet.addEdge("p" + place, "t" + transition, abs(fromPlace));
+//
+//
+//        }
     }
 
 

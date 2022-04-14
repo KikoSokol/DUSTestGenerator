@@ -25,11 +25,23 @@ public class InvariantServiceTest {
         ConstraintViolationException exception = this.invariantValidator
                 .validateInvariantRequest(invariantGeneratorRequest);
 
-        if(exception != null)
+        if (exception != null)
             throw exception;
 
         return invariantGenerator.makeRandomPInvariant(invariantGeneratorRequest.getPlaces(),
                 invariantGeneratorRequest.getTransitions(), invariantGeneratorRequest.isProperty(), InvariantType.P);
+
+    }
+
+    public Invariant TInvariantGeneratorResult(InvariantGeneratorRequest invariantGeneratorRequest) {
+        ConstraintViolationException exception = this.invariantValidator
+                .validateInvariantRequest(invariantGeneratorRequest);
+
+        if (exception != null)
+            throw exception;
+
+        return invariantGenerator.makeRandomTInvariant(invariantGeneratorRequest.getPlaces(),
+                invariantGeneratorRequest.getTransitions(), invariantGeneratorRequest.isProperty(), InvariantType.T);
 
     }
 }
