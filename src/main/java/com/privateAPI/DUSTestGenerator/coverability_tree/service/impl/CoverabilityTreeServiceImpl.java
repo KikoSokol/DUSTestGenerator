@@ -7,6 +7,7 @@ import com.privateAPI.DUSTestGenerator.coverability_tree.dto.mapper.Coverability
 import com.privateAPI.DUSTestGenerator.coverability_tree.genrator.CoverabilityTreeGenerator;
 import com.privateAPI.DUSTestGenerator.coverability_tree.service.CoverabilityTreeService;
 import com.privateAPI.DUSTestGenerator.coverability_tree.validator.CoverabilityTreeValidator;
+import com.privateAPI.DUSTestGenerator.petri_nets.dto.mapper.ReachabilityGraphToPetriNetMapper;
 import org.springframework.stereotype.Service;
 
 import javax.validation.ConstraintViolationException;

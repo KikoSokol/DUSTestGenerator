@@ -49,7 +49,8 @@ public class CoverabilityTreeGenerator
             if(isCorrectCoverabilityTree(coverabilityTreeMakerResult, minVertices, maxVertices))
             {
                 return new CoverabilityTreeGeneratorResult(countOfDeletedCoverabilityTrees,
-                        coverabilityTreeMakerResult.getCoverabilityTree());
+                        coverabilityTreeMakerResult.getCoverabilityTree(),
+                        coverabilityTreeMakerResult.getCoverabilityTreeState());
             }
             else
                 countOfDeletedCoverabilityTrees++;
@@ -75,7 +76,8 @@ public class CoverabilityTreeGenerator
                     generatorRequest.getMaxVertices()))
             {
                 return new CoverabilityTreeGeneratorResult(countOfDeletedCoverabilityTrees,
-                        coverabilityTreeMakerResult.getCoverabilityTree());
+                        coverabilityTreeMakerResult.getCoverabilityTree(),
+                        coverabilityTreeMakerResult.getCoverabilityTreeState());
             }
             else
                 countOfDeletedCoverabilityTrees++;
