@@ -93,7 +93,7 @@ public class ReachabilityGraphGenerator {
             if(isCorrectReachabilityGraph(reachabilityGraphMakerResult, minVertices, maxVertices))
             {
                 return new ReachabilityGraphGeneratorResult(countOfDeletedReachabilityGraphs,
-                        reachabilityGraphMakerResult.getReachabilityGraph());
+                        reachabilityGraphMakerResult.getReachabilityGraph(), reachabilityGraphMakerResult.getState());
             }
             else
                 countOfDeletedReachabilityGraphs++;
@@ -116,7 +116,7 @@ public class ReachabilityGraphGenerator {
             if(isCorrectReachabilityGraph(reachabilityGraphMakerResult, generatorRequest.getMinVertices(), generatorRequest.getMaxVertices()))
             {
                 return new ReachabilityGraphGeneratorResult(countOfDeletedReachabilityGraphs,
-                        reachabilityGraphMakerResult.getReachabilityGraph());
+                        reachabilityGraphMakerResult.getReachabilityGraph(), reachabilityGraphMakerResult.getState());
             }
             else
                 countOfDeletedReachabilityGraphs++;

@@ -28,7 +28,8 @@ public class ReachabilityGraphMapper
     public ReachabilityGraphGeneratorResultDto toReachabilityGraphGeneratorResultDto(ReachabilityGraphGeneratorResult reachabilityGraphGeneratorResult)
     {
         return new ReachabilityGraphGeneratorResultDto(reachabilityGraphGeneratorResult.getCountOfDeletedReachabilityGraphs(),
-                toReachabilityGraphDto(reachabilityGraphGeneratorResult.getReachabilityGraph()));
+                toReachabilityGraphDto(reachabilityGraphGeneratorResult.getReachabilityGraph()),
+                reachabilityGraphGeneratorResult.getState());
     }
 
 
