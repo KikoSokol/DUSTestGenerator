@@ -6,6 +6,10 @@ import com.privateAPI.DUSTestGenerator.coverability_tree.domain.CoverabilityTree
 import com.privateAPI.DUSTestGenerator.objects_for_graph_and_tree.domain.Edge;
 import com.privateAPI.DUSTestGenerator.objects_for_graph_and_tree.domain.EdgeDirection;
 import com.privateAPI.DUSTestGenerator.objects_for_graph_and_tree.domain.Vertex;
+import com.privateAPI.DUSTestGenerator.petri_nets.dto.EdgeDto;
+import com.privateAPI.DUSTestGenerator.petri_nets.dto.PetriNetDto;
+import com.privateAPI.DUSTestGenerator.petri_nets.dto.PlaceDto;
+import com.privateAPI.DUSTestGenerator.petri_nets.dto.TransitionDto;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -112,6 +116,96 @@ public class CoverabilityTreeMaker
         return new CoverabilityTreeMakerResult(CoverabilityTreeState.COMPLETE, coverabilityTree);
 
     }
+
+
+    public CoverabilityTreeMakerResult makeCoverabilityTree(PetriNetDto petriNetDto)
+    {
+        Map<Integer, Vertex> vertexMap = new HashMap<>();
+        List<Integer> examinedVertices = new ArrayList<>();
+
+        int idNewVertex = 1;
+
+        String[] placePositions = getPlacePosition(petriNetDto);
+
+        Vertex firstVertex = createFirstVertexFromPetriNet(petriNetDto, placePositions, idNewVertex);
+        List<Edge> edges = createEdgesFromPetriNet(petriNetDto, placePositions);
+
+        prepareFirstVertex(firstVertex, idNewVertex);
+        vertexMap.put(firstVertex.getId(), firstVertex);
+
+        Vertex examine = getUnexaminedVertex(vertexMap, examinedVertices);
+        while(examine != null)
+        {
+            if(!existsEqualPredecessor(examine, vertexMap))
+            {
+                for(Edge edge : edges)
+                {
+
+                    if(!isTransitionExecutable(edge, examine, petriNetDto, placePositions))
+                        continue;
+
+                    int[] newMarking = computeNewMarking(examine.getMarking(), edge.getMarkingChange());
+                    if(!isCorrectMarking(examine.getMarking(), newMarking))
+                    {
+                        continue;
+                    }
+
+                    idNewVertex++;
+                    Vertex vertex = new Vertex(idNewVertex, newMarking, createPredecessors(examine));
+
+                    Vertex predecessorVertexWithLowerMarking = getPredecessorVertexWithLowerMarking(vertex, vertexMap);
+                    if(predecessorVertexWithLowerMarking != null)
+                    {
+                        addOmegaToMarkingInNewVertex(vertex, predecessorVertexWithLowerMarking);
+                    }
+
+                    EdgeDirection edgeDirection = new EdgeDirection(examine, vertex);
+                    edge.getEdgeDirections().add(edgeDirection);
+                    vertexMap.put(vertex.getId(), vertex);
+
+                }
+            }
+            examinedVertices.add(examine.getId());
+            examine = getUnexaminedVertex(vertexMap, examinedVertices);
+        }
+
+        CoverabilityTree coverabilityTree = new CoverabilityTree(getVertexListFromMap(vertexMap), edges);
+        return new CoverabilityTreeMakerResult(CoverabilityTreeState.COMPLETE, coverabilityTree);
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     private boolean existsEqualPredecessor(Vertex vertex,  Map<Integer, Vertex> vertexMap)
     {
@@ -247,5 +341,105 @@ public class CoverabilityTreeMaker
     private int getCountVertexInVertexMap(Map<Integer,Vertex> vertexMap)
     {
         return vertexMap.keySet().size();
+    }
+
+
+    private String[] getPlacePosition(PetriNetDto petriNetDto)
+    {
+        List<PlaceDto> places = petriNetDto.sortPlaces();
+        List<PlaceDto> staticPlaces = new ArrayList<>();
+        for(PlaceDto placeDto : places)
+        {
+            if(placeDto.isStatic())
+                staticPlaces.add(placeDto);
+        }
+        places.removeAll(staticPlaces);
+
+        String[] positions = new String[places.size()];
+
+        for (int i = 0; i < places.size(); i++)
+        {
+            positions[i] = places.get(i).getId();
+        }
+
+        return positions;
+    }
+
+    private Vertex createFirstVertexFromPetriNet(PetriNetDto petriNetDto, String[] placesPositions, int id)
+    {
+        int[] marking = new int[placesPositions.length];
+
+        for(int i = 0; i < placesPositions.length; i++)
+        {
+            for(PlaceDto placeDto : petriNetDto.getPlaces())
+            {
+                if(placeDto.getId().compareTo(placesPositions[i]) == 0)
+                {
+                    marking[i] = placeDto.getNumberOfTokens();
+                    break;
+                }
+            }
+        }
+
+        return new Vertex(id, marking);
+
+    }
+
+    private List<Edge> createEdgesFromPetriNet(PetriNetDto petriNetDto, String[] placesPositions)
+    {
+        List<Edge> edges = new ArrayList<>();
+
+        for(TransitionDto transitionDto : petriNetDto.getTransitions())
+        {
+            int[] markingChange = new int[placesPositions.length];
+
+            for (int i = 0; i < placesPositions.length; i++)
+            {
+                markingChange[i] = getMarkingChangeForPlace(placesPositions[i], transitionDto.getId(), petriNetDto.getEdges());
+            }
+            edges.add(new Edge(transitionDto.getId(), new ArrayList<>(), markingChange));
+        }
+
+        return edges;
+    }
+
+    private int getMarkingChangeForPlace(String place, String transition, List<EdgeDto> edges)
+    {
+        int fromTransitionToPlace = 0;
+        int fromPlaceToTransition = 0;
+
+        for(EdgeDto edgeDto : edges)
+        {
+            if(edgeDto.getFrom().compareTo(transition) == 0 && edgeDto.getTo().compareTo(place) == 0)
+                fromTransitionToPlace += edgeDto.getWeight();
+            else if(edgeDto.getFrom().compareTo(place) == 0 && edgeDto.getTo().compareTo(transition) == 0)
+                fromPlaceToTransition += edgeDto.getWeight();
+        }
+
+        return fromTransitionToPlace - fromPlaceToTransition;
+    }
+
+    private int getSumWeightOfEdgesFromPlaceToTransition(String place, String transition, List<EdgeDto> edges)
+    {
+        int fromPlaceToTransition = 0;
+
+        for(EdgeDto edgeDto : edges)
+        {
+            if(edgeDto.getFrom().compareTo(place) == 0 && edgeDto.getTo().compareTo(transition) == 0)
+                fromPlaceToTransition += edgeDto.getWeight();
+        }
+
+        return fromPlaceToTransition;
+    }
+
+    private boolean isTransitionExecutable(Edge edge, Vertex vertex, PetriNetDto petriNetDto, String[] placePositions)
+    {
+        for (int i = 0; i < placePositions.length; i++)
+        {
+            int countMarksGetFromPlace = getSumWeightOfEdgesFromPlaceToTransition(placePositions[i], edge.getId(), petriNetDto.getEdges());
+            if(countMarksGetFromPlace > vertex.getMarking()[i])
+                return false;
+        }
+        return true;
     }
 }

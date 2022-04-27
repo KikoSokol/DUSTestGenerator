@@ -3,6 +3,8 @@ package com.privateAPI.DUSTestGenerator.coverability_tree.service.impl;
 import com.privateAPI.DUSTestGenerator.coverability_tree.controller.request.CoverabilityTreeGeneratorRequest;
 import com.privateAPI.DUSTestGenerator.coverability_tree.domain.CoverabilityTree;
 import com.privateAPI.DUSTestGenerator.coverability_tree.domain.CoverabilityTreeGeneratorResult;
+import com.privateAPI.DUSTestGenerator.coverability_tree.domain.CoverabilityTreeMakerResult;
+import com.privateAPI.DUSTestGenerator.coverability_tree.domain.CoverabilityTreeState;
 import com.privateAPI.DUSTestGenerator.coverability_tree.dto.CoverabilityTreeDto;
 import com.privateAPI.DUSTestGenerator.coverability_tree.dto.CoverabilityTreeGeneratorResultDto;
 import com.privateAPI.DUSTestGenerator.coverability_tree.dto.mapper.CoverabilityTreeMapper;
@@ -10,6 +12,7 @@ import com.privateAPI.DUSTestGenerator.coverability_tree.genrator.CoverabilityTr
 import com.privateAPI.DUSTestGenerator.coverability_tree.genrator.CoverabilityTreeMaker;
 import com.privateAPI.DUSTestGenerator.objects_for_graph_and_tree.domain.Edge;
 import com.privateAPI.DUSTestGenerator.objects_for_graph_and_tree.domain.Vertex;
+import com.privateAPI.DUSTestGenerator.petri_nets.dto.PetriNetDto;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -81,6 +84,20 @@ public class CoverabilityTreeServiceTest
                 .generateRandomCoverabilityTree(generatorRequest);
 
         return this.coverabilityTreeMapper.toCoverabilityTreeGeneratorResultDto(result);
+    }
+
+    public CoverabilityTreeDto coverabilityTreeDtoFromPetriNet(PetriNetDto petriNetDto)
+    {
+        CoverabilityTreeMakerResult result = this.coverabilityTreeMaker.makeCoverabilityTree(petriNetDto);
+
+        if(result.getCoverabilityTreeState() == CoverabilityTreeState.COMPLETE)
+        {
+            CoverabilityTree coverabilityTree = result.getCoverabilityTree();
+
+            return this.coverabilityTreeMapper.toCoverabilityTreeDto(coverabilityTree);
+        }
+
+        return null;
     }
 
 
