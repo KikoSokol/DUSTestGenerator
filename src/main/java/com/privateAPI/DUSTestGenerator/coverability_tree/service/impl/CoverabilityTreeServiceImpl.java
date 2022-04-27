@@ -7,6 +7,8 @@ import com.privateAPI.DUSTestGenerator.coverability_tree.dto.mapper.Coverability
 import com.privateAPI.DUSTestGenerator.coverability_tree.genrator.CoverabilityTreeGenerator;
 import com.privateAPI.DUSTestGenerator.coverability_tree.service.CoverabilityTreeService;
 import com.privateAPI.DUSTestGenerator.coverability_tree.validator.CoverabilityTreeValidator;
+import com.privateAPI.DUSTestGenerator.petri_nets.dto.PetriNetDto;
+import com.privateAPI.DUSTestGenerator.petri_nets.dto.mapper.CoverabilityTreeToPetriNetMapper;
 import com.privateAPI.DUSTestGenerator.petri_nets.dto.mapper.ReachabilityGraphToPetriNetMapper;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +21,13 @@ public class CoverabilityTreeServiceImpl implements CoverabilityTreeService
     private final CoverabilityTreeGenerator coverabilityTreeGenerator;
     private final CoverabilityTreeMapper coverabilityTreeMapper;
     private final CoverabilityTreeValidator coverabilityTreeValidator;
+    private final CoverabilityTreeToPetriNetMapper coverabilityTreeToPetriNetMapper;
 
     public CoverabilityTreeServiceImpl(CoverabilityTreeGenerator coverabilityTreeGenerator, CoverabilityTreeValidator coverabilityTreeValidator) {
         this.coverabilityTreeGenerator = coverabilityTreeGenerator;
         this.coverabilityTreeMapper = new CoverabilityTreeMapper();
         this.coverabilityTreeValidator = coverabilityTreeValidator;
+        this.coverabilityTreeToPetriNetMapper = new CoverabilityTreeToPetriNetMapper();
     }
 
     @Override
@@ -36,6 +40,14 @@ public class CoverabilityTreeServiceImpl implements CoverabilityTreeService
             throw exception;
 
         CoverabilityTreeGeneratorResult coverabilityTree = this.coverabilityTreeGenerator.generateRandomCoverabilityTree(coverabilityTreeGeneratorRequest);
-        return this.coverabilityTreeMapper.toCoverabilityTreeGeneratorResultDto(coverabilityTree);
+
+        PetriNetDto petriNetDto = this.coverabilityTreeToPetriNetMapper.calculatePetriNet(coverabilityTree.getCoverabilityTree());
+
+        CoverabilityTreeGeneratorResultDto coverabilityTreeGeneratorResultDto =
+                this.coverabilityTreeMapper.toCoverabilityTreeGeneratorResultDto(coverabilityTree);
+
+        coverabilityTreeGeneratorResultDto.setPetriNetDto(petriNetDto);
+
+        return coverabilityTreeGeneratorResultDto;
     }
 }

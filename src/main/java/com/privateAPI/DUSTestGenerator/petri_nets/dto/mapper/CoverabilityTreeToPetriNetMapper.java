@@ -38,7 +38,7 @@ public class CoverabilityTreeToPetriNetMapper {
         int[] initialMarking =  this.tree.getVertices().get(0).getMarking();
         int placeId = 1;
         for (int marking : initialMarking) {
-            this.petriNet.addPlace(marking, placeId);
+            this.petriNet.addPlace(marking, placeId, false);
             placeId++;
         }
     }

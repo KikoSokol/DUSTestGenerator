@@ -44,6 +44,14 @@ public class CoverabilityTreeGeneratorResultDto
         this.petriNetDto = petriNetDto;
     }
 
+    public CoverabilityTreeState getState() {
+        return state;
+    }
+
+    public void setState(CoverabilityTreeState state) {
+        this.state = state;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
