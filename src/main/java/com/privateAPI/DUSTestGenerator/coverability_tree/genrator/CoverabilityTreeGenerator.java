@@ -129,24 +129,89 @@ public class CoverabilityTreeGenerator
     private List<Edge> generateRandomEdges(int numberOfPlaces, int minCount, int maxCount, int minNumber, int maxNumber)
     {
         Random random = new Random();
-        GenaratorAllCombination genaratorAllCombination = new GenaratorAllCombination(minNumber, maxNumber, numberOfPlaces);
-        genaratorAllCombination.removeCombinationsWithAllPositiveNumbers();
-
         int countEdges = random.nextInt((maxCount + 1) - minCount) + minCount;
-
-        if(genaratorAllCombination.getActualCountOfCombination() < countEdges)
-            countEdges = genaratorAllCombination.getActualCountOfCombination();
-
 
         List<Edge> edges = new ArrayList<>();
 
-        for (int i = 0; i < countEdges; i++)
-        {
-            int[] marking = genaratorAllCombination.getRandomCombinationAndRemove();
-            edges.add(new Edge(i+1, new ArrayList<>(), marking));
+        int allPossibleCountOfEdge = getCountOfAllCombinationWithOneNegativeNumber(minNumber, maxNumber, numberOfPlaces);
+
+        countEdges = Math.min(allPossibleCountOfEdge, countEdges);
+
+        for (int i = 0; i < countEdges; i++) {
+            edges.add(generateRandomEdge(edges, numberOfPlaces,i+1, minNumber, maxNumber));
         }
 
         return edges;
+    }
+
+    private Edge generateRandomEdge(List<Edge> edges, int numberOfPlaces, int id, int minNumber, int maxNumber)
+    {
+        while (true)
+        {
+            Edge edge = generateRandomEdge(id, numberOfPlaces, minNumber, maxNumber);
+            if(isCorrectEdge(edges,edge))
+            {
+                return edge;
+            }
+
+        }
+    }
+
+    private boolean isCorrectEdge(List<Edge> edges, Edge edge)
+    {
+        for(Edge e : edges)
+        {
+            if(isEqualMarkingChange(e.getMarkingChange(), edge.getMarkingChange()))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isEqualMarkingChange(int[] markingChange1, int[] markingChange2)
+    {
+        if(markingChange1.length != markingChange2.length)
+            return false;
+
+        for (int i = 0; i < markingChange1.length; i++)
+        {
+            if(markingChange1[i] != markingChange2[i])
+                return false;
+        }
+
+        return true;
+    }
+
+    private Edge generateRandomEdge(int id, int numberOfPlaces, int minNumber, int maxNumber)
+    {
+        int[] markingChange = getRandomMarkingChange(numberOfPlaces,minNumber,maxNumber);
+        return new Edge(id, new ArrayList<>(), markingChange);
+    }
+
+    private int[] getRandomMarkingChange(int numberOfPlaces, int minToken, int maxToken)
+    {
+        int[] marking = new int[numberOfPlaces];
+        Random random = new Random();
+        int negativeIndex = random.nextInt(numberOfPlaces);
+
+        for (int i = 0; i < numberOfPlaces; i++) {
+            if(i != negativeIndex)
+                marking[i] = random.nextInt((maxToken + 1) - minToken) + minToken;
+            else
+                marking[i] = random.nextInt(-minToken) + minToken;
+        }
+
+        return marking;
+    }
+
+    public static int getCountOfAllCombinationWithOneNegativeNumber(int minNumber, int maxNumber, int length)
+    {
+        int countOfValue =  maxNumber - minNumber + 1;
+        int countOfPositiveNumber = maxNumber + 1;
+        int allCombination = (int) Math.pow(countOfValue, length);
+
+        return allCombination - (int) Math.pow(countOfPositiveNumber, length);
     }
 
 }
