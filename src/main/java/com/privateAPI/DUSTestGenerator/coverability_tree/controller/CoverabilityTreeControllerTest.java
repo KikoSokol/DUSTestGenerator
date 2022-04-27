@@ -57,7 +57,7 @@ public class CoverabilityTreeControllerTest
     }
 
     @CrossOrigin(origins = "https://lubossremanak.site")
-    @PostMapping("generator-with-parameter")
+    @PostMapping("get-coverability-tree-from-petri-net")
     public ResponseEntity getCoverabilityTreeFromPetriNet(@RequestBody PetriNetDto petriNetDto)
     {
         CoverabilityTreeDto coverabilityTree = this.serviceTest.coverabilityTreeDtoFromPetriNet(petriNetDto);
