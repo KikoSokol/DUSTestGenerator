@@ -1,5 +1,7 @@
 package com.privateAPI.DUSTestGenerator.test_generator.service.impl;
 
+import com.privateAPI.DUSTestGenerator.coverability_tree.controller.request.CoverabilityTreeGeneratorRequest;
+import com.privateAPI.DUSTestGenerator.coverability_tree.domain.CoverabilityTreeGeneratorResult;
 import com.privateAPI.DUSTestGenerator.coverability_tree.dto.CoverabilityTreeGeneratorResultDto;
 import com.privateAPI.DUSTestGenerator.coverability_tree.service.CoverabilityTreeService;
 import com.privateAPI.DUSTestGenerator.reachability_graph.controller.request.ReachabilityGraphGeneratorRequest;
@@ -32,5 +34,23 @@ public class MainTestServiceImpl implements MainTestService
                 this.coverabilityTreeService.fromPetriNetToCoverabilityTree(reachabilityGraphResult.getPetriNetDto());
 
         return new GraphAndTreeTaskDto(reachabilityGraphResult.getPetriNetDto(), reachabilityGraphResult, coverabilityTreeResult);
+    }
+
+    public GraphAndTreeTaskDto getCoverabilityTree(CoverabilityTreeGeneratorRequest request) throws ConstraintViolationException
+    {
+        CoverabilityTreeGeneratorResultDto coverabilityTreeResult =
+                this.coverabilityTreeService.generateCoverabilityTree(request); ;
+
+        if(coverabilityTreeResult.getPetriNetDto() == null)
+            System.out.println("nullllllllllllll");
+
+        if(coverabilityTreeResult.getCoverabilityTree() == null)
+            System.out.println("nuuuuulllllll");
+
+        ReachabilityGraphGeneratorResultDto reachabilityTestResult = this.reachabilityGraphService
+                .fromPetriNetToReachabilityGraph(coverabilityTreeResult.getPetriNetDto());
+
+        return new GraphAndTreeTaskDto(coverabilityTreeResult.getPetriNetDto(), reachabilityTestResult, coverabilityTreeResult);
+
     }
 }
