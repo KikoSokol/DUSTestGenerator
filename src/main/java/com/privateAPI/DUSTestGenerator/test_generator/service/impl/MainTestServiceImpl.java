@@ -1,9 +1,12 @@
 package com.privateAPI.DUSTestGenerator.test_generator.service.impl;
 
 import com.privateAPI.DUSTestGenerator.coverability_tree.controller.request.CoverabilityTreeGeneratorRequest;
-import com.privateAPI.DUSTestGenerator.coverability_tree.domain.CoverabilityTreeGeneratorResult;
 import com.privateAPI.DUSTestGenerator.coverability_tree.dto.CoverabilityTreeGeneratorResultDto;
 import com.privateAPI.DUSTestGenerator.coverability_tree.service.CoverabilityTreeService;
+import com.privateAPI.DUSTestGenerator.petri_nets.controller.request.PetriNetGeneratorRequest;
+import com.privateAPI.DUSTestGenerator.petri_nets.dto.DefinitionPTIOM0;
+import com.privateAPI.DUSTestGenerator.petri_nets.dto.PrescriptionPnDto;
+import com.privateAPI.DUSTestGenerator.petri_nets.service.PetriNetService;
 import com.privateAPI.DUSTestGenerator.reachability_graph.controller.request.ReachabilityGraphGeneratorRequest;
 import com.privateAPI.DUSTestGenerator.reachability_graph.dto.ReachabilityGraphGeneratorResultDto;
 import com.privateAPI.DUSTestGenerator.reachability_graph.service.ReachabilityGraphService;
@@ -18,10 +21,12 @@ public class MainTestServiceImpl implements MainTestService
 {
     private final ReachabilityGraphService reachabilityGraphService;
     private final CoverabilityTreeService coverabilityTreeService;
+    private final PetriNetService petriNetService;
 
-    public MainTestServiceImpl(ReachabilityGraphService reachabilityGraphService, CoverabilityTreeService coverabilityTreeService) {
+    public MainTestServiceImpl(ReachabilityGraphService reachabilityGraphService, CoverabilityTreeService coverabilityTreeService, PetriNetService petriNetService) {
         this.reachabilityGraphService = reachabilityGraphService;
         this.coverabilityTreeService = coverabilityTreeService;
+        this.petriNetService = petriNetService;
     }
 
 
@@ -52,5 +57,15 @@ public class MainTestServiceImpl implements MainTestService
 
         return new GraphAndTreeTaskDto(coverabilityTreeResult.getPetriNetDto(), reachabilityTestResult, coverabilityTreeResult);
 
+    }
+
+    public PrescriptionPnDto getPrescriptionPN(PetriNetGeneratorRequest petriNetGeneratorRequest) throws ConstraintViolationException
+    {
+        return this.petriNetService.getRandomPetriNetWithPrescriptionPN(petriNetGeneratorRequest);
+    }
+
+    public DefinitionPTIOM0 getDefinitionPTIOM0(PetriNetGeneratorRequest petriNetGeneratorRequest) throws ConstraintViolationException
+    {
+        return this.petriNetService.getRandomPetriNetWithDefinitionPNIOM0C(petriNetGeneratorRequest);
     }
 }
