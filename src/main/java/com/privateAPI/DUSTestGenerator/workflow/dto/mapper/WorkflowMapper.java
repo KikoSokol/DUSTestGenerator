@@ -1,6 +1,7 @@
 package com.privateAPI.DUSTestGenerator.workflow.dto.mapper;
 
 import com.privateAPI.DUSTestGenerator.reachability_graph.dto.ReachabilityGraphDto;
+import com.privateAPI.DUSTestGenerator.reachability_graph.dto.ReachabilityGraphGeneratorResultDto;
 import com.privateAPI.DUSTestGenerator.reachability_graph.dto.mapper.ReachabilityGraphMapper;
 import com.privateAPI.DUSTestGenerator.workflow.domain.WorkflowResult;
 import com.privateAPI.DUSTestGenerator.workflow.dto.WorkflowResultDto;
@@ -16,8 +17,8 @@ public class WorkflowMapper
 
     public WorkflowResultDto toWorkflowResultDto(WorkflowResult workflowResult)
     {
-        ReachabilityGraphDto reachabilityGraphDto = this.reachabilityGraphMapper
-                .toReachabilityGraphDto(workflowResult.getReachabilityGraph());
+        ReachabilityGraphGeneratorResultDto reachabilityGraphDto = this.reachabilityGraphMapper
+                .toReachabilityGraphGeneratorResultDto(workflowResult.getReachabilityGraph());
 
         return new WorkflowResultDto(workflowResult.getWorkflow(), workflowResult.isCorrect(), reachabilityGraphDto,
                 workflowResult.getReachabilityNet());

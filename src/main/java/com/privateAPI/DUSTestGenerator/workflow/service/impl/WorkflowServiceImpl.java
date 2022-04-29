@@ -1,6 +1,7 @@
 package com.privateAPI.DUSTestGenerator.workflow.service.impl;
 
 import com.privateAPI.DUSTestGenerator.petri_nets.dto.PetriNetDto;
+import com.privateAPI.DUSTestGenerator.reachability_graph.dto.ReachabilityGraphGeneratorResultDto;
 import com.privateAPI.DUSTestGenerator.reachability_graph.service.ReachabilityGraphService;
 import com.privateAPI.DUSTestGenerator.workflow.WorkflowChecker;
 import com.privateAPI.DUSTestGenerator.workflow.controller.request.WorkflowGeneratorRequest;
@@ -43,15 +44,25 @@ public class WorkflowServiceImpl implements WorkflowService
 
         boolean isCorrect = this.workflowChecker.isCorrectWorkflow(workflow);
 
-//        if(!isCorrect)
-//        {
-//            return new WorkflowResultDto(workflow, isCorrect, null, null);
-//        }
+        if(!isCorrect)
+        {
+            return new WorkflowResultDto(workflow, isCorrect, null, null);
+        }
 
 
+        return makeFullWorkflowResult(workflow, isCorrect);
 
-        return new WorkflowResultDto(workflow, isCorrect, null, null);
+    }
 
+    private WorkflowResultDto makeFullWorkflowResult(PetriNetDto workflow, boolean isCorrect)
+    {
+        ReachabilityGraphGeneratorResultDto reachabilityGraph =
+                this.reachabilityGraphService.fromPetriNetToReachabilityGraph(workflow);
+
+//        TODO: pridať funkciu na generovanie sieti dosiahnuteľnosti
+        PetriNetDto reachabilityNet = null;
+
+        return new WorkflowResultDto(workflow, isCorrect, reachabilityGraph, reachabilityNet);
     }
 
 
