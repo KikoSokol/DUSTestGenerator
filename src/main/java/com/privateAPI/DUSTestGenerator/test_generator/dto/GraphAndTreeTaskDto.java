@@ -10,8 +10,8 @@ import lombok.Data;
 @AllArgsConstructor
 public class GraphAndTreeTaskDto
 {
-    private PetriNetDto petriNetDto;
+    private PetriNetDto petriNet;
     private ReachabilityGraphGeneratorResultDto reachabilityGraph;
-    private CoverabilityTreeGeneratorResultDto coverabilityGraph;
+    private CoverabilityTreeGeneratorResultDto coverabilityTree;
 
 }

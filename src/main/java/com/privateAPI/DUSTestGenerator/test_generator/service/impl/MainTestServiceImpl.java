@@ -43,9 +43,9 @@ public class MainTestServiceImpl implements MainTestService
                 this.reachabilityGraphService.getReachabilityGraph(request);
 
         CoverabilityTreeGeneratorResultDto coverabilityTreeResult =
-                this.coverabilityTreeService.fromPetriNetToCoverabilityTree(reachabilityGraphResult.getPetriNetDto());
+                this.coverabilityTreeService.fromPetriNetToCoverabilityTree(reachabilityGraphResult.getPetriNet());
 
-        return new GraphAndTreeTaskDto(reachabilityGraphResult.getPetriNetDto(), reachabilityGraphResult, coverabilityTreeResult);
+        return new GraphAndTreeTaskDto(reachabilityGraphResult.getPetriNet(), reachabilityGraphResult, coverabilityTreeResult);
     }
 
     public GraphAndTreeTaskDto getCoverabilityTree(CoverabilityTreeGeneratorRequest request) throws ConstraintViolationException
@@ -53,16 +53,16 @@ public class MainTestServiceImpl implements MainTestService
         CoverabilityTreeGeneratorResultDto coverabilityTreeResult =
                 this.coverabilityTreeService.generateCoverabilityTree(request); ;
 
-        if(coverabilityTreeResult.getPetriNetDto() == null)
+        if(coverabilityTreeResult.getPetriNet() == null)
             System.out.println("nullllllllllllll");
 
         if(coverabilityTreeResult.getCoverabilityTree() == null)
             System.out.println("nuuuuulllllll");
 
         ReachabilityGraphGeneratorResultDto reachabilityTestResult = this.reachabilityGraphService
-                .fromPetriNetToReachabilityGraph(coverabilityTreeResult.getPetriNetDto());
+                .fromPetriNetToReachabilityGraph(coverabilityTreeResult.getPetriNet());
 
-        return new GraphAndTreeTaskDto(coverabilityTreeResult.getPetriNetDto(), reachabilityTestResult, coverabilityTreeResult);
+        return new GraphAndTreeTaskDto(coverabilityTreeResult.getPetriNet(), reachabilityTestResult, coverabilityTreeResult);
 
     }
 

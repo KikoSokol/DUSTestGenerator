@@ -10,7 +10,7 @@ public class CoverabilityTreeGeneratorResultDto
 {
     private int countOfDeletedCoverabilityTrees;
     private CoverabilityTreeDto coverabilityTree;
-    private PetriNetDto petriNetDto;
+    private PetriNetDto petriNet;
     private CoverabilityTreeState state;
 
     public CoverabilityTreeGeneratorResultDto(int countOfDeletedCoverabilityTrees, CoverabilityTreeDto coverabilityTree,
@@ -36,12 +36,12 @@ public class CoverabilityTreeGeneratorResultDto
         this.coverabilityTree = coverabilityTree;
     }
 
-    public PetriNetDto getPetriNetDto() {
-        return petriNetDto;
+    public PetriNetDto getPetriNet() {
+        return petriNet;
     }
 
-    public void setPetriNetDto(PetriNetDto petriNetDto) {
-        this.petriNetDto = petriNetDto;
+    public void setPetriNet(PetriNetDto petriNet) {
+        this.petriNet = petriNet;
     }
 
     public CoverabilityTreeState getState() {

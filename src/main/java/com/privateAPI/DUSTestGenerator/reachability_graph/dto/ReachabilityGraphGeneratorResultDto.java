@@ -9,7 +9,7 @@ public class ReachabilityGraphGeneratorResultDto
 {
     private int countOfDeletedReachabilityGraphs;
     private ReachabilityGraphDto reachabilityGraph;
-    private PetriNetDto petriNetDto;
+    private PetriNetDto petriNet;
     private ReachabilityGraphState state;
 
     public ReachabilityGraphGeneratorResultDto(int countOfDeletedReachabilityGraphs,
@@ -36,12 +36,12 @@ public class ReachabilityGraphGeneratorResultDto
         this.reachabilityGraph = reachabilityGraph;
     }
 
-    public PetriNetDto getPetriNetDto() {
-        return petriNetDto;
+    public PetriNetDto getPetriNet() {
+        return petriNet;
     }
 
-    public void setPetriNetDto(PetriNetDto petriNetDto) {
-        this.petriNetDto = petriNetDto;
+    public void setPetriNet(PetriNetDto petriNet) {
+        this.petriNet = petriNet;
     }
 
     public ReachabilityGraphState getState() {

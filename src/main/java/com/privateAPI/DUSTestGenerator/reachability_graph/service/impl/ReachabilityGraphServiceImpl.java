@@ -49,7 +49,7 @@ public class ReachabilityGraphServiceImpl implements ReachabilityGraphService
 
         ReachabilityGraphGeneratorResultDto generatorResultDto = this.reachabilityGraphMapper.toReachabilityGraphGeneratorResultDto(generatorResult);
 
-        generatorResultDto.setPetriNetDto(petriNetDto);
+        generatorResultDto.setPetriNet(petriNetDto);
 
         return generatorResultDto;
     }
@@ -70,7 +70,7 @@ public class ReachabilityGraphServiceImpl implements ReachabilityGraphService
         ReachabilityGraphGeneratorResultDto resultDto = new ReachabilityGraphGeneratorResultDto(0, reachabilityGraphDto,
                 result.getState());
 
-        resultDto.setPetriNetDto(petriNetDto);
+        resultDto.setPetriNet(petriNetDto);
 
         return resultDto;
     }

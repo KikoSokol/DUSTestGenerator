@@ -52,7 +52,7 @@ public class CoverabilityTreeServiceImpl implements CoverabilityTreeService
         CoverabilityTreeGeneratorResultDto coverabilityTreeGeneratorResultDto =
                 this.coverabilityTreeMapper.toCoverabilityTreeGeneratorResultDto(coverabilityTree);
 
-        coverabilityTreeGeneratorResultDto.setPetriNetDto(petriNetDto);
+        coverabilityTreeGeneratorResultDto.setPetriNet(petriNetDto);
 
         return coverabilityTreeGeneratorResultDto;
     }
