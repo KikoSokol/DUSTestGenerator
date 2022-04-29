@@ -12,6 +12,9 @@ import com.privateAPI.DUSTestGenerator.reachability_graph.dto.ReachabilityGraphG
 import com.privateAPI.DUSTestGenerator.reachability_graph.service.ReachabilityGraphService;
 import com.privateAPI.DUSTestGenerator.test_generator.dto.GraphAndTreeTaskDto;
 import com.privateAPI.DUSTestGenerator.test_generator.service.MainTestService;
+import com.privateAPI.DUSTestGenerator.workflow.controller.request.WorkflowGeneratorRequest;
+import com.privateAPI.DUSTestGenerator.workflow.dto.WorkflowResultDto;
+import com.privateAPI.DUSTestGenerator.workflow.service.WorkflowService;
 import org.springframework.stereotype.Service;
 
 import javax.validation.ConstraintViolationException;
@@ -22,11 +25,15 @@ public class MainTestServiceImpl implements MainTestService
     private final ReachabilityGraphService reachabilityGraphService;
     private final CoverabilityTreeService coverabilityTreeService;
     private final PetriNetService petriNetService;
+    private final WorkflowService workflowService;
 
-    public MainTestServiceImpl(ReachabilityGraphService reachabilityGraphService, CoverabilityTreeService coverabilityTreeService, PetriNetService petriNetService) {
+    public MainTestServiceImpl(ReachabilityGraphService reachabilityGraphService,
+                               CoverabilityTreeService coverabilityTreeService, PetriNetService petriNetService,
+                               WorkflowService workflowService) {
         this.reachabilityGraphService = reachabilityGraphService;
         this.coverabilityTreeService = coverabilityTreeService;
         this.petriNetService = petriNetService;
+        this.workflowService = workflowService;
     }
 
 
@@ -67,5 +74,15 @@ public class MainTestServiceImpl implements MainTestService
     public DefinitionPTIOM0 getDefinitionPTIOM0(PetriNetGeneratorRequest petriNetGeneratorRequest) throws ConstraintViolationException
     {
         return this.petriNetService.getRandomPetriNetWithDefinitionPNIOM0C(petriNetGeneratorRequest);
+    }
+
+    public WorkflowResultDto getRandomWorkflow(WorkflowGeneratorRequest workflowGeneratorRequest) throws ConstraintViolationException
+    {
+        return this.workflowService.getRandomWorkflow(workflowGeneratorRequest);
+    }
+
+    public WorkflowResultDto getRandomCorrectWorkflow(WorkflowGeneratorRequest workflowGeneratorRequest) throws ConstraintViolationException
+    {
+        return this.workflowService.getRandomCorrectWorkflow(workflowGeneratorRequest);
     }
 }

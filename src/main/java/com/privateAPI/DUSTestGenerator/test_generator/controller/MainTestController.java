@@ -8,6 +8,8 @@ import com.privateAPI.DUSTestGenerator.reachability_graph.controller.request.Rea
 import com.privateAPI.DUSTestGenerator.response.ErrorResponse;
 import com.privateAPI.DUSTestGenerator.test_generator.dto.GraphAndTreeTaskDto;
 import com.privateAPI.DUSTestGenerator.test_generator.service.MainTestService;
+import com.privateAPI.DUSTestGenerator.workflow.controller.request.WorkflowGeneratorRequest;
+import com.privateAPI.DUSTestGenerator.workflow.dto.WorkflowResultDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -76,4 +78,34 @@ public class MainTestController
             return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
+
+    @CrossOrigin(origins = "https://lubossremanak.site")
+    @PostMapping("random-workflow")
+    public ResponseEntity getRandomWorkflow(@RequestBody WorkflowGeneratorRequest request)
+    {
+        try
+        {
+            WorkflowResultDto workflowResultDto = this.mainTestService.getRandomWorkflow(request);
+            return new ResponseEntity<>(workflowResultDto, HttpStatus.OK);
+        } catch (ConstraintViolationException e) {
+            return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    @CrossOrigin(origins = "https://lubossremanak.site")
+    @PostMapping("random-correct-workflow")
+    public ResponseEntity getRandomCorrectWorkflow(@RequestBody WorkflowGeneratorRequest request)
+    {
+        try
+        {
+            WorkflowResultDto workflowResultDto = this.mainTestService.getRandomCorrectWorkflow(request);
+            return new ResponseEntity<>(workflowResultDto, HttpStatus.OK);
+        } catch (ConstraintViolationException e) {
+            return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+    }
+
+
+
+
 }
