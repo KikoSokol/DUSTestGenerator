@@ -19,7 +19,7 @@ public class WorkflowGeneratorRequest
     private int maxTransition;
 
     @Nullable
-    @Min(value = 0, message = "Počet miest musí byť minimálne 0")
+    @Min(value = 0, message = "Počet statických miest musí byť minimálne 0")
     private Integer countStaticPlace;
 
 

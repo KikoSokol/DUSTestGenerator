@@ -54,6 +54,41 @@ public class WorkflowServiceImpl implements WorkflowService
 
     }
 
+    public WorkflowResultDto getRandomCorrectWorkflow(WorkflowGeneratorRequest workflowGeneratorRequest) throws ConstraintViolationException
+    {
+        ConstraintViolationException exception = this.workflowValidator.validateForCorrectWorkflow(workflowGeneratorRequest);
+
+        if(exception != null)
+            throw exception;
+
+        PetriNetDto workflow = null;
+        while (true)
+        {
+            PetriNetDto tmp = this.workflowGenerator.generateRandomWorkflow(workflowGeneratorRequest);
+            if(this.workflowChecker.isCorrectWorkflow(tmp))
+            {
+                workflow = tmp;
+                break;
+            }
+        }
+
+        if(workflowGeneratorRequest.getCountStaticPlace() > 0)
+        {
+            workflow = addStaticPlaceToWorkflow(workflow, workflowGeneratorRequest.getCountStaticPlace());
+        }
+
+        return makeFullWorkflowResult(workflow, true);
+    }
+
+
+    public PetriNetDto addStaticPlaceToWorkflow(PetriNetDto workflow, int count)
+    {
+        if(!this.workflowChecker.isCorrectWorkflow(workflow))
+            return null;
+
+        return this.staticPlacesGenerator.addStaticPlacesToWorkflow(workflow, count);
+    }
+
     private WorkflowResultDto makeFullWorkflowResult(PetriNetDto workflow, boolean isCorrect)
     {
         ReachabilityGraphGeneratorResultDto reachabilityGraph =

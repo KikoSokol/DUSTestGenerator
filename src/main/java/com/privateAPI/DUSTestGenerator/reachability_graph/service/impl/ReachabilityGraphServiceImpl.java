@@ -63,10 +63,16 @@ public class ReachabilityGraphServiceImpl implements ReachabilityGraphService
         ReachabilityGraphDto reachabilityGraphDto = null;
 
         if(result.getState() == ReachabilityGraphState.BOUNDED)
+        {
             reachabilityGraphDto = this.reachabilityGraphMapper.toReachabilityGraphDto(result.getReachabilityGraph());
+        }
 
-        return new ReachabilityGraphGeneratorResultDto(0, reachabilityGraphDto,
+        ReachabilityGraphGeneratorResultDto resultDto = new ReachabilityGraphGeneratorResultDto(0, reachabilityGraphDto,
                 result.getState());
+
+        resultDto.setPetriNetDto(petriNetDto);
+
+        return resultDto;
     }
 
 }

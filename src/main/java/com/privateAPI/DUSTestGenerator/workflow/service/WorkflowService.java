@@ -8,4 +8,5 @@ import javax.validation.ConstraintViolationException;
 public interface WorkflowService
 {
     WorkflowResultDto getRandomWorkflow(WorkflowGeneratorRequest workflowGeneratorRequest) throws ConstraintViolationException;
+    WorkflowResultDto getRandomCorrectWorkflow(WorkflowGeneratorRequest workflowGeneratorRequest) throws ConstraintViolationException;
 }
