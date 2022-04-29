@@ -354,7 +354,7 @@ public class ReachabilityGraphMaker
 
     private String[] getPlacePosition(PetriNetDto petriNetDto)
     {
-        List<PlaceDto> places = petriNetDto.sortPlaces();
+        List<PlaceDto> places = new ArrayList<>(petriNetDto.sortPlaces());
         List<PlaceDto> staticPlaces = new ArrayList<>();
         for(PlaceDto placeDto : places)
         {
