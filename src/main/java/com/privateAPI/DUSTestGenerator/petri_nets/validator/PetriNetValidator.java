@@ -1,7 +1,6 @@
 package com.privateAPI.DUSTestGenerator.petri_nets.validator;
 
 import com.privateAPI.DUSTestGenerator.petri_nets.controller.request.PetriNetGeneratorRequest;
-import com.privateAPI.DUSTestGenerator.reachability_graph.controller.request.ReachabilityGraphGeneratorRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +15,7 @@ public class PetriNetValidator
     @Autowired
     private Validator validator;
 
-    public ConstraintViolationException validatePetriNetGeneratorRequest(PetriNetGeneratorRequest request)
+    public ConstraintViolationException validate(PetriNetGeneratorRequest request)
     {
         Set<ConstraintViolation<PetriNetGeneratorRequest>> violations = this.validator.validate(request);
         StringBuilder sb = new StringBuilder();

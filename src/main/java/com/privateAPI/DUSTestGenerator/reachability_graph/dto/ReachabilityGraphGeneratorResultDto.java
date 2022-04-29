@@ -1,6 +1,7 @@
 package com.privateAPI.DUSTestGenerator.reachability_graph.dto;
 
 import com.privateAPI.DUSTestGenerator.petri_nets.dto.PetriNetDto;
+import com.privateAPI.DUSTestGenerator.reachability_graph.domain.ReachabilityGraphState;
 
 import java.util.Objects;
 
@@ -9,10 +10,14 @@ public class ReachabilityGraphGeneratorResultDto
     private int countOfDeletedReachabilityGraphs;
     private ReachabilityGraphDto reachabilityGraph;
     private PetriNetDto petriNetDto;
+    private ReachabilityGraphState state;
 
-    public ReachabilityGraphGeneratorResultDto(int countOfDeletedReachabilityGraphs, ReachabilityGraphDto reachabilityGraph) {
+    public ReachabilityGraphGeneratorResultDto(int countOfDeletedReachabilityGraphs,
+                                               ReachabilityGraphDto reachabilityGraph,
+                                               ReachabilityGraphState reachabilityGraphState) {
         this.countOfDeletedReachabilityGraphs = countOfDeletedReachabilityGraphs;
         this.reachabilityGraph = reachabilityGraph;
+        this.state = reachabilityGraphState;
     }
 
     public int getCountOfDeletedReachabilityGraphs() {
@@ -37,6 +42,14 @@ public class ReachabilityGraphGeneratorResultDto
 
     public void setPetriNetDto(PetriNetDto petriNetDto) {
         this.petriNetDto = petriNetDto;
+    }
+
+    public ReachabilityGraphState getState() {
+        return state;
+    }
+
+    public void setState(ReachabilityGraphState state) {
+        this.state = state;
     }
 
     @Override

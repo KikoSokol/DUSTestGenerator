@@ -33,7 +33,7 @@ public class CoverabilityTreeMapper
                 getCoverabilityTree());
 
         return new CoverabilityTreeGeneratorResultDto(coverabilityTreeGeneratorResult.getCountOfDeletedCoverabilityTrees(),
-                coverabilityTreeDto);
+                coverabilityTreeDto, coverabilityTreeGeneratorResult.getState());
 
     }
 

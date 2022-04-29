@@ -10,7 +10,9 @@ import com.privateAPI.DUSTestGenerator.petri_nets.validator.PetriNetValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import java.util.Set;
 
 @Service
 public class PetriNetServiceImpl implements PetriNetService
@@ -25,7 +27,7 @@ public class PetriNetServiceImpl implements PetriNetService
     @Override
     public PetriNetDto getRandomPetriNet(PetriNetGeneratorRequest petriNetGeneratorRequest)
     {
-        ConstraintViolationException exception = petriNetValidator.validatePetriNetGeneratorRequest(petriNetGeneratorRequest);
+        ConstraintViolationException exception = petriNetValidator.validate(petriNetGeneratorRequest);
 
         if(exception != null)
             throw exception;
@@ -34,13 +36,26 @@ public class PetriNetServiceImpl implements PetriNetService
     }
 
     @Override
-    public PrescriptionPnDto getRandomPetriNetWithPrescriptionPN(PetriNetGeneratorRequest petriNetGeneratorRequest) {
+    public PrescriptionPnDto getRandomPetriNetWithPrescriptionPN(PetriNetGeneratorRequest petriNetGeneratorRequest) throws ConstraintViolationException
+    {
+        ConstraintViolationException exception = this.petriNetValidator.validate(petriNetGeneratorRequest);
+
+        if(exception != null)
+            throw exception;
+
         PetriNetDto petriNetDto = getRandomPetriNet(petriNetGeneratorRequest);
         return new PrescriptionPnDto(petriNetDto);
     }
 
     @Override
-    public DefinitionPTIOM0 getRandomPetriNetWithDefinitionPNIOM0C(PetriNetGeneratorRequest petriNetGeneratorRequest) {
+    public DefinitionPTIOM0 getRandomPetriNetWithDefinitionPNIOM0C(PetriNetGeneratorRequest petriNetGeneratorRequest) throws ConstraintViolationException
+    {
+
+        ConstraintViolationException exception = this.petriNetValidator.validate(petriNetGeneratorRequest);
+
+        if(exception != null)
+            throw exception;
+
         PetriNetDto petriNetDto = getRandomPetriNet(petriNetGeneratorRequest);
         return new DefinitionPTIOM0(petriNetDto);
     }

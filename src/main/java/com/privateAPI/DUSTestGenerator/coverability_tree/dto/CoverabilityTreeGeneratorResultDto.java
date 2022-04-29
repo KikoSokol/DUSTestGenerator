@@ -1,16 +1,23 @@
 package com.privateAPI.DUSTestGenerator.coverability_tree.dto;
 
 
+import com.privateAPI.DUSTestGenerator.coverability_tree.domain.CoverabilityTreeState;
+import com.privateAPI.DUSTestGenerator.petri_nets.dto.PetriNetDto;
+
 import java.util.Objects;
 
 public class CoverabilityTreeGeneratorResultDto
 {
     private int countOfDeletedCoverabilityTrees;
     private CoverabilityTreeDto coverabilityTree;
+    private PetriNetDto petriNetDto;
+    private CoverabilityTreeState state;
 
-    public CoverabilityTreeGeneratorResultDto(int countOfDeletedCoverabilityTrees, CoverabilityTreeDto coverabilityTree) {
+    public CoverabilityTreeGeneratorResultDto(int countOfDeletedCoverabilityTrees, CoverabilityTreeDto coverabilityTree,
+                                              CoverabilityTreeState coverabilityTreeState) {
         this.countOfDeletedCoverabilityTrees = countOfDeletedCoverabilityTrees;
         this.coverabilityTree = coverabilityTree;
+        this.state = coverabilityTreeState;
     }
 
     public int getCountOfDeletedCoverabilityTrees() {
@@ -27,6 +34,22 @@ public class CoverabilityTreeGeneratorResultDto
 
     public void setCoverabilityTree(CoverabilityTreeDto coverabilityTree) {
         this.coverabilityTree = coverabilityTree;
+    }
+
+    public PetriNetDto getPetriNetDto() {
+        return petriNetDto;
+    }
+
+    public void setPetriNetDto(PetriNetDto petriNetDto) {
+        this.petriNetDto = petriNetDto;
+    }
+
+    public CoverabilityTreeState getState() {
+        return state;
+    }
+
+    public void setState(CoverabilityTreeState state) {
+        this.state = state;
     }
 
     @Override
