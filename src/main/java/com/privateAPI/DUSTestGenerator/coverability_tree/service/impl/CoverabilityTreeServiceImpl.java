@@ -1,7 +1,6 @@
 package com.privateAPI.DUSTestGenerator.coverability_tree.service.impl;
 
 import com.privateAPI.DUSTestGenerator.coverability_tree.controller.request.CoverabilityTreeGeneratorRequest;
-import com.privateAPI.DUSTestGenerator.coverability_tree.domain.CoverabilityTree;
 import com.privateAPI.DUSTestGenerator.coverability_tree.domain.CoverabilityTreeGeneratorResult;
 import com.privateAPI.DUSTestGenerator.coverability_tree.domain.CoverabilityTreeMakerResult;
 import com.privateAPI.DUSTestGenerator.coverability_tree.dto.CoverabilityTreeDto;
@@ -65,8 +64,12 @@ public class CoverabilityTreeServiceImpl implements CoverabilityTreeService
         CoverabilityTreeDto coverabilityTreeDto = this.coverabilityTreeMapper
                 .toCoverabilityTreeDto(coverabilityTree.getCoverabilityTree());
 
+        CoverabilityTreeGeneratorResultDto coverabilityTreeGeneratorResultDto =
+                new CoverabilityTreeGeneratorResultDto(0, coverabilityTreeDto,
+                        coverabilityTree.getCoverabilityTreeState());
 
-        return new CoverabilityTreeGeneratorResultDto(0, coverabilityTreeDto,
-                coverabilityTree.getCoverabilityTreeState());
+        coverabilityTreeGeneratorResultDto.setPetriNet(petriNetDto);
+
+        return coverabilityTreeGeneratorResultDto;
     }
 }
