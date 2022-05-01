@@ -199,7 +199,11 @@ public class ReachabilityGraphWorker
             {
                 Vertex vertexFromSecond = getVertexFromMapById(a, map);
                 if(map.get(vertexFromFirst).containsKey(vertexFromSecond))
+                {
+                    if(map.get(vertexFromSecond).size() > 1)
+                        continue;
                     return true;
+                }
             }
         }
         return false;

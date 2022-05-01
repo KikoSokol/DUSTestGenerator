@@ -116,6 +116,13 @@ public class StaticPlacesGenerator
                                                  int id)
     {
         System.out.println("BB");
+        System.out.println("Paralelne vetvy");
+
+        for(ReachabilityGraphParallelPaths p : parallelPaths)
+        {
+            System.out.println(p.getStartVertex().getId() + " - " + p.getEndVertex().getId());
+        }
+        System.out.println("---");
         this.reachabilityGraphWorker.printMap(vertexMap);
         int positionFromVertex = getPositionVertex(parallelPaths, from.getVertex());
         int positionRandomVertexToStaticPlace = getPositionVertex(parallelPaths, to.getVertex());
@@ -164,16 +171,29 @@ public class StaticPlacesGenerator
         }
         else if(positionFromVertex > -1 && positionRandomVertexToStaticPlace == -1)
         {
+            boolean isChanged = changeParallelPaths(vertexMap, parallelPaths.get(positionFromVertex));
+
             List<String> fromStaticPlaces = getAllMustConnectedWithStaticPlace(vertexMap,
                     parallelPaths.get(positionFromVertex), new ArrayList<>(), null);
+
+            if(isChanged)
+            {
+                fromStaticPlaces = vertexMap.get(from.getVertex()).get(from.getAfterVertex());
+            }
 
             generateAndConnectStaticPlace(workflow, fromStaticPlaces, to.getTransitionsConnectedWithStaticPlace(), id);
         }
         else if(positionFromVertex == -1 && positionRandomVertexToStaticPlace > -1)
         {
+            boolean isChanged = changeParallelPaths(vertexMap, parallelPaths.get(positionRandomVertexToStaticPlace));
+
             List<String> toStaticPlaces = getAllMustConnectedWithStaticPlace(vertexMap,
                     parallelPaths.get(positionRandomVertexToStaticPlace), new ArrayList<>(), null);
 
+            if(isChanged)
+            {
+                toStaticPlaces = vertexMap.get(to.getVertex()).get(to.getAfterVertex());
+            }
             generateAndConnectStaticPlace(workflow, from.getTransitionsConnectedWithStaticPlace(), toStaticPlaces, id);
         }
 
@@ -183,10 +203,48 @@ public class StaticPlacesGenerator
         return workflow; // vymaz a vrat workflow so statickym miestom
     }
 
+    private boolean changeParallelPaths(Map<Vertex, Map<Vertex, List<String>>> vertexMap,
+                                     ReachabilityGraphParallelPaths parallelPaths)
+    {
+        ReachabilityGraphParallelPaths parallelInParallel =
+                computeParallel(vertexMap, parallelPaths.getStartVertex());
+
+        if(parallelInParallel.getEndVertex().getId() <
+                parallelPaths.getEndVertex().getId())
+        {
+            parallelPaths.setEndVertex(parallelInParallel.getEndVertex());
+            return true;
+        }
+        return false;
+    }
+
+    private Vertex getRandomVertexFromParallelPaths(ReachabilityGraph reachabilityGraph, ReachabilityGraphParallelPaths parallelInParallel)
+    {
+        Random random = new Random();
+        int max = parallelInParallel.getEndVertex().getId() - 1;
+        int min = parallelInParallel.getStartVertex().getId();
+        int randomVertexId = random.nextInt((max - min) + 1) + min;
+
+        Vertex randomVertex = null;
+
+        for(Vertex v : reachabilityGraph.getVertices())
+        {
+            if(v.getId() == randomVertexId)
+                randomVertex = v;
+        }
+        return randomVertex;
+    }
+
     private StaticPlaceConnector getFromVertex(ReachabilityGraph reachabilityGraph,
                                               Map<Vertex, Map<Vertex, List<String>>> vertexMap)
     {
         Vertex fromVertex = getRandomVertexFromStaticPlace(reachabilityGraph.getVertices());
+
+//        for(Vertex v : reachabilityGraph.getVertices())
+//        {
+//            if(v.getId() == 2)
+//                fromVertex = v;
+//        }
 
         Map<Vertex, List<String>> nextVertices = vertexMap.get(fromVertex);
         Vertex afterFromVertex = getRandomTransitions(nextVertices);
@@ -207,6 +265,11 @@ public class StaticPlacesGenerator
         {
             randomVertexToStaticPlace = getRandomVertexToPlace(vertexMap, afterFromVertex,
                     this.reachabilityGraphWorker.getLastIdVertex(reachabilityGraph));
+//            for(Vertex v : reachabilityGraph.getVertices())
+//            {
+//                if(v.getId() == 3)
+//                    randomVertexToStaticPlace = v;
+//            }
         }
 
         Map<Vertex, List<String>> nextVerticesToPlace = vertexMap.get(randomVertexToStaticPlace);
