@@ -22,7 +22,7 @@ public class CoverabilityTreeMaker
         Map<Integer, Vertex> vertexMap = new HashMap<>();
         List<Integer> examinedVertices = new ArrayList<>();
 
-        int idNewVertex = 1;
+        int idNewVertex = 0;
         firstVertex = prepareFirstVertex(firstVertex,idNewVertex);
         vertexMap.put(firstVertex.getId(), firstVertex);
 
@@ -69,7 +69,7 @@ public class CoverabilityTreeMaker
         Map<Integer, Vertex> vertexMap = new HashMap<>();
         List<Integer> examinedVertices = new ArrayList<>();
 
-        int idNewVertex = 1;
+        int idNewVertex = 0;
         firstVertex = prepareFirstVertex(firstVertex,idNewVertex);
         vertexMap.put(firstVertex.getId(), firstVertex);
 
@@ -123,7 +123,7 @@ public class CoverabilityTreeMaker
         Map<Integer, Vertex> vertexMap = new HashMap<>();
         List<Integer> examinedVertices = new ArrayList<>();
 
-        int idNewVertex = 1;
+        int idNewVertex = 0;
 
         String[] placePositions = getPlacePosition(petriNetDto);
 
