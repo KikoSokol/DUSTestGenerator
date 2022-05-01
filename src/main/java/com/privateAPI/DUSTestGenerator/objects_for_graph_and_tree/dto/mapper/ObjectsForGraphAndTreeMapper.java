@@ -12,18 +12,23 @@ import java.util.List;
 public class ObjectsForGraphAndTreeMapper
 {
     private final String EDGE_FIRST_WORD = "t";
-    private final String VERTEX_FIRST_WORD = "m";
+    private final String VERTEX_FIRST_WORD_GRAPH = "m";
+    private final String VERTEX_FIRST_WORD_TREE = "v";
 
-    public VertexDto toVertexDto(Vertex vertex)
+    public VertexDto toVertexDto(Vertex vertex, boolean isGraph)
     {
-        return new VertexDto(VERTEX_FIRST_WORD + vertex.getId(), vertex.getMarking(),
-                listIntegerPredecessorsToStringArrayPredecessors(vertex.getPredecessors()));
+        if(isGraph)
+            return new VertexDto(VERTEX_FIRST_WORD_GRAPH + vertex.getId(), vertex.getMarking(),
+                listIntegerPredecessorsToStringArrayPredecessors(vertex.getPredecessors(), isGraph));
+
+        return new VertexDto(VERTEX_FIRST_WORD_TREE + vertex.getId(), vertex.getMarking(),
+                listIntegerPredecessorsToStringArrayPredecessors(vertex.getPredecessors(), isGraph));
     }
 
     public EdgeDirectionDto toEdgeDirectionDto(EdgeDirection edgeDirection)
     {
-        return new EdgeDirectionDto(VERTEX_FIRST_WORD + edgeDirection.getFrom().getId(),
-                VERTEX_FIRST_WORD + edgeDirection.getTo().getId());
+        return new EdgeDirectionDto(VERTEX_FIRST_WORD_GRAPH + edgeDirection.getFrom().getId(),
+                VERTEX_FIRST_WORD_GRAPH + edgeDirection.getTo().getId());
     }
 
     public EdgeDto toEdgeDto(Edge edge)
@@ -42,13 +47,16 @@ public class ObjectsForGraphAndTreeMapper
                 listEdgeDirectionToArrayEdgeDirectionsDto(edge.getEdgeDirections()));
     }
 
-    private String[] listIntegerPredecessorsToStringArrayPredecessors(List<Integer> predecessors)
+    private String[] listIntegerPredecessorsToStringArrayPredecessors(List<Integer> predecessors, boolean isGraph)
     {
         String[] stringPredecessors = new String[predecessors.size()];
 
         for(int i = 0; i < predecessors.size();i++)
         {
-            stringPredecessors[i] = VERTEX_FIRST_WORD + predecessors.get(i);
+            if(isGraph)
+                stringPredecessors[i] = VERTEX_FIRST_WORD_GRAPH + predecessors.get(i);
+            else
+                stringPredecessors[i] = VERTEX_FIRST_WORD_TREE + predecessors.get(i);
         }
 
         return stringPredecessors;

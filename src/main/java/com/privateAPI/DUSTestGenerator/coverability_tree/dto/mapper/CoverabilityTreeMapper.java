@@ -42,7 +42,7 @@ public class CoverabilityTreeMapper
     {
         VertexDto[] vertexDtos = new VertexDto[vertices.size()];
         for (int i = 0; i < vertices.size(); i++) {
-            vertexDtos[i] = graphAndTreeObjectsMapper.toVertexDto(vertices.get(i));
+            vertexDtos[i] = graphAndTreeObjectsMapper.toVertexDto(vertices.get(i), false);
         }
 
         return vertexDtos;
