@@ -11,19 +11,6 @@ import java.util.stream.Collectors;
 public class ReachabilityGraphWorker
 {
 
-//    private Map<Vertex, Map<Vertex, List<String>>> getNextVerticesMap(ReachabilityGraph reachabilityGraph)
-//    {
-//        Map<Vertex, Map<Vertex, List<String>>> possibleTransitionTakeFromStaticPlace = new HashMap<>();
-//
-//        for(Vertex vertex : reachabilityGraph.getVertices())
-//        {
-//            possibleTransitionTakeFromStaticPlace.put(vertex, getNextVertices(reachabilityGraph, vertex));
-//        }
-//        printMap(possibleTransitionTakeFromStaticPlace);
-//        return possibleTransitionTakeFromStaticPlace;
-//    }
-
-
     public Map<Vertex, Map<Vertex, List<String>>> getNextVerticesMap(ReachabilityGraph reachabilityGraph)
     {
         Map<Vertex, Map<Vertex, List<String>>> possibleTransitionTakeFromStaticPlace = new HashMap<>();
@@ -32,7 +19,7 @@ public class ReachabilityGraphWorker
         {
             possibleTransitionTakeFromStaticPlace.put(vertex, getNextVertices(reachabilityGraph, vertex));
         }
-//        printMap(possibleTransitionTakeFromStaticPlace);
+
         return possibleTransitionTakeFromStaticPlace;
     }
 
@@ -363,42 +350,15 @@ public class ReachabilityGraphWorker
         Map<Vertex, List<Vertex>> parallelPaths = getParallelPaths(vertexMap, parallel.getStartVertex());
         parallelPaths = removeVerticesFromPaths(parallelPaths, parallel.getEndVertex());
 
-//        Map<Vertex, List<Vertex>> p = this.reachabilityGraphWorker.getParallelPaths(vertexMap, vertex);
-//        p = this.reachabilityGraphWorker.removeVerticesFromPaths(p, parallelPaths.get(0).getEndVertex());
-        for(Vertex v : parallelPaths.keySet())
-        {
-            System.out.print(v.getId() + ": ");
-            for(Vertex l : parallelPaths.get(v))
-            {
-                System.out.print(l.getId() + ", ");
-            }
-            System.out.println();
-        }
-
         List<Vertex> vertices = parallelPaths.keySet().stream().map(Vertex::new).collect(Collectors.toList());
 
         for(int i = 0; i < parallelPaths.size(); i++)
         {
             List<Vertex> basePathVertices = parallelPaths.get(vertices.get(i));
-//            System.out.println("Base vertices");
-//            for(Vertex pr : basePathVertices)
-//            {
-//                System.out.print(pr.getId() + ", ");
-//            }
-//            System.out.println();
+
             List<List<String>> baseTransitions = getTransitionsOnPath(vertexMap, vertices.get(i),
                     basePathVertices);
 
-//            System.out.println("Base transitions");
-//            System.out.print(vertices.get(i).getId() + ":  ");
-//            for(List<String> o : baseTransitions)
-//            {
-//                for(String p : o)
-//                {
-//                    System.out.print(p + ", ");
-//                }
-//                System.out.println();
-//            }
             for(int a = i + 1; a < parallelPaths.size(); a++)
             {
 
