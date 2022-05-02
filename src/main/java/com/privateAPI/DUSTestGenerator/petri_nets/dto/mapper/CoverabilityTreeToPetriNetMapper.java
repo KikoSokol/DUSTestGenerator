@@ -48,7 +48,7 @@ public class CoverabilityTreeToPetriNetMapper {
      */
     private void calculateTransitions () {
         for(Edge graphEdge : this.tree.getEdges()) {
-            this.petriNet.addTransition(graphEdge.getId());
+            this.petriNet.addTransitionWithNameSameAsId(graphEdge.getId());
         }
     }
 

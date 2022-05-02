@@ -6,12 +6,24 @@ import lombok.Data;
 import java.util.Objects;
 
 @Data
-@AllArgsConstructor
 public class TransitionDto {
     private String id;
+    private String name;
 
     public TransitionDto () {
         this.id = "";
+    }
+
+    public TransitionDto(String id)
+    {
+        this.id = id;
+        this.name = id;
+    }
+
+    public TransitionDto(String id, String name)
+    {
+        this.id = id;
+        this.name = name;
     }
 
 
@@ -20,11 +32,11 @@ public class TransitionDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TransitionDto that = (TransitionDto) o;
-        return getId().equals(that.getId());
+        return getId().equals(that.getId()) && getName().equals(that.getName());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId());
+        return Objects.hash(getId(), getName());
     }
 }

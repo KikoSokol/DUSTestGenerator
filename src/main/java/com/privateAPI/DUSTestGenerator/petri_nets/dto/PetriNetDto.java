@@ -19,12 +19,17 @@ public class PetriNetDto {
         this.edges = new ArrayList<>();
     }
 
-    public void addTransition (TransitionDto transition) {
+    public void addTransition(TransitionDto transition) {
         this.transitions.add(transition);
     }
 
-    public void addTransition (String transitionId) {
+    public void addTransitionWithNameSameAsId(String transitionId) {
         TransitionDto transition = new TransitionDto("t" + transitionId);
+        this.transitions.add(transition);
+    }
+
+    public void addTransitionWithNameDifferentAsId(String transitionId, String name) {
+        TransitionDto transition = new TransitionDto("t" + transitionId, name);
         this.transitions.add(transition);
     }
 

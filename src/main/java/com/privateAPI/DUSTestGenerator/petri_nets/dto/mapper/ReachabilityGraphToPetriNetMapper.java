@@ -50,7 +50,7 @@ public class ReachabilityGraphToPetriNetMapper {
      */
     private void calculateTransitions () {
         for(Edge graphEdge : this.graph.getEdges()) {
-            this.petriNet.addTransition(graphEdge.getId());
+            this.petriNet.addTransitionWithNameSameAsId(graphEdge.getId());
         }
     }
 
