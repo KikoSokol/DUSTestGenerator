@@ -55,7 +55,7 @@ public class PrescriptionPnDto
         stringBuilder.append("{");
         for (TransitionDto transition : this.petriNet.getTransitions())
         {
-            stringBuilder.append(transition.getId());
+            stringBuilder.append(transition.getName());
             stringBuilder.append(", ");
         }
 
@@ -197,7 +197,7 @@ public class PrescriptionPnDto
     {
         StringBuilder stringBuilder = new StringBuilder();
 
-        stringBuilder.append(transition.getId());
+        stringBuilder.append(transition.getName());
         stringBuilder.append("• = {");
 
         List<String> places = new ArrayList<>();
@@ -222,7 +222,7 @@ public class PrescriptionPnDto
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.append("•");
-        stringBuilder.append(transition.getId());
+        stringBuilder.append(transition.getName());
         stringBuilder.append(" = {");
 
 
