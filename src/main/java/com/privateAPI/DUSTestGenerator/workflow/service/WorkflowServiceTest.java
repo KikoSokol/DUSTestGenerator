@@ -1,9 +1,11 @@
 package com.privateAPI.DUSTestGenerator.workflow.service;
 
+import com.privateAPI.DUSTestGenerator.reachability_graph.generator.ReachabilityGraphMaker;
 import com.privateAPI.DUSTestGenerator.workflow.WorkflowChecker;
 import com.privateAPI.DUSTestGenerator.workflow.controller.request.WorkflowGeneratorRequest;
 import com.privateAPI.DUSTestGenerator.petri_nets.dto.PetriNetDto;
 import com.privateAPI.DUSTestGenerator.workflow.generator.WorkflowGenerator;
+import com.privateAPI.DUSTestGenerator.workflow.reachability_net.ReachabilityGraphToReachabilityNet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +18,13 @@ public class WorkflowServiceTest
 
     private final WorkflowChecker workflowChecker;
 
+    private final ReachabilityGraphToReachabilityNet reachabilityNet;
+
     @Autowired
     public WorkflowServiceTest(WorkflowGenerator workflowGenerator) {
         this.workflowGenerator = workflowGenerator;
         this.workflowChecker = new WorkflowChecker();
+        this.reachabilityNet = new ReachabilityGraphToReachabilityNet();
     }
 
     public PetriNetDto getRandomWorkflow(WorkflowGeneratorRequest workflowGeneratorRequest)

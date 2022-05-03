@@ -1,6 +1,7 @@
 package com.privateAPI.DUSTestGenerator.workflow.controller;
 
 import com.privateAPI.DUSTestGenerator.workflow.controller.request.WorkflowGeneratorRequest;
+import com.privateAPI.DUSTestGenerator.workflow.reachability_net.ReachabilityGraphToReachabilityNet;
 import com.privateAPI.DUSTestGenerator.workflow.service.WorkflowServiceTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
