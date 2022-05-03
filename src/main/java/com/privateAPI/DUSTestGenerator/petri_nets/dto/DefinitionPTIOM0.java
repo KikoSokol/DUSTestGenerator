@@ -44,7 +44,7 @@ public class DefinitionPTIOM0
         stringBuilder.append("{");
         for (TransitionDto transition : this.petriNet.getTransitions())
         {
-            stringBuilder.append(transition.getId());
+            stringBuilder.append(transition.getName());
             stringBuilder.append(", ");
         }
 

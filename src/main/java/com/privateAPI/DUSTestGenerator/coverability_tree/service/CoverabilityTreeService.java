@@ -2,8 +2,10 @@ package com.privateAPI.DUSTestGenerator.coverability_tree.service;
 
 import com.privateAPI.DUSTestGenerator.coverability_tree.controller.request.CoverabilityTreeGeneratorRequest;
 import com.privateAPI.DUSTestGenerator.coverability_tree.dto.CoverabilityTreeGeneratorResultDto;
+import com.privateAPI.DUSTestGenerator.petri_nets.dto.PetriNetDto;
 
 public interface CoverabilityTreeService
 {
     CoverabilityTreeGeneratorResultDto generateCoverabilityTree(CoverabilityTreeGeneratorRequest coverabilityTreeGeneratorRequest);
+    CoverabilityTreeGeneratorResultDto fromPetriNetToCoverabilityTree(PetriNetDto petriNetDto);
 }

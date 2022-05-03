@@ -6,10 +6,13 @@ public class CoverabilityTreeGeneratorResult
 {
     private int countOfDeletedCoverabilityTrees;
     private CoverabilityTree coverabilityTree;
+    private CoverabilityTreeState state;
 
-    public CoverabilityTreeGeneratorResult(int countOfDeletedCoverabilityTrees, CoverabilityTree coverabilityTree) {
+    public CoverabilityTreeGeneratorResult(int countOfDeletedCoverabilityTrees, CoverabilityTree coverabilityTree,
+                                           CoverabilityTreeState coverabilityTreeState) {
         this.countOfDeletedCoverabilityTrees = countOfDeletedCoverabilityTrees;
         this.coverabilityTree = coverabilityTree;
+        this.state = coverabilityTreeState;
     }
 
     public int getCountOfDeletedCoverabilityTrees() {
@@ -26,6 +29,14 @@ public class CoverabilityTreeGeneratorResult
 
     public void setCoverabilityTree(CoverabilityTree coverabilityTree) {
         this.coverabilityTree = coverabilityTree;
+    }
+
+    public CoverabilityTreeState getState() {
+        return state;
+    }
+
+    public void setState(CoverabilityTreeState state) {
+        this.state = state;
     }
 
     @Override

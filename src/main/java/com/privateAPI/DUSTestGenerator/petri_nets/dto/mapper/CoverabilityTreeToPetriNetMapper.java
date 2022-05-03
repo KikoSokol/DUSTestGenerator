@@ -1,20 +1,20 @@
 package com.privateAPI.DUSTestGenerator.petri_nets.dto.mapper;
 
-import com.privateAPI.DUSTestGenerator.petri_nets.dto.PetriNetDto;
-import com.privateAPI.DUSTestGenerator.petri_nets.dto.Loop;
+import com.privateAPI.DUSTestGenerator.coverability_tree.domain.CoverabilityTree;
 import com.privateAPI.DUSTestGenerator.objects_for_graph_and_tree.domain.Edge;
 import com.privateAPI.DUSTestGenerator.objects_for_graph_and_tree.domain.EdgeDirection;
-import com.privateAPI.DUSTestGenerator.reachability_graph.domain.ReachabilityGraph;
+import com.privateAPI.DUSTestGenerator.petri_nets.dto.Loop;
+import com.privateAPI.DUSTestGenerator.petri_nets.dto.PetriNetDto;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReachabilityGraphToPetriNetMapper {
-    private ReachabilityGraph graph;
+public class CoverabilityTreeToPetriNetMapper {
+    private CoverabilityTree tree;
     private PetriNetDto petriNet;
 
-    public PetriNetDto calculatePetriNet (ReachabilityGraph graph) {
-        this.graph = graph;
+    public PetriNetDto calculatePetriNet (CoverabilityTree tree) {
+        this.tree = tree;
         this.petriNet = new PetriNetDto();
 
         this.startCalculation();
@@ -35,7 +35,7 @@ public class ReachabilityGraphToPetriNetMapper {
      * calculation of PLACES
      */
     private void calculatePlaces () {
-        int[] initialMarking =  this.graph.getVertices().get(0).getMarking();
+        int[] initialMarking =  this.tree.getVertices().get(0).getMarking();
         int placeId = 1;
         for (int marking : initialMarking) {
             this.petriNet.addPlace(marking, placeId, false);
@@ -43,13 +43,11 @@ public class ReachabilityGraphToPetriNetMapper {
         }
     }
 
-
-
     /**
      * calculation of TRANSITIONS
      */
     private void calculateTransitions () {
-        for(Edge graphEdge : this.graph.getEdges()) {
+        for(Edge graphEdge : this.tree.getEdges()) {
             this.petriNet.addTransitionWithNameSameAsId(graphEdge.getId());
         }
     }
@@ -60,7 +58,7 @@ public class ReachabilityGraphToPetriNetMapper {
      * calculation of EDGES
      */
     private void calculateEdges () {
-        for(Edge edge : this.graph.getEdges()) {
+        for(Edge edge : this.tree.getEdges()) {
             List<Loop> allLoops = this.calculateAllLoops(edge);
             this.calculateEdges(edge, allLoops);
         }
@@ -161,10 +159,6 @@ public class ReachabilityGraphToPetriNetMapper {
         int[] markingChange = edge.getMarkingChange();
         List<Loop> loops = this.getPotentialLoops(markingChange);
         List<EdgeDirection> directions = edge.getEdgeDirections();
-
-        if (directions == null || directions.isEmpty()) {
-            return new ArrayList<Loop>();
-        }
 
         for (EdgeDirection edgeDirection : directions) {
             if (loops.isEmpty()) {

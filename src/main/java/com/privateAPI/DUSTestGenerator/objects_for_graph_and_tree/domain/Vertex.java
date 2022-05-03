@@ -31,6 +31,13 @@ public class Vertex
         this.predecessors = predecessors;
     }
 
+    public Vertex(Vertex vertex)
+    {
+        this.id = vertex.getId();
+        this.marking = vertex.getMarking();
+        this.predecessors = vertex.getPredecessors();
+    }
+
     public void addPredecessors(int id)
     {
         this.predecessors.add(id);

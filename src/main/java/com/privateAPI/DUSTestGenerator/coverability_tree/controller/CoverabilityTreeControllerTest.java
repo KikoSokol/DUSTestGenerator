@@ -4,6 +4,7 @@ import com.privateAPI.DUSTestGenerator.coverability_tree.controller.request.Cove
 import com.privateAPI.DUSTestGenerator.coverability_tree.dto.CoverabilityTreeDto;
 import com.privateAPI.DUSTestGenerator.coverability_tree.dto.CoverabilityTreeGeneratorResultDto;
 import com.privateAPI.DUSTestGenerator.coverability_tree.service.impl.CoverabilityTreeServiceTest;
+import com.privateAPI.DUSTestGenerator.petri_nets.dto.PetriNetDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -54,4 +55,15 @@ public class CoverabilityTreeControllerTest
 
         return new ResponseEntity<>(coverabilityTree, HttpStatus.OK);
     }
+
+    @CrossOrigin(origins = "https://lubossremanak.site")
+    @PostMapping("get-coverability-tree-from-petri-net")
+    public ResponseEntity getCoverabilityTreeFromPetriNet(@RequestBody PetriNetDto petriNetDto)
+    {
+        CoverabilityTreeDto coverabilityTree = this.serviceTest.coverabilityTreeDtoFromPetriNet(petriNetDto);
+//        CoverabilityTreeDto coverabilityTreeDto = coverabilityTree.getCoverabilityTree();
+
+        return new ResponseEntity<>(coverabilityTree, HttpStatus.OK);
+    }
+
 }

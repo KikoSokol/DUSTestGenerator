@@ -6,10 +6,13 @@ public class ReachabilityGraphGeneratorResult
 {
     private int countOfDeletedReachabilityGraphs;
     private ReachabilityGraph reachabilityGraph;
+    private ReachabilityGraphState state;
 
-    public ReachabilityGraphGeneratorResult(int countOfDeletedReachabilityGraphs, ReachabilityGraph reachabilityGraph) {
+    public ReachabilityGraphGeneratorResult(int countOfDeletedReachabilityGraphs, ReachabilityGraph reachabilityGraph,
+                                            ReachabilityGraphState reachabilityGraphState) {
         this.countOfDeletedReachabilityGraphs = countOfDeletedReachabilityGraphs;
         this.reachabilityGraph = reachabilityGraph;
+        this.state = reachabilityGraphState;
     }
 
     public int getCountOfDeletedReachabilityGraphs() {
@@ -26,6 +29,14 @@ public class ReachabilityGraphGeneratorResult
 
     public void setReachabilityGraph(ReachabilityGraph reachabilityGraph) {
         this.reachabilityGraph = reachabilityGraph;
+    }
+
+    public ReachabilityGraphState getState() {
+        return state;
+    }
+
+    public void setState(ReachabilityGraphState state) {
+        this.state = state;
     }
 
     @Override

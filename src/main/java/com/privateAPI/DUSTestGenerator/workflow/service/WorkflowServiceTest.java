@@ -4,6 +4,8 @@ import com.privateAPI.DUSTestGenerator.reachability_graph.generator.Reachability
 import com.privateAPI.DUSTestGenerator.workflow.WorkflowChecker;
 import com.privateAPI.DUSTestGenerator.workflow.controller.request.WorkflowGeneratorRequest;
 import com.privateAPI.DUSTestGenerator.petri_nets.dto.PetriNetDto;
+import com.privateAPI.DUSTestGenerator.workflow.generator.ComplementaryPlaceMaker;
+import com.privateAPI.DUSTestGenerator.workflow.generator.StaticPlacesGenerator;
 import com.privateAPI.DUSTestGenerator.workflow.generator.WorkflowGenerator;
 import com.privateAPI.DUSTestGenerator.workflow.reachability_net.ReachabilityGraphToReachabilityNet;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +20,18 @@ public class WorkflowServiceTest
 
     private final WorkflowChecker workflowChecker;
 
+    private final StaticPlacesGenerator staticPlacesGenerator;
+
+    private final ComplementaryPlaceMaker complementaryPlaceMaker;
+
     private final ReachabilityGraphToReachabilityNet reachabilityNet;
 
     @Autowired
     public WorkflowServiceTest(WorkflowGenerator workflowGenerator) {
         this.workflowGenerator = workflowGenerator;
         this.workflowChecker = new WorkflowChecker();
+        this.staticPlacesGenerator = new StaticPlacesGenerator();
+        this.complementaryPlaceMaker = new ComplementaryPlaceMaker();
         this.reachabilityNet = new ReachabilityGraphToReachabilityNet();
     }
 
@@ -55,6 +63,17 @@ public class WorkflowServiceTest
         }
 
         return petriNetDto;
+    }
+
+
+    public PetriNetDto addStaticPlaces(PetriNetDto workflow)
+    {
+        return this.staticPlacesGenerator.addStaticPlacesToWorkflow(workflow, 1);
+    }
+
+    public PetriNetDto addComplementaryPlaces(PetriNetDto workflow)
+    {
+        return this.complementaryPlaceMaker.makeComplementaryPlaces(workflow);
     }
 
     public PetriNetDto getReachabilityNetFromWorkflow(PetriNetDto petriNetDto)
