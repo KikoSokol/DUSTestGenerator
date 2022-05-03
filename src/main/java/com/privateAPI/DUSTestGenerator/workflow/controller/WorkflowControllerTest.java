@@ -35,4 +35,11 @@ public class WorkflowControllerTest
     {
         return new ResponseEntity<>(this.workflowServiceTest.addStaticPlaces(workflow), HttpStatus.OK);
     }
+
+    @CrossOrigin(origins = "https://lubossremanak.site")
+    @PostMapping("add-complementary-places")
+    public ResponseEntity addComplementaryPlaces(@RequestBody PetriNetDto workflow)
+    {
+        return new ResponseEntity<>(this.workflowServiceTest.addComplementaryPlaces(workflow), HttpStatus.OK);
+    }
 }
