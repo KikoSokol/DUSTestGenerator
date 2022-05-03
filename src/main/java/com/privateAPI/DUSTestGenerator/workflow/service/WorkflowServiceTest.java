@@ -56,4 +56,10 @@ public class WorkflowServiceTest
 
         return petriNetDto;
     }
+
+    public PetriNetDto getReachabilityNetFromWorkflow(PetriNetDto petriNetDto)
+    {
+        PetriNetDto reachabilityNet = this.reachabilityNet.ReachabilityGraphToReachabilityNet(petriNetDto);
+        return reachabilityNet;
+    }
 }
