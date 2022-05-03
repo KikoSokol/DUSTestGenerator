@@ -7,90 +7,83 @@ import java.util.List;
 import java.util.Random;
 
 import static java.lang.Math.abs;
-import static java.lang.Math.log;
 
 @Component
 public class InvariantMaker {
-
-    //PRE T INVARIANT
-//    int maxNumOfParameters = place - 1;
-//        if (maxNumOfParameters > place / 2) {
-//        maxNumOfParameters = place / 2;
-//    }
-//    int minNumOfParameters = (place > transition) ? place - transition : 1;
-//    int bound = maxNumOfParameters - minNumOfParameters;
-//        if(bound <1)//mozem toto<<<<????
-//    bound = 1;
-//    int numberOfParameters = random.nextInt(bound) + minNumOfParameters; //chyba- 3,3 bound je zaporne/ 0
-//    double[][] PInvariant = new double[place][numberOfParameters];
-//    boolean biggerParam = false;
-//    ArrayList<Integer> possibleParametersIndexes = new ArrayList<>();
-//        for (int i = 0; i < place; i++) {
-//        possibleParametersIndexes.add(i);
-//    }
-
     public double[][] generateTInvariant(int place, int transition, ArrayList<Integer> parametersIndexes) {
-        Random random = new Random();
         double[][] invariant = declareInvariant(place, transition);
+        ArrayList<Integer> possibleParametersIndexes = fillPossibleIndexes(invariant.length);
+
+        findParamIndexes(parametersIndexes, possibleParametersIndexes, invariant[0].length);
+
         boolean biggerParam = false;
-        ArrayList<Integer> possibleParametersIndexes = new ArrayList<>();
-        for (int i = 0; i < invariant.length; i++) {
-            possibleParametersIndexes.add(i);
-        }
-        for (int i = 0; i < invariant[0].length; i++) {
-            int generatedIndex = random.nextInt(possibleParametersIndexes.size());
-            parametersIndexes.add(possibleParametersIndexes.get(generatedIndex));
-            possibleParametersIndexes.remove(generatedIndex);
-        }
+
         for (int i = 0; i < invariant.length; i++) {
             if (parametersIndexes.contains(i)) {
-                int paramVal = 1;
-                if (!biggerParam) {
-                    paramVal = random.nextInt(3) + 1;
-                    if (paramVal != 1)
-                        biggerParam = true;
-                }
-                invariant[i][parametersIndexes.indexOf(i)] = paramVal;
+
+                invariant[i][parametersIndexes.indexOf(i)] = fillInvariantParam(biggerParam);
+                if (invariant[i][parametersIndexes.indexOf(i)] != 1)
+                    biggerParam = true;
 
             } else {
-
-                for (int j = 0; j < invariant[0].length; j++) {
-                    invariant[i][j] = random.nextInt(6) - 3;
-                }
+                fillInvariant(invariant, i);
             }
         }
         return invariant;
     }
 
-
-    public double[][] generatePInvariant(int place, int transition, ArrayList<Integer> parametersIndexes) {
-        Random random = new Random();
-        double[][] invariant = declareInvariant(transition, place);
-        boolean biggerParam = false;
+    private ArrayList<Integer> fillPossibleIndexes(int length) {
         ArrayList<Integer> possibleParametersIndexes = new ArrayList<>();
-        for (int i = 0; i < invariant.length; i++) {
+        for (int i = 0; i < length; i++) {
             possibleParametersIndexes.add(i);
         }
-        for (int i = 0; i < invariant[0].length; i++) {
+        return possibleParametersIndexes;
+    }
+
+    private void findParamIndexes(ArrayList<Integer> parametersIndexes, ArrayList<Integer> possibleParametersIndexes,
+                                  int length) {
+        Random random = new Random();
+        for (int i = 0; i < length; i++) {
             int generatedIndex = random.nextInt(possibleParametersIndexes.size());
             parametersIndexes.add(possibleParametersIndexes.get(generatedIndex));
             possibleParametersIndexes.remove(generatedIndex);
         }
+    }
+
+    public double fillInvariantParam(boolean biggerParam){
+        Random random = new Random();
+        int paramVal = 1;
+        if (!biggerParam) {
+            paramVal = random.nextInt(3) + 1;
+        }
+        return paramVal;
+    }
+    private void fillInvariant(double[][] invariant, int i) {
+        Random random = new Random();
+
+        for (int j = 0; j < invariant[0].length; j++) {
+            invariant[i][j] = random.nextInt(6) - 3;
+        }
+    }
+
+    public double[][] generatePInvariant(int place, int transition, ArrayList<Integer> parametersIndexes) {
+        double[][] invariant = declareInvariant(transition, place);
+        ArrayList<Integer> possibleParametersIndexes = fillPossibleIndexes(invariant.length);
+
+        findParamIndexes(parametersIndexes, possibleParametersIndexes, invariant[0].length);
+
+        boolean biggerParam = false;
+
         for (int i = 0; i < invariant.length; i++) {
             if (parametersIndexes.contains(i)) {
-                int paramVal = 1;
-                if (!biggerParam) {
-                    paramVal = random.nextInt(3) + 1;
-                    if (paramVal != 1)
-                        biggerParam = true;
-                }
-                invariant[i][parametersIndexes.indexOf(i)] = paramVal;
+
+                invariant[i][parametersIndexes.indexOf(i)] = fillInvariantParam(biggerParam);
+                if (invariant[i][parametersIndexes.indexOf(i)] != 1)
+                    biggerParam = true;
 
             } else {
                 do {
-                    for (int j = 0; j < invariant[0].length; j++) {
-                        invariant[i][j] = random.nextInt(6) - 3;
-                    }
+                    fillInvariant(invariant, i);
                 } while (notNullInRow(invariant[i]));
             }
         }
@@ -112,84 +105,44 @@ public class InvariantMaker {
         return new double[cMatrixCol][numberOfParameters];
     }
 
-    private boolean notNullInRow(double[] InvariantRow) {
-        for (double val : InvariantRow) {
-            if (val != 0)
-                return false;
-        }
-        return true;
-    }
-
-    //PRE T INVARIANT
-
-//    Random random = new Random();
-//
-//    int maxNullRows = Math.min(place, transition);
-//    int numNullRowsInInvariant = random.nextInt(maxNullRows) + 1;
-//
-//    int maxNumOfParameters = place - numNullRowsInInvariant;
-//        if (maxNumOfParameters > place / 2) {
-//        maxNumOfParameters = place / 2;
-//    }
-//    int minNumOfParameters = (place > transition) ? place - transition : 0;
-//    int boundForNumOfParameters = maxNumOfParameters - minNumOfParameters + 1;
-//    int numberOfParameters = random.nextInt(boundForNumOfParameters) + minNumOfParameters;
-//    boolean biggerParam = false;
-//        if (numberOfParameters < 1)
-//            return new double[place][1];
-//
-//    double[][] PInvariant = new double[place][numberOfParameters];
-//    ArrayList<Integer> possibleParametersIndexes = new ArrayList<>();
-//
-//        for (int colId = 0; colId < place; colId++) {
-//        possibleParametersIndexes.add(colId);
-//    }
-
-
     public double[][] generateFalsePInvariant(int place, int transition, ArrayList<Integer> parametersIndexes) {
         Random random = new Random();
 
-        int maxNullRows = Math.min(place, transition);
-        int numNullRowsInInvariant = random.nextInt(maxNullRows) + 1;
+        int numNullRowsInInvariant = random.nextInt(Math.min(place, transition)) + 1;
 
         int numberOfParameters = randomNumberOfParameters(transition, place, numNullRowsInInvariant);
         if (numberOfParameters < 1)
             return new double[transition][1];
+
         double[][] invariant = new double[place][numberOfParameters];
+
+        ArrayList<Integer> possibleParametersIndexes = fillPossibleIndexes(invariant.length);
+        findParamIndexes(parametersIndexes, possibleParametersIndexes, invariant[0].length);
+        removeParamIndexes(possibleParametersIndexes, numNullRowsInInvariant);
+
         boolean biggerParam = false;
-        ArrayList<Integer> possibleParametersIndexes = new ArrayList<>();
 
-        for (int colId = 0; colId < invariant.length; colId++) {
-            possibleParametersIndexes.add(colId);
-        }
+        for (int i = 0; i < invariant.length; i++) {
+            if (parametersIndexes.contains(i)) {
 
-        for (int i = 0; i < invariant[0].length; i++) {
-            int generatedIndex = random.nextInt(possibleParametersIndexes.size());
-            parametersIndexes.add(possibleParametersIndexes.get(generatedIndex));
-            possibleParametersIndexes.remove(generatedIndex);
+                invariant[i][parametersIndexes.indexOf(i)] = fillInvariantParam(biggerParam);
+                if (invariant[i][parametersIndexes.indexOf(i)] != 1)
+                    biggerParam = true;
+
+            } else {
+                if (!possibleParametersIndexes.contains(i))
+                    fillInvariant(invariant, i);
+            }
         }
+        return invariant;
+    }
+
+    private void removeParamIndexes(ArrayList<Integer> possibleParametersIndexes, int numNullRowsInInvariant) {
+        Random random = new Random();
 
         while (possibleParametersIndexes.size() > numNullRowsInInvariant) {
             possibleParametersIndexes.remove(random.nextInt(possibleParametersIndexes.size()));
         }
-
-        for (int i = 0; i < invariant.length; i++) {
-            if (parametersIndexes.contains(i)) {
-                int paramVal = 1;
-                if (!biggerParam) {
-                    paramVal = random.nextInt(3) + 1;
-                    if (paramVal != 1)
-                        biggerParam = true;
-                }
-                invariant[i][parametersIndexes.indexOf(i)] = paramVal;
-            } else {
-                if (!possibleParametersIndexes.contains(i))
-                    for (int j = 0; j < invariant[0].length; j++) {
-                        invariant[i][j] = random.nextInt(6) - 3;
-                    }
-            }
-        }
-        return invariant;
     }
 
     private int randomNumberOfParameters(int cMatrixRow, int cMatrixCol, int numNullRowsInInvariant) {
@@ -205,7 +158,6 @@ public class InvariantMaker {
     }
 
     public double[][] calculateAndTransposeMatrixC(int matrixCRow, double[][] invariant, ArrayList<Integer> parametersIndexes) {
-
         double[][] matrixC = transposeMatrix(calculateMatrixC(matrixCRow, invariant, parametersIndexes));
         printMatrix(matrixC, "transpose: ");
 
@@ -305,7 +257,6 @@ public class InvariantMaker {
     private void mixRows(double[][] matrixC) {
         Random random = new Random();
 
-        //POZOR!! nech sa ten isty neodcita od seba
         int editRows = random.nextInt(matrixC.length) + 1;
         for (int editRow = 0; editRow < editRows; editRow++) {
             int rowCombination = random.nextInt(4) + 1;
@@ -318,15 +269,19 @@ public class InvariantMaker {
                     matrixC[editRow][col] += matrixC[row][col] * multiplicity;
                     if (abs(matrixC[editRow][col]) > 15) {
                         matrixC[editRow] = rowValues.clone();
+                        break;
                     }
                 }
+
+                if (notNullInRow(matrixC[editRow]))
+                    matrixC[editRow] = rowValues.clone();
             }
         }
     }
 
-
     private void makeRowsNotNull(double[][] matrixC) {
         Random random = new Random();
+
         List<Integer> nullRows = new ArrayList<>();
         List<Integer> notNullRows = new ArrayList<>();
         exploreRows(matrixC, nullRows, notNullRows);
@@ -405,16 +360,19 @@ public class InvariantMaker {
 
     private int matrixHasNullRows(double[][] matrixC) {
         int nullRows = 0;
-        for (double[] rows : matrixC) {
-            int sum = 0;
-            for (double val : rows) {
-                sum += val;
-                if (sum > 0)
-                    break;
-            }
-            if (sum == 0)
+        for (double[] row : matrixC) {
+            if (notNullInRow(row))
                 nullRows++;
         }
         return nullRows;
     }
+
+    private boolean notNullInRow(double[] row) {
+        for (double val : row) {
+            if (val != 0)
+                return false;
+        }
+        return true;
+    }
 }
+
