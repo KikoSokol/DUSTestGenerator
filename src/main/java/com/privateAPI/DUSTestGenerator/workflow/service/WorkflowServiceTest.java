@@ -1,9 +1,9 @@
 package com.privateAPI.DUSTestGenerator.workflow.service;
 
-import com.privateAPI.DUSTestGenerator.reachability_graph.generator.ReachabilityGraphMaker;
+import com.privateAPI.DUSTestGenerator.petri_nets.dto.PetriNetDto;
 import com.privateAPI.DUSTestGenerator.workflow.WorkflowChecker;
 import com.privateAPI.DUSTestGenerator.workflow.controller.request.WorkflowGeneratorRequest;
-import com.privateAPI.DUSTestGenerator.petri_nets.dto.PetriNetDto;
+import com.privateAPI.DUSTestGenerator.workflow.domain.ReachabilityNetResult;
 import com.privateAPI.DUSTestGenerator.workflow.generator.ComplementaryPlaceMaker;
 import com.privateAPI.DUSTestGenerator.workflow.generator.StaticPlacesGenerator;
 import com.privateAPI.DUSTestGenerator.workflow.generator.WorkflowGenerator;
@@ -76,9 +76,8 @@ public class WorkflowServiceTest
         return this.complementaryPlaceMaker.makeComplementaryPlaces(workflow);
     }
 
-    public PetriNetDto getReachabilityNetFromWorkflow(PetriNetDto petriNetDto)
+    public ReachabilityNetResult getReachabilityNetFromWorkflow(PetriNetDto petriNetDto)
     {
-        PetriNetDto reachabilityNet = this.reachabilityNet.ReachabilityGraphToReachabilityNet(petriNetDto);
-        return reachabilityNet;
+        return this.reachabilityNet.ReachabilityGraphToReachabilityNet(petriNetDto);
     }
 }

@@ -21,6 +21,6 @@ public class WorkflowMapper
                 .toReachabilityGraphGeneratorResultDto(workflowResult.getReachabilityGraph());
 
         return new WorkflowResultDto(workflowResult.getWorkflow(), workflowResult.isCorrect(), reachabilityGraphDto,
-                workflowResult.getReachabilityNet());
+                workflowResult.getReachabilityNetResult());
     }
 }

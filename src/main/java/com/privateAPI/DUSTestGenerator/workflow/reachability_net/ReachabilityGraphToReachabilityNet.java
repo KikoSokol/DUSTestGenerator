@@ -1,34 +1,37 @@
 package com.privateAPI.DUSTestGenerator.workflow.reachability_net;
 
-import com.privateAPI.DUSTestGenerator.objects_for_graph_and_tree.domain.Edge;
-import com.privateAPI.DUSTestGenerator.objects_for_graph_and_tree.domain.EdgeDirection;
-import com.privateAPI.DUSTestGenerator.objects_for_graph_and_tree.domain.Vertex;
-import com.privateAPI.DUSTestGenerator.petri_nets.dto.*;
+import com.privateAPI.DUSTestGenerator.petri_nets.dto.EdgeDto;
+import com.privateAPI.DUSTestGenerator.petri_nets.dto.PetriNetDto;
+import com.privateAPI.DUSTestGenerator.petri_nets.dto.PlaceDto;
+import com.privateAPI.DUSTestGenerator.petri_nets.dto.TransitionDto;
 import com.privateAPI.DUSTestGenerator.reachability_graph.domain.ReachabilityGraph;
 import com.privateAPI.DUSTestGenerator.reachability_graph.domain.ReachabilityGraphMakerResult;
 import com.privateAPI.DUSTestGenerator.reachability_graph.generator.ReachabilityGraphMaker;
 import com.privateAPI.DUSTestGenerator.workflow.WorkflowChecker;
+import com.privateAPI.DUSTestGenerator.workflow.domain.ReachabilityNetResult;
+import com.privateAPI.DUSTestGenerator.workflow.generator.ComplementaryPlaceMaker;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class ReachabilityGraphToReachabilityNet {
     private ReachabilityGraphMaker reachabilityGraphMaker;
     private WorkflowChecker workflowChecker;
+    private ComplementaryPlaceMaker complementaryPlaceMaker;
     private ReachabilityGraph reachabilityGraph;
     private PetriNetDto workflow;
     private PetriNetDto reachabilityNet;
 
-    public PetriNetDto ReachabilityGraphToReachabilityNet(PetriNetDto petriNetDto) {
-        this.workflow = petriNetDto;
-        this.reachabilityNet = new PetriNetDto();
+    public ReachabilityNetResult ReachabilityGraphToReachabilityNet(PetriNetDto petriNetDto) {
         this.reachabilityGraphMaker = new ReachabilityGraphMaker();
         this.workflowChecker = new WorkflowChecker();
+        this.complementaryPlaceMaker = new ComplementaryPlaceMaker();
+        this.workflow = this.complementaryPlaceMaker.makeComplementaryPlaces(petriNetDto);
+        this.reachabilityNet = new PetriNetDto();
         this.reachabilityGraph = createReachabilityGraphFromWorkflow();
         this.startCalculation();
+        this.addStaticPlacesToReachabilityNet();
 
-        return this.reachabilityNet;
+        return new ReachabilityNetResult(this.workflow, this.reachabilityNet);
     }
 
     public ReachabilityGraph createReachabilityGraphFromWorkflow(){
@@ -137,6 +140,110 @@ public class ReachabilityGraphToReachabilityNet {
         }
 
     }
+
+
+    private void addStaticPlacesToReachabilityNet()
+    {
+        List<PlaceDto> staticPlaces = getStaticPlaces(this.workflow);
+
+        if(staticPlaces.size() == 0)
+            return;
+
+        for(PlaceDto staticPlace : staticPlaces)
+        {
+            PlaceDto staticPlaceNet = new PlaceDto(staticPlace.getNumberOfTokens(), staticPlace.getId(), true);
+            List<String> toTransitions = getToTransitions(staticPlace);
+            List<String> fromTransition = getFromTransitions(staticPlace);
+
+            List<EdgeDto> edgesToTransitions = getEdgesFromStaticPlaceToTransitionsInNet(staticPlaceNet, toTransitions);
+            List<EdgeDto> edgesFromTransitions = getEdgesToStaticPlaceFromTransitionsInNet(staticPlaceNet, fromTransition);
+
+            this.reachabilityNet.getPlaces().add(staticPlaceNet);
+            this.reachabilityNet.getEdges().addAll(edgesToTransitions);
+            this.reachabilityNet.getEdges().addAll(edgesFromTransitions);
+        }
+    }
+
+    private List<PlaceDto> getStaticPlaces(PetriNetDto workflow)
+    {
+        List<PlaceDto> staticPlaces = new ArrayList<>();
+
+        for(PlaceDto placeDto : workflow.getPlaces())
+        {
+            if(placeDto.isStatic())
+                staticPlaces.add(placeDto);
+        }
+
+        return staticPlaces;
+    }
+
+    private List<String> getToTransitions(PlaceDto staticPlace)
+    {
+        List<String> toTransitions = new ArrayList<>();
+
+        for(EdgeDto edgeDto : this.workflow.getEdges())
+        {
+            if(edgeDto.getFrom().compareTo(staticPlace.getId()) == 0)
+            {
+                toTransitions.add(edgeDto.getTo());
+            }
+        }
+
+        return toTransitions;
+    }
+
+    private List<String> getFromTransitions(PlaceDto staticPlace)
+    {
+        List<String> fromTransitions = new ArrayList<>();
+
+        for(EdgeDto edgeDto : this.workflow.getEdges())
+        {
+            if(edgeDto.getTo().compareTo(staticPlace.getId()) == 0)
+            {
+                fromTransitions.add(edgeDto.getFrom());
+            }
+        }
+
+        return fromTransitions;
+    }
+
+    private List<EdgeDto> getEdgesFromStaticPlaceToTransitionsInNet(PlaceDto staticPlace, List<String> toTransitions)
+    {
+        List<EdgeDto> edges = new ArrayList<>();
+
+        for(String toTransition : toTransitions)
+        {
+            for(TransitionDto transitionDto : this.reachabilityNet.getTransitions())
+            {
+                if(toTransition.compareTo(transitionDto.getName()) == 0)
+                {
+                    edges.add(new EdgeDto(staticPlace.getId(), transitionDto.getId(), 1));
+                }
+            }
+        }
+
+        return edges;
+    }
+
+
+    private List<EdgeDto> getEdgesToStaticPlaceFromTransitionsInNet(PlaceDto staticPlace, List<String> fromTransitions)
+    {
+        List<EdgeDto> edges = new ArrayList<>();
+
+        for(String fromTransition : fromTransitions)
+        {
+            for(TransitionDto transitionDto : this.reachabilityNet.getTransitions())
+            {
+                if(fromTransition.compareTo(transitionDto.getName()) == 0)
+                {
+                    edges.add(new EdgeDto(transitionDto.getId(), staticPlace.getId(), 1));
+                }
+            }
+        }
+
+        return edges;
+    }
+
 }
 
 

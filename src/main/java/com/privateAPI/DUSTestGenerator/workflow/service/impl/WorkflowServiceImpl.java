@@ -5,6 +5,7 @@ import com.privateAPI.DUSTestGenerator.reachability_graph.dto.ReachabilityGraphG
 import com.privateAPI.DUSTestGenerator.reachability_graph.service.ReachabilityGraphService;
 import com.privateAPI.DUSTestGenerator.workflow.WorkflowChecker;
 import com.privateAPI.DUSTestGenerator.workflow.controller.request.WorkflowGeneratorRequest;
+import com.privateAPI.DUSTestGenerator.workflow.domain.ReachabilityNetResult;
 import com.privateAPI.DUSTestGenerator.workflow.dto.WorkflowResultDto;
 import com.privateAPI.DUSTestGenerator.workflow.generator.StaticPlacesGenerator;
 import com.privateAPI.DUSTestGenerator.workflow.generator.WorkflowGenerator;
@@ -97,7 +98,7 @@ public class WorkflowServiceImpl implements WorkflowService
 //        TODO: pridať funkciu na generovanie sieti dosiahnuteľnosti
         PetriNetDto reachabilityNet = null;
 
-        return new WorkflowResultDto(workflow, isCorrect, reachabilityGraph, reachabilityNet);
+        return new WorkflowResultDto(workflow, isCorrect, reachabilityGraph, new ReachabilityNetResult(null, null));
     }
 
 
