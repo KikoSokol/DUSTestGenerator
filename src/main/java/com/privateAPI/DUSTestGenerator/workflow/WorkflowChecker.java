@@ -127,6 +127,8 @@ public class WorkflowChecker
     {
         for(PlaceDto placeDto : allPlaces)
         {
+            if(placeDto.isStatic())
+                continue;
             if(placeDto.equals(inputPlace) && placeDto.getNumberOfTokens() != 1)
             {
                 return false;
