@@ -10,7 +10,7 @@ import java.util.Arrays;
 @AllArgsConstructor
 
 public class Invariant {
-    private double[][] invariant;
+    private String[] invariant;
     private PetriNetDto petriNet;
     private InvariantType invariantType;
 

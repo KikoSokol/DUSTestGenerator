@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 import static java.lang.Math.abs;
@@ -373,6 +374,32 @@ public class InvariantMaker {
                 return false;
         }
         return true;
+    }
+
+    public String[] invariantToString(double[][] invariant_double) {
+        char[] alphabet =  {'a', 'b','c', 'd','e', 'f','g', 'h','i', 'j','k', 'l','m', 'n','o', 'p','q', 'r','s', 't','u', 'v','w', 'x','y', 'z' };
+        printMatrix(invariant_double, "Inv");
+        String[] invariant = new String[invariant_double.length];
+        for (int row = 0; row < invariant_double.length; row++) {
+            boolean first = true;
+            StringBuilder val = new StringBuilder();
+            for (int param = 0; param < invariant_double[0].length; param++) {
+                if(invariant_double[row][param] != 0){
+                    if(first){
+                        first = false;
+                    }
+                    else {
+                        if(invariant_double[row][param] > 0)
+                            val.append("+");
+                    }
+                    val.append((int)invariant_double[row][param]);
+                    val.append(alphabet[param]);
+                }
+            }
+            invariant[row] = (Objects.equals(String.valueOf(val), ""))? "0" :  String.valueOf(val);
+
+        }
+        return invariant;
     }
 }
 

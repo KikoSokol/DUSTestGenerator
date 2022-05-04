@@ -32,10 +32,11 @@ public class InvariantGenerator {
 
     public Invariant makeRandomPInvariant(int place, int transition, boolean limitedness, InvariantType type) {
         ArrayList<Integer> parametersIndexes = new ArrayList<>();
-        double[][] invariant = (limitedness) ?
+        double[][] invariant_double = (limitedness) ?
                 invariantMaker.generatePInvariant(place, transition, parametersIndexes) :
                 invariantMaker.generateFalsePInvariant(place, transition, parametersIndexes);
-        double[][] cMatrix = invariantMaker.calculateAndTransposeMatrixC(transition, invariant, parametersIndexes);
+        double[][] cMatrix = invariantMaker.calculateAndTransposeMatrixC(transition, invariant_double, parametersIndexes);
+        String[] invariant = invariantMaker.invariantToString(invariant_double);
         PetriNetDto petriNet = incidentalMatrixToPetriNet.calculatePetriNet(cMatrix);
         return new Invariant(invariant, petriNet, type);
     }
@@ -43,10 +44,11 @@ public class InvariantGenerator {
 
     public Invariant makeRandomTInvariant(int place, int transition, boolean reversibility, InvariantType type) {
         ArrayList<Integer> parametersIndexes = new ArrayList<>();
-        double[][] invariant = (reversibility) ?
+        double[][] invariant_double = (reversibility) ?
                 invariantMaker.generateTInvariant(place, transition, parametersIndexes) :
                 new double[transition][1];
-        double[][] cMatrix = invariantMaker.calculateMatrixC(place, invariant, parametersIndexes);
+        double[][] cMatrix = invariantMaker.calculateMatrixC(place, invariant_double, parametersIndexes);
+        String[] invariant = invariantMaker.invariantToString(invariant_double);
         PetriNetDto petriNet = incidentalMatrixToPetriNet.calculatePetriNet(cMatrix);
         return new Invariant(invariant, petriNet, type);
     }
