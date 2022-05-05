@@ -9,6 +9,7 @@ import com.privateAPI.DUSTestGenerator.workflow.domain.ReachabilityNetResult;
 import com.privateAPI.DUSTestGenerator.workflow.dto.WorkflowResultDto;
 import com.privateAPI.DUSTestGenerator.workflow.generator.StaticPlacesGenerator;
 import com.privateAPI.DUSTestGenerator.workflow.generator.WorkflowGenerator;
+import com.privateAPI.DUSTestGenerator.workflow.reachability_net.ReachabilityGraphToReachabilityNet;
 import com.privateAPI.DUSTestGenerator.workflow.service.WorkflowService;
 import com.privateAPI.DUSTestGenerator.workflow.validator.WorkflowValidator;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ public class WorkflowServiceImpl implements WorkflowService
     private final StaticPlacesGenerator staticPlacesGenerator;
     private final WorkflowValidator workflowValidator;
     private final ReachabilityGraphService reachabilityGraphService;
+    private final ReachabilityGraphToReachabilityNet reachabilityNetMaker;
 
     public WorkflowServiceImpl(WorkflowGenerator workflowGenerator, WorkflowValidator workflowValidator, ReachabilityGraphService reachabilityGraphService) {
         this.workflowGenerator = workflowGenerator;
@@ -30,6 +32,7 @@ public class WorkflowServiceImpl implements WorkflowService
         this.reachabilityGraphService = reachabilityGraphService;
         this.workflowChecker = new WorkflowChecker();
         this.staticPlacesGenerator = new StaticPlacesGenerator();
+        this.reachabilityNetMaker = new ReachabilityGraphToReachabilityNet();
     }
 
     public WorkflowResultDto getRandomWorkflow(WorkflowGeneratorRequest workflowGeneratorRequest) throws ConstraintViolationException
@@ -95,10 +98,15 @@ public class WorkflowServiceImpl implements WorkflowService
         ReachabilityGraphGeneratorResultDto reachabilityGraph =
                 this.reachabilityGraphService.fromPetriNetToReachabilityGraph(workflow);
 
-//        TODO: pridať funkciu na generovanie sieti dosiahnuteľnosti
-        PetriNetDto reachabilityNet = null;
+        if(!isCorrect)
+            return new WorkflowResultDto(workflow, isCorrect, null, null);
 
-        return new WorkflowResultDto(workflow, isCorrect, reachabilityGraph, new ReachabilityNetResult(null, null));
+        ReachabilityNetResult reachabilityNetResult =
+                this.reachabilityNetMaker.ReachabilityGraphToReachabilityNet(workflow);
+
+
+
+        return new WorkflowResultDto(workflow, isCorrect, reachabilityGraph, reachabilityNetResult);
     }
 
 
