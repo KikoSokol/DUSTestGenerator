@@ -48,7 +48,7 @@ public class IncidentalMatrixToPetriNet {
      */
     private void calculateTransitions() {
         for (int transitionId = 0; transitionId < this.c[0].length; transitionId++) {
-            this.petriNet.addTransition(transitionId + "");
+            this.petriNet.addTransitionWithNameSameAsId(transitionId + "");
         }
     }
 
