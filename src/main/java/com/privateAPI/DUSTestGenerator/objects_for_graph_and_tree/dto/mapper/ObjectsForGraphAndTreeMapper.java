@@ -25,13 +25,20 @@ public class ObjectsForGraphAndTreeMapper
                 listIntegerPredecessorsToStringArrayPredecessors(vertex.getPredecessors(), isGraph));
     }
 
-    public EdgeDirectionDto toEdgeDirectionDto(EdgeDirection edgeDirection)
+    public EdgeDirectionDto toEdgeDirectionDto(EdgeDirection edgeDirection, boolean isGraph)
     {
-        return new EdgeDirectionDto(VERTEX_FIRST_WORD_GRAPH + edgeDirection.getFrom().getId(),
-                VERTEX_FIRST_WORD_GRAPH + edgeDirection.getTo().getId());
+        if(isGraph)
+        {
+            return new EdgeDirectionDto(VERTEX_FIRST_WORD_GRAPH + edgeDirection.getFrom().getId(),
+                    VERTEX_FIRST_WORD_GRAPH + edgeDirection.getTo().getId());
+        }
+
+        return new EdgeDirectionDto(VERTEX_FIRST_WORD_TREE + edgeDirection.getFrom().getId(),
+                VERTEX_FIRST_WORD_TREE + edgeDirection.getTo().getId());
+
     }
 
-    public EdgeDto toEdgeDto(Edge edge)
+    public EdgeDto toEdgeDto(Edge edge, boolean isGraph)
     {
         String id;
 
@@ -44,7 +51,7 @@ public class ObjectsForGraphAndTreeMapper
         }
 
         return new EdgeDto(id,
-                listEdgeDirectionToArrayEdgeDirectionsDto(edge.getEdgeDirections()));
+                listEdgeDirectionToArrayEdgeDirectionsDto(edge.getEdgeDirections(), isGraph));
     }
 
     private String[] listIntegerPredecessorsToStringArrayPredecessors(List<Integer> predecessors, boolean isGraph)
@@ -62,13 +69,13 @@ public class ObjectsForGraphAndTreeMapper
         return stringPredecessors;
     }
 
-    private EdgeDirectionDto[] listEdgeDirectionToArrayEdgeDirectionsDto(List<EdgeDirection> edgeDirections)
+    private EdgeDirectionDto[] listEdgeDirectionToArrayEdgeDirectionsDto(List<EdgeDirection> edgeDirections, boolean isGraph)
     {
         EdgeDirectionDto[] edgeDirectionDtos = new EdgeDirectionDto[edgeDirections.size()];
 
         for(int i = 0; i < edgeDirections.size();i++)
         {
-            edgeDirectionDtos[i] = this.toEdgeDirectionDto(edgeDirections.get(i));
+            edgeDirectionDtos[i] = this.toEdgeDirectionDto(edgeDirections.get(i), isGraph);
         }
 
         return edgeDirectionDtos;

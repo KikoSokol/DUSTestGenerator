@@ -47,7 +47,7 @@ public class ReachabilityGraphMapper
     {
         EdgeDto[] edgesDtos = new EdgeDto[edges.size()];
         for (int i = 0; i < edges.size(); i++) {
-            edgesDtos[i] = graphAndTreeObjectsMapper.toEdgeDto(edges.get(i));
+            edgesDtos[i] = graphAndTreeObjectsMapper.toEdgeDto(edges.get(i), true);
         }
 
         return edgesDtos;
