@@ -15,18 +15,30 @@ import java.util.*;
 public class WorkflowGenerator {
     public PetriNetDto generateRandomWorkflow(WorkflowGeneratorRequest request)
     {
-        PlaceDto inputPlace = new PlaceDto(1, "INPUT", false);
-        PlaceDto outputPlace = new PlaceDto(0, "OUTPUT", false);
+        List<PlaceDto> places = generatePlaces(request.getMinPlaces(), request.getMaxPlaces());
+        List<TransitionDto> transitions = generateTransitions(request.getMinTransition(), request.getMaxTransition());
 
-        TransitionDto afterInputPlaceTransition = new TransitionDto("IT");
-        TransitionDto beforeOutputPlaceTransition = new TransitionDto("OT");
+        System.out.println("Len places: " + places.size());
+        PlaceDto inputPlace = getRandomPlaceFromList(places);
+        places.remove(inputPlace);
+        inputPlace.setNumberOfTokens(1);
+        PlaceDto outputPlace = getRandomPlaceFromList(places);
+        places.remove(outputPlace);
+        System.out.println("Len places: " + places.size());
+
+
+        System.out.println("Len transitions: " + transitions.size());
+        TransitionDto afterInputPlaceTransition = getRandomTransitionFromList(transitions);
+        transitions.remove(afterInputPlaceTransition);
+        TransitionDto beforeOutputPlaceTransition = getRandomTransitionFromList(transitions);
+        transitions.remove(beforeOutputPlaceTransition);
+        System.out.println("Len transitions: " + transitions.size());
 
         List<EdgeDto> edges = new ArrayList<>();
         edges.add(new EdgeDto(inputPlace.getId(), afterInputPlaceTransition.getId(), 1));
         edges.add(new EdgeDto(beforeOutputPlaceTransition.getId(), outputPlace.getId(), 1));
 
-        List<PlaceDto> places = generatePlaces(request.getMinPlaces(), request.getMaxPlaces());
-        List<TransitionDto> transitions = generateTransitions(request.getMinTransition(), request.getMaxTransition());
+
 
 
         edges = connectWorkflow(edges, afterInputPlaceTransition, places, transitions, beforeOutputPlaceTransition,
@@ -291,6 +303,8 @@ public class WorkflowGenerator {
         Random random = new Random();
         int countOfPlaces = random.nextInt((maxPlaces + 1) - minPlaces) + minPlaces;
 
+        countOfPlaces += 2;
+
         char name = 97;
         for (int i = 0; i < countOfPlaces; i++) {
             PlaceDto place = new PlaceDto(0, "" + name, false);
@@ -307,6 +321,8 @@ public class WorkflowGenerator {
         Random random = new Random();
         int countOfTransitions = random.nextInt((maxTransition + 1) - minTransition) + minTransition;
 
+        countOfTransitions += 2;
+
         char name = 65;
         for (int i = 0; i < countOfTransitions; i++) {
             transitions.add(new TransitionDto("" + name));
@@ -314,6 +330,20 @@ public class WorkflowGenerator {
         }
 
         return transitions;
+    }
+
+    private PlaceDto getRandomPlaceFromList(List<PlaceDto> places)
+    {
+        Random random = new Random();
+
+        return places.get(random.nextInt(places.size()));
+    }
+
+    private TransitionDto getRandomTransitionFromList(List<TransitionDto> transitions)
+    {
+        Random random = new Random();
+
+        return transitions.get(random.nextInt(transitions.size()));
     }
 
 }
