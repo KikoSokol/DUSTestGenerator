@@ -18,27 +18,21 @@ public class WorkflowGenerator {
         List<PlaceDto> places = generatePlaces(request.getMinPlaces(), request.getMaxPlaces());
         List<TransitionDto> transitions = generateTransitions(request.getMinTransition(), request.getMaxTransition());
 
-        System.out.println("Len places: " + places.size());
         PlaceDto inputPlace = getRandomPlaceFromList(places);
         places.remove(inputPlace);
         inputPlace.setNumberOfTokens(1);
         PlaceDto outputPlace = getRandomPlaceFromList(places);
         places.remove(outputPlace);
-        System.out.println("Len places: " + places.size());
 
 
-        System.out.println("Len transitions: " + transitions.size());
         TransitionDto afterInputPlaceTransition = getRandomTransitionFromList(transitions);
         transitions.remove(afterInputPlaceTransition);
         TransitionDto beforeOutputPlaceTransition = getRandomTransitionFromList(transitions);
         transitions.remove(beforeOutputPlaceTransition);
-        System.out.println("Len transitions: " + transitions.size());
 
         List<EdgeDto> edges = new ArrayList<>();
         edges.add(new EdgeDto(inputPlace.getId(), afterInputPlaceTransition.getId(), 1));
         edges.add(new EdgeDto(beforeOutputPlaceTransition.getId(), outputPlace.getId(), 1));
-
-
 
 
         edges = connectWorkflow(edges, afterInputPlaceTransition, places, transitions, beforeOutputPlaceTransition,
@@ -107,7 +101,6 @@ public class WorkflowGenerator {
                     outputPlace);
         }
 
-        System.out.println(last);
         return edges;
 
     }
