@@ -4,12 +4,14 @@ import com.privateAPI.DUSTestGenerator.objects_for_graph_and_tree.domain.Vertex;
 import com.privateAPI.DUSTestGenerator.petri_nets.dto.EdgeDto;
 import com.privateAPI.DUSTestGenerator.petri_nets.dto.PetriNetDto;
 import com.privateAPI.DUSTestGenerator.petri_nets.dto.PlaceDto;
+import com.privateAPI.DUSTestGenerator.petri_nets.dto.TransitionDto;
 import com.privateAPI.DUSTestGenerator.reachability_graph.domain.ReachabilityGraph;
 import com.privateAPI.DUSTestGenerator.reachability_graph.domain.ReachabilityGraphMakerResult;
 import com.privateAPI.DUSTestGenerator.reachability_graph.domain.ReachabilityGraphState;
 import com.privateAPI.DUSTestGenerator.reachability_graph.generator.ReachabilityGraphMaker;
 import com.privateAPI.DUSTestGenerator.reachability_graph.util.ReachabilityGraphParallelPaths;
 import com.privateAPI.DUSTestGenerator.reachability_graph.util.ReachabilityGraphWorker;
+import com.privateAPI.DUSTestGenerator.workflow.WorkflowChecker;
 
 
 import java.util.*;
@@ -20,10 +22,14 @@ public class StaticPlacesGenerator
 
     private final ReachabilityGraphMaker reachabilityGraphMaker;
     private final ReachabilityGraphWorker reachabilityGraphWorker;
+    private final ComplementaryPlaceMaker complementaryPlaceMaker;
+    private final WorkflowChecker workflowChecker;
 
     public StaticPlacesGenerator() {
         this.reachabilityGraphMaker = new ReachabilityGraphMaker();
         this.reachabilityGraphWorker = new ReachabilityGraphWorker();
+        this.complementaryPlaceMaker = new ComplementaryPlaceMaker();
+        this.workflowChecker = new WorkflowChecker();
     }
 
     public PetriNetDto addStaticPlacesToWorkflow(PetriNetDto workflow, int count)
@@ -34,10 +40,19 @@ public class StaticPlacesGenerator
         if(reachabilityGraphMakerResult.getState() == ReachabilityGraphState.UNBOUDED)
             return null;
 
-
+        int attempt = 0;
         for(int i = 0; i < count; i++)
         {
             workflow = addStaticPlaceToWorkflow(workflow, reachabilityGraphMakerResult.getReachabilityGraph(), i+1);
+            attempt++;
+            if(!isCorrectWorkflowWithComplementaryPlaces(workflow))
+            {
+                deleteLastStaticPlace(workflow);
+                i--;
+            }
+
+            if(attempt == 50)
+                break;
         }
 
         return workflow;
@@ -448,6 +463,33 @@ public class StaticPlacesGenerator
         {
             workflow.getEdges().add(new EdgeDto(to, placeDto.getId(), 1));
         }
+
+        return workflow;
+    }
+
+    private boolean isCorrectWorkflowWithComplementaryPlaces(PetriNetDto workflow)
+    {
+        PetriNetDto workflowWithComplementaryPlaces = this.complementaryPlaceMaker.makeComplementaryPlaces(workflow);
+
+        return this.workflowChecker.isCorrectWorkflow(workflowWithComplementaryPlaces);
+    }
+
+    private PetriNetDto deleteLastStaticPlace(PetriNetDto workflow)
+    {
+        PlaceDto lastStaticPlace = workflow.getPlaces().get(workflow.getPlaces().size() - 1);
+
+        List<EdgeDto> edgesToDelete = new ArrayList<>();
+
+        for(EdgeDto edgeDto : workflow.getEdges())
+        {
+            if(edgeDto.getFrom().compareTo(lastStaticPlace.getId()) == 0 || edgeDto.getTo().compareTo(lastStaticPlace.getId()) == 0)
+            {
+                edgesToDelete.add(edgeDto);
+            }
+        }
+
+        workflow.getEdges().removeAll(edgesToDelete);
+        workflow.getPlaces().remove(lastStaticPlace);
 
         return workflow;
     }
