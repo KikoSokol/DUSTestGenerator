@@ -27,7 +27,7 @@ public class MainTestController
         this.mainTestService = mainTestService;
     }
 
-    @CrossOrigin(origins = "https://lubossremanak.site/test-dus")
+    @CrossOrigin(origins = "https://lubossremanak.site")
     @PostMapping("reachability-graph")
     public ResponseEntity getReachabilityGraph(@RequestBody ReachabilityGraphGeneratorRequest request)
     {
@@ -40,7 +40,7 @@ public class MainTestController
         }
     }
 
-    @CrossOrigin(origins = "https://lubossremanak.site/test-dus")
+    @CrossOrigin(origins = "https://lubossremanak.site")
     @PostMapping("coverability-tree")
     public ResponseEntity getCoverabilityTree(@RequestBody CoverabilityTreeGeneratorRequest request)
     {
@@ -53,7 +53,7 @@ public class MainTestController
         }
     }
 
-    @CrossOrigin(origins = "https://lubossremanak.site/test-dus")
+    @CrossOrigin(origins = "https://lubossremanak.site")
     @PostMapping("prescription-pn-petri-net")
     public ResponseEntity getPrescriptionPN(@RequestBody PetriNetGeneratorRequest request)
     {
@@ -66,7 +66,7 @@ public class MainTestController
         }
     }
 
-    @CrossOrigin(origins = "https://lubossremanak.site/test-dus")
+    @CrossOrigin(origins = "https://lubossremanak.site")
     @PostMapping("definition-ptiom0")
     public ResponseEntity getDefinitionPTIOM0(@RequestBody PetriNetGeneratorRequest request)
     {
@@ -79,7 +79,7 @@ public class MainTestController
         }
     }
 
-    @CrossOrigin(origins = "https://lubossremanak.site/test-dus")
+    @CrossOrigin(origins = "https://lubossremanak.site")
     @PostMapping("random-workflow")
     public ResponseEntity getRandomWorkflow(@RequestBody WorkflowGeneratorRequest request)
     {
@@ -92,7 +92,7 @@ public class MainTestController
         }
     }
 
-    @CrossOrigin(origins = "https://lubossremanak.site/test-dus")
+    @CrossOrigin(origins = "https://lubossremanak.site")
     @PostMapping("random-correct-workflow")
     public ResponseEntity getRandomCorrectWorkflow(@RequestBody WorkflowGeneratorRequest request)
     {

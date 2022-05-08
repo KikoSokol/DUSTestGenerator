@@ -19,7 +19,7 @@ public class TestExportController
         this.exportService = exportService;
     }
 
-    @CrossOrigin(origins = "https://lubossremanak.site/test-dus")
+    @CrossOrigin(origins = "https://lubossremanak.site")
     @PostMapping("html-to-pdf")
     public String testFromHtmlToPdf(@RequestBody String html) throws IOException {
         return this.exportService.htmlTestToPdf(html);
