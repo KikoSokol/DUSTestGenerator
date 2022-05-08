@@ -106,6 +106,13 @@ public class MainTestController
     }
 
 
+    @CrossOrigin(origins = "https://lubossremanak.site/test-dus")
+    @GetMapping("get")
+    public String getRandomCorrectWorkflow()
+    {
+        return "Spring je najlepší framework forever";
+    }
+
 
 
 }
