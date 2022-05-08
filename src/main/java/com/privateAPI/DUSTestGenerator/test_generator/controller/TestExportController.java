@@ -4,6 +4,8 @@ import com.privateAPI.DUSTestGenerator.test_generator.service.TestExportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("export")
 public class TestExportController
@@ -19,8 +21,7 @@ public class TestExportController
 
     @CrossOrigin(origins = "https://lubossremanak.site")
     @PostMapping("html-to-pdf")
-    public String testFromHtmlToPdf(@RequestBody String html)
-    {
+    public String testFromHtmlToPdf(@RequestBody String html) throws IOException {
         return this.exportService.htmlTestToPdf(html);
     }
 

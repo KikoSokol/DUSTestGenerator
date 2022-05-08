@@ -4,6 +4,8 @@ import com.privateAPI.DUSTestGenerator.test_generator.PdfTestCreator;
 import com.privateAPI.DUSTestGenerator.test_generator.service.TestExportService;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+
 @Service
 public class TestExportServiceImpl implements TestExportService
 {
@@ -14,8 +16,7 @@ public class TestExportServiceImpl implements TestExportService
     }
 
     @Override
-    public String htmlTestToPdf(String html)
-    {
+    public String htmlTestToPdf(String html) throws IOException {
         return this.pdfCreator.createPdfTestFromHtml(html);
     }
 }
