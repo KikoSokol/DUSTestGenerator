@@ -106,7 +106,7 @@ public class MainTestController
     }
 
 
-    @CrossOrigin(origins = "https://lubossremanak.site/test-dus")
+    @CrossOrigin(origins = "https://lubossremanak.site")
     @GetMapping("get")
     public String getRandomCorrectWorkflow()
     {
