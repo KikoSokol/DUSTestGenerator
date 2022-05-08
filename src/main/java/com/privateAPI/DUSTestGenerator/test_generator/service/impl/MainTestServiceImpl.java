@@ -51,13 +51,7 @@ public class MainTestServiceImpl implements MainTestService
     public GraphAndTreeTaskDto getCoverabilityTree(CoverabilityTreeGeneratorRequest request) throws ConstraintViolationException
     {
         CoverabilityTreeGeneratorResultDto coverabilityTreeResult =
-                this.coverabilityTreeService.generateCoverabilityTree(request); ;
-
-        if(coverabilityTreeResult.getPetriNet() == null)
-            System.out.println("nullllllllllllll");
-
-        if(coverabilityTreeResult.getCoverabilityTree() == null)
-            System.out.println("nuuuuulllllll");
+                this.coverabilityTreeService.generateCoverabilityTree(request);
 
         ReachabilityGraphGeneratorResultDto reachabilityTestResult = this.reachabilityGraphService
                 .fromPetriNetToReachabilityGraph(coverabilityTreeResult.getPetriNet());
