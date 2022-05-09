@@ -14,7 +14,7 @@ public class WorkflowGeneratorRequest
     private int minPlaces;
     private int maxPlaces;
 
-    @Min(value = 1, message = "Počet miest musí byť minimálne 1")
+    @Min(value = 1, message = "Počet prechodov musí byť minimálne 1")
     private int minTransition;
     private int maxTransition;
 
