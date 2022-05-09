@@ -3,6 +3,8 @@ package com.privateAPI.DUSTestGenerator.test_generator;
 import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
 import com.itextpdf.html2pdf.resolver.font.DefaultFontProvider;
+import com.itextpdf.io.font.FontProgram;
+import com.itextpdf.io.font.FontProgramFactory;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.layout.font.FontProvider;
@@ -23,6 +25,12 @@ public class PdfTestCreator {
     public String createPdfTestFromHtml(String html) throws IOException {
         ByteArrayOutputStream target = new ByteArrayOutputStream();
         ConverterProperties properties = new ConverterProperties();
+        FontProvider fontProvider = new DefaultFontProvider(false, false, false);
+        properties.setFontProvider(fontProvider);
+        FontProgram fontProgram = FontProgramFactory.createFont(
+                "src/main/resources/fonts/Roboto-BoldCondensed.ttf"
+        );
+        fontProvider.addFont(fontProgram);
         properties.setCharset("UTF-8");
         HtmlConverter.convertToPdf(html, target, properties);
 
