@@ -4,8 +4,7 @@ import com.privateAPI.DUSTestGenerator.coverability_tree.controller.request.Cove
 import com.privateAPI.DUSTestGenerator.coverability_tree.dto.CoverabilityTreeGeneratorResultDto;
 import com.privateAPI.DUSTestGenerator.coverability_tree.service.CoverabilityTreeService;
 import com.privateAPI.DUSTestGenerator.petri_nets.controller.request.PetriNetGeneratorRequest;
-import com.privateAPI.DUSTestGenerator.petri_nets.dto.DefinitionPTIOM0;
-import com.privateAPI.DUSTestGenerator.petri_nets.dto.PrescriptionPnDto;
+import com.privateAPI.DUSTestGenerator.petri_nets.dto.*;
 import com.privateAPI.DUSTestGenerator.petri_nets.service.PetriNetService;
 import com.privateAPI.DUSTestGenerator.reachability_graph.controller.request.ReachabilityGraphGeneratorRequest;
 import com.privateAPI.DUSTestGenerator.reachability_graph.dto.ReachabilityGraphGeneratorResultDto;
@@ -18,6 +17,10 @@ import com.privateAPI.DUSTestGenerator.workflow.service.WorkflowService;
 import org.springframework.stereotype.Service;
 
 import javax.validation.ConstraintViolationException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class MainTestServiceImpl implements MainTestService
@@ -42,10 +45,38 @@ public class MainTestServiceImpl implements MainTestService
         ReachabilityGraphGeneratorResultDto reachabilityGraphResult =
                 this.reachabilityGraphService.getReachabilityGraph(request);
 
+        PetriNetDto petrinet = reachabilityGraphResult.getPetriNet();
+        this.testPrintPetriNet(petrinet);
+
         CoverabilityTreeGeneratorResultDto coverabilityTreeResult =
                 this.coverabilityTreeService.fromPetriNetToCoverabilityTree(reachabilityGraphResult.getPetriNet());
 
         return new GraphAndTreeTaskDto(reachabilityGraphResult.getPetriNet(), reachabilityGraphResult, coverabilityTreeResult);
+    }
+
+    private Set<TransitionDto> getLinkedTransitions(List<TransitionDto> transitions, List<EdgeDto> edges) {
+        Set<TransitionDto> linked = new HashSet<TransitionDto>();
+        for (EdgeDto edge: edges) {
+            for (TransitionDto transition : transitions) {
+                if (transition.getName().equals(edge.getFrom()) || transition.getName().equals(edge.getTo())) {
+                    linked.add(transition);
+                }
+            }
+        }
+        return linked;
+    }
+
+    private void testPrintPetriNet(PetriNetDto petrinet) {
+        System.out.println("\n\n\n--------------------------------------\n");
+        System.out.println("Places: " + petrinet.getPlaces().size());
+        System.out.println(petrinet.getPlaces());
+        System.out.println("\nTransitions: " + petrinet.getTransitions().size());
+        System.out.println(petrinet.getTransitions());
+        Set<TransitionDto> linked = this.getLinkedTransitions(petrinet.getTransitions(), petrinet.getEdges());
+        System.out.println("\nLinked transitions: " +  linked.size());
+        System.out.println(linked);
+        System.out.println("\nEdges: " + petrinet.getEdges().size());
+        System.out.println(petrinet.getEdges());
     }
 
     public GraphAndTreeTaskDto getCoverabilityTree(CoverabilityTreeGeneratorRequest request) throws ConstraintViolationException

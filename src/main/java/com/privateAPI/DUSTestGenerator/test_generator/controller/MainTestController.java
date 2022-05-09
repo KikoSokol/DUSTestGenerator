@@ -27,7 +27,7 @@ public class MainTestController
         this.mainTestService = mainTestService;
     }
 
-    @CrossOrigin(origins = "https://lubossremanak.site")
+    //@CrossOrigin(origins = "https://lubossremanak.site")
     @PostMapping("reachability-graph")
     public ResponseEntity getReachabilityGraph(@RequestBody ReachabilityGraphGeneratorRequest request)
     {
