@@ -15,7 +15,8 @@ public class InvariantValidator {
     @Autowired
     private Validator validator;
 
-    public ConstraintViolationException validateInvariantRequest(InvariantGeneratorRequest invariantGeneratorRequest) {
+    public ConstraintViolationException validateInvariantRequest(InvariantGeneratorRequest invariantGeneratorRequest,
+                                                                 boolean isTInvariant) {
         Set<ConstraintViolation<InvariantGeneratorRequest>> violations = this.validator.validate(invariantGeneratorRequest);
         StringBuilder sb = new StringBuilder();
 
@@ -28,6 +29,20 @@ public class InvariantValidator {
                 sb.append(",\n");
             }
         }
+
+        if(isTInvariant)
+        {
+            if(!invariantGeneratorRequest.isProperty())
+            {
+                if(invariantGeneratorRequest.getPlaces() < invariantGeneratorRequest.getTransitions())
+                {
+                    isValid = false;
+                    sb.append("Počet miest nemôže byť menší ako počet prechodov");
+                    sb.append(",\n");
+                }
+            }
+        }
+
         if (isValid)
             return null;
         else {

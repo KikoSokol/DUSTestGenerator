@@ -23,7 +23,7 @@ public class InvariantServiceTest {
 
     public Invariant PInvariantGeneratorResult(InvariantGeneratorRequest invariantGeneratorRequest) {
         ConstraintViolationException exception = this.invariantValidator
-                .validateInvariantRequest(invariantGeneratorRequest);
+                .validateInvariantRequest(invariantGeneratorRequest,false);
 
         if (exception != null)
             throw exception;
@@ -35,7 +35,7 @@ public class InvariantServiceTest {
 
     public Invariant TInvariantGeneratorResult(InvariantGeneratorRequest invariantGeneratorRequest) {
         ConstraintViolationException exception = this.invariantValidator
-                .validateInvariantRequest(invariantGeneratorRequest);
+                .validateInvariantRequest(invariantGeneratorRequest, true);
 
         if (exception != null)
             throw exception;
