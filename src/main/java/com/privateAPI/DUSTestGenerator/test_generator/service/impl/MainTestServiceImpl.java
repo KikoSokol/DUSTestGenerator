@@ -45,38 +45,10 @@ public class MainTestServiceImpl implements MainTestService
         ReachabilityGraphGeneratorResultDto reachabilityGraphResult =
                 this.reachabilityGraphService.getReachabilityGraph(request);
 
-        PetriNetDto petrinet = reachabilityGraphResult.getPetriNet();
-        this.testPrintPetriNet(petrinet);
-
         CoverabilityTreeGeneratorResultDto coverabilityTreeResult =
                 this.coverabilityTreeService.fromPetriNetToCoverabilityTree(reachabilityGraphResult.getPetriNet());
 
         return new GraphAndTreeTaskDto(reachabilityGraphResult.getPetriNet(), reachabilityGraphResult, coverabilityTreeResult);
-    }
-
-    private Set<TransitionDto> getLinkedTransitions(List<TransitionDto> transitions, List<EdgeDto> edges) {
-        Set<TransitionDto> linked = new HashSet<TransitionDto>();
-        for (EdgeDto edge: edges) {
-            for (TransitionDto transition : transitions) {
-                if (transition.getName().equals(edge.getFrom()) || transition.getName().equals(edge.getTo())) {
-                    linked.add(transition);
-                }
-            }
-        }
-        return linked;
-    }
-
-    private void testPrintPetriNet(PetriNetDto petrinet) {
-        System.out.println("\n\n\n--------------------------------------\n");
-        System.out.println("Places: " + petrinet.getPlaces().size());
-        System.out.println(petrinet.getPlaces());
-        System.out.println("\nTransitions: " + petrinet.getTransitions().size());
-        System.out.println(petrinet.getTransitions());
-        Set<TransitionDto> linked = this.getLinkedTransitions(petrinet.getTransitions(), petrinet.getEdges());
-        System.out.println("\nLinked transitions: " +  linked.size());
-        System.out.println(linked);
-        System.out.println("\nEdges: " + petrinet.getEdges().size());
-        System.out.println(petrinet.getEdges());
     }
 
     public GraphAndTreeTaskDto getCoverabilityTree(CoverabilityTreeGeneratorRequest request) throws ConstraintViolationException
