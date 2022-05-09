@@ -4,7 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -72,5 +74,30 @@ public class PetriNetDto {
         });
 
         return this.places;
+    }
+
+    public Set<TransitionDto> getLinkedTransitions() {
+        Set<TransitionDto> linked = new HashSet<TransitionDto>();
+        for (EdgeDto edge: edges) {
+            for (TransitionDto transition : transitions) {
+                if (transition.getName().equals(edge.getFrom()) || transition.getName().equals(edge.getTo())) {
+                    linked.add(transition);
+                }
+            }
+        }
+        return linked;
+    }
+
+    public void testPrintPetriNet() {
+        System.out.println("\n\n\n--------------------------------------\n");
+        System.out.println("Places: " + places.size());
+        System.out.println(places);
+        System.out.println("\nTransitions: " + transitions.size());
+        System.out.println(transitions);
+        Set<TransitionDto> linked = this.getLinkedTransitions();
+        System.out.println("\nLinked transitions: " +  linked.size());
+        System.out.println(linked);
+        System.out.println("\nEdges: " + edges.size());
+        System.out.println(edges);
     }
 }

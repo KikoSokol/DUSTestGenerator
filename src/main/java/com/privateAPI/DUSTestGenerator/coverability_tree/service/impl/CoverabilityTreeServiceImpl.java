@@ -15,6 +15,7 @@ import com.privateAPI.DUSTestGenerator.petri_nets.dto.mapper.CoverabilityTreeToP
 import org.springframework.stereotype.Service;
 
 import javax.validation.ConstraintViolationException;
+import javax.validation.constraints.Null;
 
 @Service
 public class CoverabilityTreeServiceImpl implements CoverabilityTreeService
@@ -45,16 +46,22 @@ public class CoverabilityTreeServiceImpl implements CoverabilityTreeService
         if(exception != null)
             throw exception;
 
-        CoverabilityTreeGeneratorResult coverabilityTree = this.coverabilityTreeGenerator.generateRandomCoverabilityTree(coverabilityTreeGeneratorRequest);
+        while (true) {
+            try {
+                CoverabilityTreeGeneratorResult coverabilityTree = this.coverabilityTreeGenerator.generateRandomCoverabilityTree(coverabilityTreeGeneratorRequest);
 
-        PetriNetDto petriNetDto = this.coverabilityTreeToPetriNetMapper.calculatePetriNet(coverabilityTree.getCoverabilityTree());
+                PetriNetDto petriNetDto = this.coverabilityTreeToPetriNetMapper.calculatePetriNet(coverabilityTree.getCoverabilityTree());
 
-        CoverabilityTreeGeneratorResultDto coverabilityTreeGeneratorResultDto =
-                this.coverabilityTreeMapper.toCoverabilityTreeGeneratorResultDto(coverabilityTree);
+                CoverabilityTreeGeneratorResultDto coverabilityTreeGeneratorResultDto =
+                        this.coverabilityTreeMapper.toCoverabilityTreeGeneratorResultDto(coverabilityTree);
 
-        coverabilityTreeGeneratorResultDto.setPetriNet(petriNetDto);
+                coverabilityTreeGeneratorResultDto.setPetriNet(petriNetDto);
 
-        return coverabilityTreeGeneratorResultDto;
+                return coverabilityTreeGeneratorResultDto;
+            } catch (NullPointerException e) {
+
+            }
+        }
     }
 
     public CoverabilityTreeGeneratorResultDto fromPetriNetToCoverabilityTree(PetriNetDto petriNetDto)

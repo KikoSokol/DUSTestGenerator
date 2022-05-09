@@ -13,7 +13,7 @@ public class ReachabilityGraphToPetriNetMapper {
     private ReachabilityGraph graph;
     private PetriNetDto petriNet;
 
-    public PetriNetDto calculatePetriNet (ReachabilityGraph graph) {
+    public PetriNetDto calculatePetriNet (ReachabilityGraph graph) throws NullPointerException {
         this.graph = graph;
         this.petriNet = new PetriNetDto();
 
@@ -25,7 +25,7 @@ public class ReachabilityGraphToPetriNetMapper {
     /**
      *  calculation of places, transitions and edges
      */
-    private void startCalculation () {
+    private void startCalculation () throws NullPointerException {
         this.calculatePlaces();
         this.calculateTransitions();
         this.calculateEdges();
@@ -59,7 +59,7 @@ public class ReachabilityGraphToPetriNetMapper {
     /**
      * calculation of EDGES
      */
-    private void calculateEdges () {
+    private void calculateEdges () throws NullPointerException {
         for(Edge edge : this.graph.getEdges()) {
             List<Loop> allLoops = this.calculateAllLoops(edge);
             this.calculateEdges(edge, allLoops);
@@ -70,7 +70,7 @@ public class ReachabilityGraphToPetriNetMapper {
     /**
      * calculation of ALL LOOPS
      */
-    private List<Loop> calculateAllLoops (Edge edge) {
+    private List<Loop> calculateAllLoops (Edge edge) throws NullPointerException {
         List<Loop> regularLoops = this.calculateLoopEdges(edge);
         List<Loop> irregularLoops = this.calculateIrregularLoops(edge);
         return this.mergeLists(regularLoops, irregularLoops);
@@ -80,7 +80,7 @@ public class ReachabilityGraphToPetriNetMapper {
     /**
      * calculation of IRREGULAR LOOPS
      */
-    private List<Loop> calculateIrregularLoops (Edge edge) {
+    private List<Loop> calculateIrregularLoops (Edge edge) throws NullPointerException {
         String transitionId = "t" + edge.getId();
         int[] markingChange = edge.getMarkingChange();
         List<Loop> loops = this.getPotentialIrregularLoops(markingChange);
@@ -156,7 +156,7 @@ public class ReachabilityGraphToPetriNetMapper {
     /**
      * calculation of REGULAR LOOPS
      */
-    private List<Loop> calculateLoopEdges (Edge edge) {
+    private List<Loop> calculateLoopEdges (Edge edge) throws NullPointerException {
         String transitionId = "t" + edge.getId();
         int[] markingChange = edge.getMarkingChange();
         List<Loop> loops = this.getPotentialLoops(markingChange);
@@ -214,13 +214,16 @@ public class ReachabilityGraphToPetriNetMapper {
         return newLoops;
     }
 
-    private void createLoopEdges (String transitionId, List<Loop> allLoops) {
+    private void createLoopEdges (String transitionId, List<Loop> allLoops) throws NullPointerException {
         for (Loop loop : allLoops) {
             String placeId = "p" + (loop.getPlaceArrayIndex() + 1);
-            if(loop.getOutWeight() != null)
-                this.petriNet.addEdge(placeId, transitionId, loop.getOutWeight());
-            if(loop.getInWeight() != null)
-                this.petriNet.addEdge(transitionId, placeId, loop.getInWeight());
+            // TODO: hotfix - any loop weight is null, throw exception and generate graph/net again - solution of loop calculations should be changed
+            if (loop.getOutWeight() == null || loop.getInWeight() == null) {
+                throw new NullPointerException("Wrong loop edge");
+            }
+            this.petriNet.addEdge(placeId, transitionId, loop.getOutWeight());
+            this.petriNet.addEdge(transitionId, placeId, loop.getInWeight());
+
         }
     }
 

@@ -44,14 +44,16 @@ public class ReachabilityGraphServiceImpl implements ReachabilityGraphService
         if(exception != null)
             throw exception;
 
-        ReachabilityGraphGeneratorResult generatorResult = this.reachabilityGraphGenerator.generateRandomReachabilityGraph(reachabilityGraphGeneratorRequest);
-        PetriNetDto petriNetDto = this.reachabilityGraphToPetriNetMapper.calculatePetriNet(generatorResult.getReachabilityGraph());
-
-        ReachabilityGraphGeneratorResultDto generatorResultDto = this.reachabilityGraphMapper.toReachabilityGraphGeneratorResultDto(generatorResult);
-
-        generatorResultDto.setPetriNet(petriNetDto);
-
-        return generatorResultDto;
+        while (true) {
+            try {
+                ReachabilityGraphGeneratorResult generatorResult = this.reachabilityGraphGenerator.generateRandomReachabilityGraph(reachabilityGraphGeneratorRequest);
+                PetriNetDto petriNetDto = this.reachabilityGraphToPetriNetMapper.calculatePetriNet(generatorResult.getReachabilityGraph());
+                ReachabilityGraphGeneratorResultDto generatorResultDto = this.reachabilityGraphMapper.toReachabilityGraphGeneratorResultDto(generatorResult);
+                generatorResultDto.setPetriNet(petriNetDto);
+                return generatorResultDto;
+            } catch (Exception e) {
+            }
+        }
     }
 
     @Override

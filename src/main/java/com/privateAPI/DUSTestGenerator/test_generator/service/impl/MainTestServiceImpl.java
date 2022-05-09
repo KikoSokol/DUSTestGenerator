@@ -4,8 +4,7 @@ import com.privateAPI.DUSTestGenerator.coverability_tree.controller.request.Cove
 import com.privateAPI.DUSTestGenerator.coverability_tree.dto.CoverabilityTreeGeneratorResultDto;
 import com.privateAPI.DUSTestGenerator.coverability_tree.service.CoverabilityTreeService;
 import com.privateAPI.DUSTestGenerator.petri_nets.controller.request.PetriNetGeneratorRequest;
-import com.privateAPI.DUSTestGenerator.petri_nets.dto.DefinitionPTIOM0;
-import com.privateAPI.DUSTestGenerator.petri_nets.dto.PrescriptionPnDto;
+import com.privateAPI.DUSTestGenerator.petri_nets.dto.*;
 import com.privateAPI.DUSTestGenerator.petri_nets.service.PetriNetService;
 import com.privateAPI.DUSTestGenerator.reachability_graph.controller.request.ReachabilityGraphGeneratorRequest;
 import com.privateAPI.DUSTestGenerator.reachability_graph.dto.ReachabilityGraphGeneratorResultDto;
@@ -18,6 +17,10 @@ import com.privateAPI.DUSTestGenerator.workflow.service.WorkflowService;
 import org.springframework.stereotype.Service;
 
 import javax.validation.ConstraintViolationException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class MainTestServiceImpl implements MainTestService
