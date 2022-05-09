@@ -129,7 +129,7 @@ public class PrescriptionPnDto
     public String getPrescriptionPN()
     {
 
-        return stringListOfPlaces() +
+        return "(" + stringListOfPlaces() +
                 ",\n" +
                 stringListOfTransitions() +
                 ",\n" +
@@ -137,7 +137,7 @@ public class PrescriptionPnDto
                 ",\n" +
                 stringListOfEdges(true) +
                 ",\n" +
-                stringListOfStartMarking();
+                stringListOfStartMarking() + ")";
     }
 
 
