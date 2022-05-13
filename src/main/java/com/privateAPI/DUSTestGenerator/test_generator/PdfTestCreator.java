@@ -28,7 +28,7 @@ public class PdfTestCreator {
         FontProvider fontProvider = new DefaultFontProvider(false, false, false);
         properties.setFontProvider(fontProvider);
         FontProgram fontProgram = FontProgramFactory.createFont(
-                "src/main/resources/fonts/Roboto-BoldCondensed.ttf"
+                "src/main/resources/fonts/Roboto-Medium.ttf"
         );
         fontProvider.addFont(fontProgram);
         properties.setCharset("UTF-8");
