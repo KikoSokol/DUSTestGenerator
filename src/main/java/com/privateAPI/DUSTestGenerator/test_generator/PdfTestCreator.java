@@ -23,6 +23,7 @@ import static com.itextpdf.kernel.pdf.PdfName.BaseFont;
 
 public class PdfTestCreator {
     public String createPdfTestFromHtml(String html) throws IOException {
+        html = html.replaceAll("Meno:___________", "  Meno:___________________________  ");
         ByteArrayOutputStream target = new ByteArrayOutputStream();
         ConverterProperties properties = new ConverterProperties();
         FontProvider fontProvider = new DefaultFontProvider(false, false, false);
