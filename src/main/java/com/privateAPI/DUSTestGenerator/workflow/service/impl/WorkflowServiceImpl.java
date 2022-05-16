@@ -6,7 +6,9 @@ import com.privateAPI.DUSTestGenerator.reachability_graph.service.ReachabilityGr
 import com.privateAPI.DUSTestGenerator.workflow.WorkflowChecker;
 import com.privateAPI.DUSTestGenerator.workflow.controller.request.WorkflowGeneratorRequest;
 import com.privateAPI.DUSTestGenerator.workflow.domain.ReachabilityNetResult;
+import com.privateAPI.DUSTestGenerator.workflow.dto.ReachabilityNetResultDto;
 import com.privateAPI.DUSTestGenerator.workflow.dto.WorkflowResultDto;
+import com.privateAPI.DUSTestGenerator.workflow.dto.mapper.WorkflowMapper;
 import com.privateAPI.DUSTestGenerator.workflow.generator.StaticPlacesGenerator;
 import com.privateAPI.DUSTestGenerator.workflow.generator.WorkflowGenerator;
 import com.privateAPI.DUSTestGenerator.workflow.reachability_net.ReachabilityGraphToReachabilityNet;
@@ -25,6 +27,7 @@ public class WorkflowServiceImpl implements WorkflowService
     private final WorkflowValidator workflowValidator;
     private final ReachabilityGraphService reachabilityGraphService;
     private final ReachabilityGraphToReachabilityNet reachabilityNetMaker;
+    private final WorkflowMapper workflowMapper;
 
     public WorkflowServiceImpl(WorkflowGenerator workflowGenerator, WorkflowValidator workflowValidator, ReachabilityGraphService reachabilityGraphService) {
         this.workflowGenerator = workflowGenerator;
@@ -33,6 +36,7 @@ public class WorkflowServiceImpl implements WorkflowService
         this.workflowChecker = new WorkflowChecker();
         this.staticPlacesGenerator = new StaticPlacesGenerator();
         this.reachabilityNetMaker = new ReachabilityGraphToReachabilityNet();
+        this.workflowMapper = new WorkflowMapper();
     }
 
     public WorkflowResultDto getRandomWorkflow(WorkflowGeneratorRequest workflowGeneratorRequest) throws ConstraintViolationException
@@ -104,9 +108,12 @@ public class WorkflowServiceImpl implements WorkflowService
         ReachabilityNetResult reachabilityNetResult =
                 this.reachabilityNetMaker.ReachabilityGraphToReachabilityNet(workflow);
 
+        ReachabilityNetResultDto reachabilityNetResultDto =
+                this.workflowMapper.toReachabilityNetResultDto(reachabilityNetResult);
 
+        reachabilityGraph.setReachabilityGraph(reachabilityNetResultDto.getReachabilityGraphWithComplementaryPlaces());
 
-        return new WorkflowResultDto(workflow, isCorrect, reachabilityGraph, reachabilityNetResult);
+        return new WorkflowResultDto(workflow, isCorrect, reachabilityGraph, reachabilityNetResultDto);
     }
 
 

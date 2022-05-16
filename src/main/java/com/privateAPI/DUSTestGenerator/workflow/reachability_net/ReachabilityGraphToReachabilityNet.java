@@ -31,7 +31,7 @@ public class ReachabilityGraphToReachabilityNet {
         this.startCalculation();
         this.addStaticPlacesToReachabilityNet();
 
-        return new ReachabilityNetResult(this.workflow, this.reachabilityNet);
+        return new ReachabilityNetResult(this.workflow, this.reachabilityNet, this.reachabilityGraph);
     }
 
     public ReachabilityGraph createReachabilityGraphFromWorkflow(){

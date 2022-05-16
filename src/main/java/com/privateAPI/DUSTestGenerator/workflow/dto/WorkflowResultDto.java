@@ -13,5 +13,5 @@ public class WorkflowResultDto
     private PetriNetDto workflow;
     private boolean isCorrect;
     private ReachabilityGraphGeneratorResultDto reachabilityGraph;
-    private ReachabilityNetResult reachabilityNetResult;
+    private ReachabilityNetResultDto reachabilityNetResult;
 }
